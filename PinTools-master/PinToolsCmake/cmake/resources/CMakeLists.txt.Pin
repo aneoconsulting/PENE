@@ -1,0 +1,21 @@
+cmake_minimum_required (VERSION 3.14)
+
+project ("PinToolKit")
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../modules" CACHE STRING "")
+
+include(ExternalProject)
+
+include (CommonVars)
+
+set(PIN_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Add Pin toolkit as an external dependency
+ExternalProject_Add(Pin
+	URL					${PIN_URL}
+	PREFIX				${PIN_INSTALL_PREFIX}
+	CONFIGURE_COMMAND	""
+	BUILD_COMMAND		""
+	INSTALL_DIR         ""
+	INSTALL_COMMAND		"${CMAKE_COMMAND}" -E rename "${PIN_INSTALL_PREFIX}/src/Pin/${PIN_TOOLKIT}" "${PIN_INSTALL_PREFIX}/${CMAKE_SYSTEM_NAME}"
+)
