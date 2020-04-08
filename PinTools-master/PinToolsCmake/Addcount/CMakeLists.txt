@@ -17,7 +17,6 @@ install(TARGETS ${PIN_TOOL})
 
 # Add tests
 add_test(NAME TestVersion
-		 COMMAND $<TARGET_FILE:pin> -t $<TARGET_FILE:${PIN_TOOL}> -version 1 -- "C:/PinTools-master/sampleprog/sampleprog/x64/Debug/sampleprog.exe")
-
-add_test(NAME TestAddcount
-		 COMMAND $<TARGET_FILE:pin> -t $<TARGET_FILE:${PIN_TOOL}> -- "C:/PinTools-master/sampleprog/sampleprog/x64/Debug/sampleprog.exe")
+		 COMMAND $<TARGET_FILE:pin> -t $<TARGET_FILE:${PIN_TOOL}> -version 1 -- "C:/Interflop/PENE/PinTools-master/PinToolsCmake/sampleprog/sampleprog/x64/Debug/sampleprog.exe")
+add_test(NAME FirstTest
+		 COMMAND $<TARGET_FILE:pin> -t $<TARGET_FILE:${PIN_TOOL}> -- "C:/Interflop/PENE/PinTools-master/PinToolsCmake/sampleprog/sampleprog/x64/Debug/sampleprog.exe")
