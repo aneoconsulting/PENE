@@ -16,4 +16,4 @@ target_link_options(${PIN_TOOL} PUBLIC ${PIN_LDFLAGS})
 install(TARGETS ${PIN_TOOL})
 
 # Add tests
-#add_test(NAME TestSamplePinTool COMMAND $<TARGET_FILE:pin> -t $<TARGET_FILE:${PIN_TOOL}> -- "C:/PinTools-master/sampleprog/sampleprog/x64/Debug/sampleprog.exe")
+#add_test(NAME TestSamplePinTool COMMAND $<TARGET_FILE:pin> -t $<TARGET_FILE:${PIN_TOOL}> -- "C:/Interflop/PENE/Test/sampleprog/x64/Debug/sampleprog.exe")

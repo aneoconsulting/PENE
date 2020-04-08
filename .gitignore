@@ -339,5 +339,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-PinToolsCmake/Pin
-PinToolsCmake/out
+Pin
+out
