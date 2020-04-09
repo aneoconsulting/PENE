@@ -32,7 +32,7 @@ class PinToolTest(unittest.TestCase):
         out = (out.stdout.decode('utf-8')).splitlines()
         
         #getting result in ref
-        with open(workpath + '/Test/ref.txt') as ref:
+        with open(workpath + '/Test/versionref.txt') as ref:
             result = ref.read()
             result = result.splitlines()
 
