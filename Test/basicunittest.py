@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 import unittest
 import subprocess
+import os
+from pathlib import Path
 
 ####################### path #######################
 
 #workplace path for simplification, replace by your own path
-workpath = 'C:/PinTools-master/'
+workpath = str(Path(os.path.abspath(__file__)).parent.parent)
 
 #executable path 
-execpath = workpath + 'sampleprog/sampleprog/x64/Debug/sampleprog.exe'
+execpath = workpath + '/Test/sampleprog/x64/Debug/sampleprog.exe'
 
 #path for pin executable
-pinpath = workpath + 'PinToolsCmake/Pin/Windows/pin.exe'
+pinpath = workpath + '/Pin/Windows/pin.exe'
 
 #path for pintool
-toolpath = workpath + 'PinToolsCmake/out/build/x64-Debug/Addcount/Addcount.dll'
+toolpath = workpath + '/out/build/x64-Debug/Addcount/Addcount.dll'
 
 #print(out.stdout.decode('utf-8').replace("\r\n","")) for not using intermediate log file
 
@@ -30,7 +32,7 @@ class PinToolTest(unittest.TestCase):
         out = (out.stdout.decode('utf-8')).splitlines()
         
         #getting result in ref
-        with open(workpath + 'sampleprog/ref.txt') as ref:
+        with open(workpath + '/Test/ref.txt') as ref:
             result = ref.read()
             result = result.splitlines()
 
