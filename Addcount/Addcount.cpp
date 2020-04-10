@@ -61,6 +61,8 @@ int main(int argc, char* argv[])
 
     INS_AddInstrumentFunction(AddCountInstrumentation, nullptr);
 
+    PIN_AddFiniFunction([](INT32, void*) {c.print(); }, nullptr);
+
     PIN_StartProgram();
 
     return 0;

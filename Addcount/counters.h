@@ -5,9 +5,9 @@ struct counters
     unsigned long long add;
     counters() :add(0) {}
 
-    static void print(counters c)
+    void print() const
     {
         std::cout << "counters : ";
-        std::cout << c.add << std::endl;
+        std::cout << add << std::endl;
     }
 };
