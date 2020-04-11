@@ -29,6 +29,6 @@ int main()
 	const double precision = std::pow(10, -i);
 	const double result = sin_integral(start, stop, precision);
 	std::printf("10^%d : %.16lf\n", -i, result);
-	std::cout << "Hello world! ";
-	std::cout << pene_version << std::endl;
+/*	std::cout << "Hello world! ";
+	std::cout << pene_version << std::endl*/;
 }

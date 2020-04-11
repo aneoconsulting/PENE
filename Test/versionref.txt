@@ -1,4 +1,4 @@
 ===============================================
     PENE: Pin Enabled Numerical Exploration    
 ===============================================
-Current version for Addcount : v0.3
+This is PENE version 0.3
