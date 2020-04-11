@@ -55,11 +55,15 @@ int main(int argc, char* argv[])
         return Usage();
     }
 
-    versionModule.Init();
+    versionModule.init();
 
     PIN_InitSymbols();
 
     INS_AddInstrumentFunction(AddCountInstrumentation, nullptr);
+
+    PIN_AddFiniFunction([](INT32, void*) {c.print(); }, nullptr);
+
+    PIN_AddFiniFunction([](INT32, void* module_ptr) { ((version_module*)module_ptr)->end(); }, &versionModule);
 
     PIN_StartProgram();
 

@@ -8,6 +8,6 @@ class version_module : public module
     KNOB<bool> KnobVersion;
 public:
     version_module();
-    void Init();
-    void End();
+    void init();
+    void end();
 };
