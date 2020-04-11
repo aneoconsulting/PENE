@@ -1,13 +1,16 @@
 #pragma once
 
-#include "module.h"
-#include "pin.H"
+#include <pin.H>
 
-class version_module : public module
-{
+#include "module.h"
+
+namespace pene {
+  class version_module : public module
+  {
     KNOB<bool> KnobVersion;
-public:
+  public:
     version_module();
     void init();
     void end();
-};
+  };
+}

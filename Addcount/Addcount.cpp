@@ -1,31 +1,10 @@
-﻿#include "pin.H"
-#include "instlib.H"
-#include "version.h"
-#include "counters.h"
-#include "module.h"
+﻿#include <pin.H>
+#include <instlib.H>
+
 #include "version_module.h"
+#include "counters_module.h"
 
-counters c{};
-void DoCountAdd() { c.add++; }
-/// TODO
-void AddCountInstrumentation(INS ins, void*)
-{
-    auto oc = INS_Opcode(ins);
-    switch (oc)
-    {
-    case XED_ICLASS_ADDSS:
-    case XED_ICLASS_SUBSS:
-    case XED_ICLASS_VADDSS:
-    case XED_ICLASS_VSUBSS:
-        INS_InsertCall(ins, IPOINT_BEFORE, DoCountAdd, IARG_END);
-        break;
-    default:
-        break;
-    }
-}
-
-
-
+using namespace pene;
 
 INT32 Usage()
 {
@@ -49,6 +28,7 @@ int main(int argc, char* argv[])
 
     // Modules have to be loaded before calling PIN_Init.
     version_module versionModule{};
+    pene::counters_module countersModule{};
 
     if (PIN_Init(argc, argv))
     {
@@ -56,14 +36,14 @@ int main(int argc, char* argv[])
     }
 
     versionModule.init();
+    countersModule.init();
 
     PIN_InitSymbols();
 
-    INS_AddInstrumentFunction(AddCountInstrumentation, nullptr);
+    PIN_AddFiniFunction([](INT32 code, void*) {std::cout << "code returned " << code << std::endl; }, nullptr);
 
-    PIN_AddFiniFunction([](INT32, void*) {c.print(); }, nullptr);
-
-    PIN_AddFiniFunction([](INT32, void* module_ptr) { ((version_module*)module_ptr)->end(); }, &versionModule);
+    versionModule.end();
+    countersModule.end();
 
     PIN_StartProgram();
 
