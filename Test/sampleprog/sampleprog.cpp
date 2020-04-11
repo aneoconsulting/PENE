@@ -26,7 +26,7 @@ int main()
 	const double stop = pi_const / 2;
 	const double start = 0.0;
 	const int i = 8;
-	const double precision = std::pow(10, -i);
+	const double precision = std::pow(10., -i);
 	const double result = sin_integral(start, stop, precision);
 	std::printf("10^%d : %.16lf\n", -i, result);
 /*	std::cout << "Hello world! ";

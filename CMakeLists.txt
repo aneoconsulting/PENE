@@ -27,7 +27,6 @@ execute_process(COMMAND				${CMAKE_COMMAND}  --build .
 				WORKING_DIRECTORY	${CMAKE_SOURCE_DIR}/Pin/build)
 
 				
-add_subdirectory ("Test/sampleprog")
 find_package(PIN)
 if (PIN_FOUND)
 	include_directories(${PIN_INCLUDE_DIRS})
@@ -66,6 +65,6 @@ endif("${isSystemDir}" STREQUAL "-1")
 enable_testing()
 
 # Include sub-projects.
-add_subdirectory ("SamplePinTool")
 add_subdirectory ("Addcount")
+add_subdirectory ("Test/sampleprog")
 

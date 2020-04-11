@@ -3,7 +3,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Set source files
-set(SOURCES "Addcount.cpp" "version_module.cpp" )
+set(SOURCES "Addcount.cpp" "version_module.cpp" "counters.cpp" "counters_module.cpp" )
 set(PIN_TOOL Addcount)
 
 # Add target
@@ -16,17 +16,18 @@ target_link_options(${PIN_TOOL} PUBLIC ${PIN_LDFLAGS})
 install(TARGETS ${PIN_TOOL})
 
 # Add tests
-add_test(NAME TestVersion
+add_test(NAME pene.TestVersion.Active
 		 COMMAND $<TARGET_FILE:pin> -t $<TARGET_FILE:${PIN_TOOL}> -version 1 -- "${CMAKE_CURRENT_BINARY_DIR}/../Test/sampleprog/sampleprog.exe")
-add_test(NAME FirstTest
+add_test(NAME pene.TestVersion.Inactive
 		 COMMAND $<TARGET_FILE:pin> -t $<TARGET_FILE:${PIN_TOOL}> -- "${CMAKE_CURRENT_BINARY_DIR}/../Test/sampleprog/sampleprog.exe")
 
-find_package(Python COMPONENTS Interpreter)
+
+find_package(Python COMPONENTS Interpreter )
 if (PYTHON_FOUND)
 	# Add tests
 	add_test(NAME TestExe
 			COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Test/basicunittest.py)
 else()
-	message(WARNING "Python not found blabla")
+	message(WARNING "Python not found")
 endif()
 
