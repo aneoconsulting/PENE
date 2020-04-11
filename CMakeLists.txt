@@ -26,6 +26,8 @@ execute_process(COMMAND				${CMAKE_COMMAND}  --build .
 				RESULT_VARIABLE		PIN_DOWNLOAD_STATUS
 				WORKING_DIRECTORY	${CMAKE_SOURCE_DIR}/Pin/build)
 
+				
+add_subdirectory ("Test/sampleprog")
 find_package(PIN)
 if (PIN_FOUND)
 	include_directories(${PIN_INCLUDE_DIRS})

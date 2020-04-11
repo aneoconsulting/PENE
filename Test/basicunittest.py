@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 import unittest
 import subprocess
-import os
 from pathlib import Path
+import os
 
 ####################### path #######################
 
 #workplace path for simplification, replace by your own path
-workpath = str(Path(os.path.abspath(__file__)).parent.parent)
+workpath = str(Path(os.path.abspath(__file__)).parent.parent) #python 2
+#workpath = str(pathlib.Path().absolute().parent)
 
 #executable path 
-execpath = workpath + '/Test/sampleprog/x64/Debug/sampleprog.exe'
+execpath = workpath + '/out/build/x64-Debug/Test/sampleprog/sampleprog.exe'
 
 #path for pin executable
 pinpath = workpath + '/Pin/Windows/pin.exe'

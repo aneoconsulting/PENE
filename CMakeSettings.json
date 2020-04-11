@@ -9,7 +9,7 @@
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
-      "ctestCommandArgs": "",
+      "ctestCommandArgs": "-V",
       "variables": [
         {
           "name": "CMAKE_C_STANDARD_LIBRARIES",
