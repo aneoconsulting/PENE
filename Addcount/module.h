@@ -2,6 +2,6 @@
 
 struct module
 {
-    virtual void Init() = 0;
-    virtual void End() = 0;
+    virtual void init() = 0;
+    virtual void end() = 0;
 };

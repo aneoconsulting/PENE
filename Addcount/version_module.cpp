@@ -8,15 +8,14 @@ version_module::version_module() : module(), KnobVersion(KNOB_MODE_WRITEONCE, "p
     "version", "0", "display the actual version of this pin tool")
 {}
 
-void version_module::Init()
+void version_module::init()
 {
     if (KnobVersion.Value())
     {
-        std::cout << "Current version for Addcount : ";
-        std::cout << pene_version << std::endl;
+        std::cout << "This is PENE version " << pene_version << std::endl;
         exit(0);
     }
 }
 
-void version_module::End() {}
+void version_module::end() {}
 //
