@@ -58,6 +58,7 @@ endif("${isSystemDir}" STREQUAL "-1")
 enable_testing()
 
 # Include sub-projects.
-add_subdirectory ("Addcount")
+
+add_subdirectory ("src")
 add_subdirectory ("Test/version_module")
 

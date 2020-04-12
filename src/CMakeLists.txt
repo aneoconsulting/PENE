@@ -1,5 +1,6 @@
 ﻿cmake_minimum_required (VERSION 3.14)
 
+project(PENE)
 
 if (PIN_FOUND)
 	include_directories(${PIN_INCLUDE_DIRS})
@@ -17,8 +18,8 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Set source files
-set(SOURCES "Addcount.cpp" "version_module.cpp" "counters.cpp" "counters_module.cpp" )
-set(PIN_TOOL Addcount)
+set(SOURCES "pene.cpp" "version_module.cpp" "counters.cpp" "counters_module.cpp" )
+set(PIN_TOOL pene)
 
 # Add target
 add_library (${PIN_TOOL} SHARED ${SOURCES})
