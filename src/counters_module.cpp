@@ -1,4 +1,5 @@
 #include "counters_module.h"
+#include "counters_utils.h"
 
 #include <pin.H>
 
@@ -8,83 +9,70 @@ namespace pene {
     *a += b;
   }
 
-  void AddCountersInstrumentation(INS ins, void* void_counters)
+  void INS_CountersInstrumentation(INS ins, void* void_counters)
   {
     auto counters_ = (counters*)void_counters;
+    auto tmp_counters = counters{};
     auto oc = INS_Opcode(ins);
+    update_counters(ins, tmp_counters);
 
-    switch (oc)
+    for (auto i = 0; i < counters::size; ++i)
     {
-    case XED_ICLASS_ADDSS:
-    case XED_ICLASS_SUBSS:
-    case XED_ICLASS_VADDSS:
-    case XED_ICLASS_VSUBSS:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->add_float_scalar, IARG_UINT32, (UINT32)1, IARG_END);
+      if (tmp_counters.array[i] > 0) 
+      {
+        INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &tmp_counters.array[i], IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
+      }
+    }
+  }
+
+  VOID TRACE_CountersInstrumentation(TRACE trace, VOID* void_counters)
+  {
+    auto counters_ = (counters*)void_counters;
+
+    for (BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
+    {
+      auto tmp_counters = counters{};
+
+      for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
+      {
+        auto oc = INS_Opcode(ins);
+        update_counters(ins, tmp_counters);
+      }    
+
+      for (auto i = 0; i < counters::size; ++i)
+      {
+        if (tmp_counters.array[i] > 0)
+        {
+          BBL_InsertCall(bbl, IPOINT_ANYWHERE, (AFUNPTR)Add, IARG_PTR, &tmp_counters.array[i], IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
+        }
+      }
+    }
+  }
+
+  counters_module::counters_module() :module(), c(), knob_counter(KNOB_MODE_WRITEONCE, "pintool",
+    "counter-mode", "1", "Change the way instruction are counted. 0: no counter, 1: fast counter, 2: slow counter (for debug purpose).") {}
+
+  bool counters_module::validate() 
+  {
+    auto mode = knob_counter.Value();
+    return mode >= 0 && mode < 3;
+  }
+
+  void counters_module::init()
+  {
+    auto mode = knob_counter.Value();
+    switch (mode)
+    {
+    case 1:
+      TRACE_AddInstrumentFunction(TRACE_CountersInstrumentation, &c);
+      PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
       break;
-    case XED_ICLASS_ADDPS:
-    case XED_ICLASS_SUBPS:
-    case XED_ICLASS_VADDPS:
-    case XED_ICLASS_VSUBPS:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->add_float_simd, IARG_UINT32, (UINT32)1, IARG_END);
-      break;
-    case XED_ICLASS_ADDSD:
-    case XED_ICLASS_SUBSD:
-    case XED_ICLASS_VADDSD:
-    case XED_ICLASS_VSUBSD:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->add_double_scalar, IARG_UINT32, (UINT32)1, IARG_END);
-      break;
-    case XED_ICLASS_ADDPD:
-    case XED_ICLASS_SUBPD:
-    case XED_ICLASS_VADDPD:
-    case XED_ICLASS_VSUBPD:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->add_double_simd, IARG_UINT32, (UINT32)1, IARG_END);
-      break;
-    case XED_ICLASS_MULSS:
-    case XED_ICLASS_VMULSS:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->mul_float_scalar, IARG_UINT32, (UINT32)1, IARG_END);
-      break;
-    case XED_ICLASS_MULPS:
-    case XED_ICLASS_VMULPS:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->mul_float_simd, IARG_UINT32, (UINT32)1, IARG_END);
-      break;
-    case XED_ICLASS_MULSD:
-    case XED_ICLASS_VMULSD:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->mul_double_scalar, IARG_UINT32, (UINT32)1, IARG_END);
-      break;
-    case XED_ICLASS_MULPD:
-    case XED_ICLASS_VMULPD:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->mul_double_simd, IARG_UINT32, (UINT32)1, IARG_END);
-      break;
-    case XED_ICLASS_DIVSS:
-    case XED_ICLASS_VDIVSS:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->div_float_scalar, IARG_UINT32, (UINT32)1, IARG_END);
-      break;
-    case XED_ICLASS_DIVPS:
-    case XED_ICLASS_VDIVPS:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->div_float_simd, IARG_UINT32, (UINT32)1, IARG_END);
-      break;
-    case XED_ICLASS_DIVSD:
-    case XED_ICLASS_VDIVSD:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->div_double_scalar, IARG_UINT32, (UINT32)1, IARG_END);
-      break;
-    case XED_ICLASS_DIVPD:
-    case XED_ICLASS_VDIVPD:
-      INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->div_double_simd, IARG_UINT32, (UINT32)1, IARG_END);
+    case 2:
+      INS_AddInstrumentFunction(INS_CountersInstrumentation, &c);
+      PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
       break;
     default:
       break;
     }
-  }
-
-  counters_module::counters_module() :module(), c() {}
-
-  void counters_module::init()
-  {
-    INS_AddInstrumentFunction(AddCountersInstrumentation, &c);
-  }
-
-  void counters_module::end()
-  {
-    PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
   }
 }

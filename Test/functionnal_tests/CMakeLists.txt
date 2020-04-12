@@ -2,15 +2,13 @@ cmake_minimum_required (VERSION 3.14)
 
 project(version_module)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
-add_executable(test_version_executable "executable.cpp")
+add_executable(test_version_executable "test_version.cpp")
 set_property(TARGET test_version_executable PROPERTY CXX_STANDARD 17)
 
-add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_version_module.py
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_version.py
   COMMAND ${CMAKE_COMMAND} 
-          -D INFILE=${CMAKE_CURRENT_SOURCE_DIR}/test_version_module.py.in
-          -D OUTFILE=${CMAKE_CURRENT_BINARY_DIR}/test_version_module.py
+          -D INFILE=${CMAKE_CURRENT_SOURCE_DIR}/test_version.py.in
+          -D OUTFILE=${CMAKE_CURRENT_BINARY_DIR}/test_version.py
           -D FLAG_TESTS_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
           -D FLAG_TESTS_ECEXUTABLE=$<TARGET_FILE:test_version_executable>
           -D FLAG_TESTS_PINTOOL=$<TARGET_FILE:pene>
@@ -18,14 +16,14 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_version_module.py
           -P ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
   DEPENDS
     ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/test_version_module.py.in
-  COMMENT "Configuring test_version_module.py"
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_version.py.in
+  COMMENT "Configuring test_version.py"
   VERBATIM
 )
 
-set(TEST_SCRIPTS test_version_module.py)
-set(REFERENCE_FILES reference_active.txt reference_inactive.txt)
-set(TEST_LIST test_version_module.flag_tests.test_active test_version_module.flag_tests.test_inactive)
+set(TEST_SCRIPTS test_version.py)
+set(REFERENCE_FILES test_version_reference_inactive.txt test_version_reference_active.txt)
+set(TEST_LIST test_version.flag_tests.test_active test_version.flag_tests.test_inactive)
 
 
 

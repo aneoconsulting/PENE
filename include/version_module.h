@@ -10,7 +10,6 @@ namespace pene {
     KNOB<bool> KnobVersion;
   public:
     version_module();
-    void init();
-    void end();
+    void init() override;
   };
 }

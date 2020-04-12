@@ -56,9 +56,11 @@ if("${isSystemDir}" STREQUAL "-1")
 endif("${isSystemDir}" STREQUAL "-1")
 
 enable_testing()
+set(CTEST_OUTPUT_ON_FAILURE 1)
 
 # Include sub-projects.
 
+include_directories("include")
 add_subdirectory ("src")
-add_subdirectory ("Test/version_module")
+add_subdirectory ("Test/functionnal_tests")
 

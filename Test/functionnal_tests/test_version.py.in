@@ -26,11 +26,11 @@ class flag_tests(unittest.TestCase):
     
     def test_active(self):
         """Test -version for displaying the actual version"""
-        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-version', '1', '--', self.execpath], "reference_active.txt")
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-version', '1', '--', self.execpath], "test_version_reference_active.txt")
 
     def test_inactive(self):
         """Test that version is not displayed withour the -version flag"""
-        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '--', self.execpath], "reference_inactive.txt")
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '--', self.execpath], "test_version_reference_inactive.txt")
 
 if __name__ == '__main__':
     unittest.main()

@@ -28,22 +28,18 @@ int main(int argc, char* argv[])
 
     // Modules have to be loaded before calling PIN_Init.
     version_module versionModule{};
-    pene::counters_module countersModule{};
+    counters_module countersModule{};
 
-    if (PIN_Init(argc, argv))
+    if (PIN_Init(argc, argv) && !module::validate_all())
     {
         return Usage();
     }
 
-    versionModule.init();
-    countersModule.init();
+    module::init_all();
 
     PIN_InitSymbols();
 
-    PIN_AddFiniFunction([](INT32 code, void*) {std::cout << "code returned " << code << std::endl; }, nullptr);
-
-    versionModule.end();
-    countersModule.end();
+    PIN_AddFiniFunction([](INT32 code, void*) {std::cout << "code returned " << code << "." << std::endl; }, nullptr);
 
     PIN_StartProgram();
 

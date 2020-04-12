@@ -17,6 +17,4 @@ namespace pene {
       exit(0);
     }
   }
-
-  void version_module::end() {}
 }
