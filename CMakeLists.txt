@@ -1,16 +1,14 @@
 ﻿cmake_minimum_required (VERSION 3.14)
 
-project ("PENE")
-
 cmake_policy(SET CMP0074 NEW)
 
-# Reset default compiler flags for avoiding conflicts
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "")
-set(CMAKE_CXX_FLAGS_DEBUG "")
-set(CMAKE_CXX_FLAGS "")
+project ("PENE")
+
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(CMAKE_GENERICS_PATH "${CMAKE_SOURCE_DIR}/cmake/generics")
+set(CMAKE_TOOLS_PATH "${CMAKE_SOURCE_DIR}/cmake/tools")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules" CACHE STRING "")
 
 include(CommonConfig)
@@ -25,14 +23,9 @@ execute_process(COMMAND				${CMAKE_COMMAND}  -G "${CMAKE_GENERATOR}" ..
 execute_process(COMMAND				${CMAKE_COMMAND}  --build .
 				RESULT_VARIABLE		PIN_DOWNLOAD_STATUS
 				WORKING_DIRECTORY	${CMAKE_SOURCE_DIR}/Pin/build)
-
 				
 find_package(PIN)
-if (PIN_FOUND)
-	include_directories(${PIN_INCLUDE_DIRS})
-	include_directories(SYSTEM ${PIN_CRT_INCLUDE_DIRS})
-	add_compile_options(${PIN_CXXFLAGS})
-else()
+if (!PIN_FOUND)
     message(FATAL_ERROR "Could not find PIN.")
 endif()
 
@@ -66,5 +59,5 @@ enable_testing()
 
 # Include sub-projects.
 add_subdirectory ("Addcount")
-add_subdirectory ("Test/sampleprog")
+add_subdirectory ("Test/version_module")
 

@@ -1,5 +1,19 @@
 ﻿cmake_minimum_required (VERSION 3.14)
 
+
+if (PIN_FOUND)
+	include_directories(${PIN_INCLUDE_DIRS})
+	include_directories(SYSTEM ${PIN_CRT_INCLUDE_DIRS})
+
+# Reset default compiler flags for avoiding conflicts
+	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "")
+	set(CMAKE_CXX_FLAGS_DEBUG "")
+	set(CMAKE_CXX_FLAGS "")
+	add_compile_options(${PIN_CXXFLAGS})
+else()
+    message(FATAL_ERROR "Could not find PIN.")
+endif()
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Set source files
@@ -14,20 +28,3 @@ target_link_libraries(${PIN_TOOL} ${PIN_LIBRARIES})
 target_link_options(${PIN_TOOL} PUBLIC ${PIN_LDFLAGS}) 
 
 install(TARGETS ${PIN_TOOL})
-
-# Add tests
-add_test(NAME pene.TestVersion.Active
-		 COMMAND $<TARGET_FILE:pin> -t $<TARGET_FILE:${PIN_TOOL}> -version 1 -- "${CMAKE_CURRENT_BINARY_DIR}/../Test/sampleprog/sampleprog.exe")
-add_test(NAME pene.TestVersion.Inactive
-		 COMMAND $<TARGET_FILE:pin> -t $<TARGET_FILE:${PIN_TOOL}> -- "${CMAKE_CURRENT_BINARY_DIR}/../Test/sampleprog/sampleprog.exe")
-
-
-find_package(Python COMPONENTS Interpreter )
-if (PYTHON_FOUND)
-	# Add tests
-	add_test(NAME TestExe
-			COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Test/basicunittest.py)
-else()
-	message(WARNING "Python not found")
-endif()
-
