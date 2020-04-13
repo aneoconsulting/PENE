@@ -1,14 +1,9 @@
-#include "counters.h"
 #include "counters_utils.h"
-
-#include <pin.H>
 
 namespace pene
 {
-  void update_counters(INS ins, counters & counters)
+  void update_counters(OPCODE oc, counters & counters)
   {
-    auto oc = INS_Opcode(ins);
-
     switch (oc)
     {
     case XED_ICLASS_ADDSS:
@@ -53,11 +48,11 @@ namespace pene
       break;
     case XED_ICLASS_DIVSS:
     case XED_ICLASS_VDIVSS:
-      counters.named.div_double_scalar += 1;
+      counters.named.div_float_scalar += 1;
       break;
     case XED_ICLASS_DIVPS:
     case XED_ICLASS_VDIVPS:
-      counters.named.div_double_scalar += 1;
+      counters.named.div_float_simd += 1;
       break;
     case XED_ICLASS_DIVSD:
     case XED_ICLASS_VDIVSD:

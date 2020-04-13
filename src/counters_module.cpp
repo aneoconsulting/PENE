@@ -2,6 +2,7 @@
 #include "counters_utils.h"
 
 #include <pin.H>
+#include <iostream>
 
 namespace pene {
   void Add(counters::int_type* a, UINT32 b)
@@ -14,13 +15,13 @@ namespace pene {
     auto counters_ = (counters*)void_counters;
     auto tmp_counters = counters{};
     auto oc = INS_Opcode(ins);
-    update_counters(ins, tmp_counters);
+    update_counters(oc, tmp_counters);
 
     for (auto i = 0; i < counters::size; ++i)
     {
       if (tmp_counters.array[i] > 0) 
       {
-        INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &tmp_counters.array[i], IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
+        INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &counters_->array[i], IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
       }
     }
   }
@@ -36,14 +37,14 @@ namespace pene {
       for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
       {
         auto oc = INS_Opcode(ins);
-        update_counters(ins, tmp_counters);
+        update_counters(oc, tmp_counters);
       }    
 
       for (auto i = 0; i < counters::size; ++i)
       {
         if (tmp_counters.array[i] > 0)
         {
-          BBL_InsertCall(bbl, IPOINT_ANYWHERE, (AFUNPTR)Add, IARG_PTR, &tmp_counters.array[i], IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
+          BBL_InsertCall(bbl, IPOINT_ANYWHERE, (AFUNPTR)Add, IARG_PTR, &counters_->array[i], IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
         }
       }
     }
@@ -64,10 +65,12 @@ namespace pene {
     switch (mode)
     {
     case 1:
+      std::cerr << "Set counters to trace instrumentation mode" << std::endl;
       TRACE_AddInstrumentFunction(TRACE_CountersInstrumentation, &c);
       PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
       break;
     case 2:
+      std::cerr << "Set counters to instructions instrumentation mode" << std::endl;
       INS_AddInstrumentFunction(INS_CountersInstrumentation, &c);
       PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
       break;

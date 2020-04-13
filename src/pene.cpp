@@ -22,9 +22,9 @@ INT32 Usage()
  */
 int main(int argc, char* argv[])
 {
-    std::cout << "===============================================" << std::endl;
-    std::cout << "    PENE: Pin Enabled Numerical Exploration    " << std::endl;
-    std::cout << "===============================================" << std::endl;
+    std::cerr << "===============================================" << std::endl;
+    std::cerr << "    PENE: Pin Enabled Numerical Exploration    " << std::endl;
+    std::cerr << "===============================================" << std::endl;
 
     // Modules have to be loaded before calling PIN_Init.
     version_module versionModule{};
@@ -35,11 +35,12 @@ int main(int argc, char* argv[])
         return Usage();
     }
 
+    PIN_AddFiniFunction([](INT32 code, void*) {std::cerr << "End of execution. Code returned " << code << "." << std::endl; }, nullptr);
+
     module::init_all();
 
     PIN_InitSymbols();
 
-    PIN_AddFiniFunction([](INT32 code, void*) {std::cout << "code returned " << code << "." << std::endl; }, nullptr);
 
     PIN_StartProgram();
 
