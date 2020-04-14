@@ -1,4 +1,2 @@
-===============================================
-    PENE: Pin Enabled Numerical Exploration    
-===============================================
-This is PENE version 0.1
+This execution is launched with PENE version 0.1
+Execution will stop now.

@@ -13,7 +13,7 @@ class flag_tests(unittest.TestCase):
         
 
     def compareOutputWithReference(self, runargs, referenceFileName):
-        out = subprocess.run(runargs, stdout=subprocess.PIPE, shell = True)
+        out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell = True)
         output = out.stdout.decode('utf-8')
         splittedOutput = output.splitlines()
         print(output) 
@@ -29,7 +29,7 @@ class flag_tests(unittest.TestCase):
         self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-version', '1', '--', self.execpath], "test_version_reference_active.txt")
 
     def test_inactive(self):
-        """Test that version is not displayed withour the -version flag"""
+        """Test that version is not displayed without the -version flag"""
         self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '--', self.execpath], "test_version_reference_inactive.txt")
 
 if __name__ == '__main__':

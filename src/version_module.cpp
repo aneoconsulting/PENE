@@ -13,7 +13,8 @@ namespace pene {
   {
     if (KnobVersion.Value())
     {
-      std::cout << "This is PENE version " << pene_version << std::endl;
+      std::cout << "This execution is launched with PENE version " << pene_version << std::endl;
+      std::cout << "Execution will stop now." <<  std::endl;
       exit(0);
     }
   }

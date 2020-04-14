@@ -1,5 +1,1 @@
-===============================================
-    PENE: Pin Enabled Numerical Exploration    
-===============================================
 This program is only used for test purposes.
-code returned 0.
