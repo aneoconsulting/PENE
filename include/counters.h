@@ -3,6 +3,7 @@
 namespace pene {
   union counters
   {
+    /// TODO: Provide a thread safe int_type similar to std::atomic<>
     using int_type = unsigned long long;
     static constexpr int size = 16;
     struct named_t {

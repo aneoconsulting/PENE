@@ -2,11 +2,14 @@
 
 #include <iostream>
 
+
 #define SCRUTE(a) \
 std::cout << #a << " " << named.##a << std::endl
 
 namespace pene {
-  counters::counters() : array{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0} {}
+  counters::counters() : 
+    array{}
+  {}
 
   void counters::print() const
   {

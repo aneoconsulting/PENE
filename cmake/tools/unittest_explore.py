@@ -19,4 +19,5 @@ def printTestIds(test_case):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('path', type=dir_path)
+    parser.parse_args()
     printTestIds(unittest.defaultTestLoader.discover(parser.path))    

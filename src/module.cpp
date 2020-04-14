@@ -1,23 +1,31 @@
 #include "module.h"
-
+#include <pin.H>
 #include <vector>
+#include <iostream>
 #include <algorithm>
 
 namespace pene {
-  namespace module_internals {
-    static std::vector<module*> modules{};
 
+  std::vector<module*> module::modules{};
+  bool module::pin_symbols_initalized = false;
 
+  module::module(bool require_pin_symbols_initialization) 
+  { 
+    module::modules.push_back(this);
+    if (require_pin_symbols_initialization && !module::pin_symbols_initalized)
+    {
+      module::pin_symbols_initalized = true;
+      PIN_InitSymbols();
+    }
   }
-  module::module() { module_internals::modules.push_back(this); }
   module::~module() {
-    auto & vec = module_internals::modules;
+    auto & vec = module::modules;
     vec.erase(std::remove(vec.begin(), vec.end(), this), vec.end());
   }
   bool module::validate() { return true; }
   bool module::validate_all()
   {
-    for each (auto module_ptr in module_internals::modules)
+    for each (auto module_ptr in module::modules)
     {
       if (!module_ptr->validate())
       {
@@ -28,9 +36,11 @@ namespace pene {
   }
   void module::init_all()
   {
-    for each (auto module_ptr in module_internals::modules)
+    std::cerr << "Modules initialization." << std::endl;
+    for each (auto module_ptr in module::modules)
     {
       module_ptr->init();
-    }
+    }    
+    std::cerr << "Modules initialized." << std::endl;
   }
 }

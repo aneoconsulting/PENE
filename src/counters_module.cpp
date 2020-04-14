@@ -51,30 +51,39 @@ namespace pene {
   }
 
   counters_module::counters_module() :module(), c(), knob_counter(KNOB_MODE_WRITEONCE, "pintool",
-    "counter-mode", "1", "Change the way instruction are counted. 0: no counter, 1: fast counter, 2: slow counter (for debug purpose).") {}
+    "counter-mode", "1", "Activate floating point instruction counting. 0: no counter, 1: fast counter, 2: slow counter (for debug purpose).") {}
 
   bool counters_module::validate() 
   {
+    std::cerr << "Checking configuration: FP instructions count." << std::endl;
+
     auto mode = knob_counter.Value();
-    return mode >= 0 && mode < 3;
+    if (mode < 0 && mode > 2)
+    {
+      PIN_WriteErrorMessage("-counter-mode option only accepts values 0, 1 or 2.", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_NONFATAL, 0);
+      return false;
+    }
+    return true;
   }
 
   void counters_module::init()
   {
+    std::cerr << "Initialization: FP instructions count." << std::endl;
     auto mode = knob_counter.Value();
     switch (mode)
     {
     case 1:
-      std::cerr << "Set counters to trace instrumentation mode" << std::endl;
+      std::cerr << "Set counters to \"trace\" instrumentation mode." << std::endl;
       TRACE_AddInstrumentFunction(TRACE_CountersInstrumentation, &c);
       PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
       break;
     case 2:
-      std::cerr << "Set counters to instructions instrumentation mode" << std::endl;
+      std::cerr << "Set counters to \"instructions\" instrumentation mode." << std::endl;
       INS_AddInstrumentFunction(INS_CountersInstrumentation, &c);
       PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
       break;
-    default:
+    default: // case 0
+      std::cerr << "Set counters to no instrumentation mode" << std::endl;
       break;
     }
   }

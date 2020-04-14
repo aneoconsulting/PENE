@@ -63,4 +63,5 @@ include_directories("include")
 add_subdirectory ("src")
 add_subdirectory ("Test/test_version")
 add_subdirectory ("Test/test_counters")
+add_subdirectory ("Test/test_symbol_list_generator")
 
