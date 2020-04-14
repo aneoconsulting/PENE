@@ -43,17 +43,29 @@ foreach(reference_file ${REFERENCE_FILES})
     copy_file(${reference_file})
 endforeach()
 
+add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/stderr2stdout.py
+    COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMAKE_TOOLS_PATH}/stderr2stdout.py
+            ${CMAKE_CURRENT_BINARY_DIR}/stderr2stdout.py
+    DEPENDS
+        ${CMAKE_TOOLS_PATH}/stderr2stdout.py
+    COMMENT "Copying stderr2stdout.py"
+    VERBATIM
+)
+
+
 list(TRANSFORM REFERENCE_FILES PREPEND ${CMAKE_CURRENT_BINARY_DIR}/)
 list(TRANSFORM TEST_SCRIPTS PREPEND ${CMAKE_CURRENT_BINARY_DIR}/)
 add_custom_target(${PROJECT_NAME} ALL DEPENDS 
     ${TEST_SCRIPTS}
     ${REFERENCE_FILES}
+    ${CMAKE_CURRENT_BINARY_DIR}/stderr2stdout.py
 )
 
 find_package(Python REQUIRED Interpreter)
 foreach(unittest ${TEST_LIST})
 	add_test(NAME ${unittest}
-			COMMAND ${Python_EXECUTABLE} -m unittest ${unittest})
+			COMMAND ${Python_EXECUTABLE} stderr2stdout.py ${Python_EXECUTABLE} -m unittest ${unittest})
 endforeach()
 
 	
