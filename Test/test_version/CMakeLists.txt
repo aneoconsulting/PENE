@@ -7,7 +7,7 @@ set_property(TARGET test_version_executable PROPERTY CXX_STANDARD 17)
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_version.py
   COMMAND ${CMAKE_COMMAND} 
-          -D INFILE=${CMAKE_CURRENT_SOURCE_DIR}/test_version.py.in
+          -D INFILE=${CMAKE_CURRENT_SOURCE_DIR}/test_version.py
           -D OUTFILE=${CMAKE_CURRENT_BINARY_DIR}/test_version.py
           -D FLAG_TESTS_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
           -D FLAG_TESTS_ECEXUTABLE=$<TARGET_FILE:test_version_executable>
@@ -16,7 +16,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_version.py
           -P ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
   DEPENDS
     ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/test_version.py.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_version.py
   COMMENT "Configuring test_version.py"
   VERBATIM
 )
