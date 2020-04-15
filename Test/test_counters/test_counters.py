@@ -13,7 +13,7 @@ class flag_tests(unittest.TestCase):
         
 
     def compareOutputWithReference(self, runargs, referenceFileName):
-        out = subprocess.run(runargs, stdout=subprocess.PIPE, shell = True)
+        out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell = True)
         output = out.stdout.decode('utf-8')
         splittedOutput = output.splitlines()
         print(output) 

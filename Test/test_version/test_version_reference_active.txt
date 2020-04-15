@@ -1,2 +1,9 @@
+===============================================
+    PENE: Pin Enabled Numerical Exploration    
+===============================================
+Checking configuration: FP instructions count.
+Checking configuration: symbol list generation.
+No symbol file will be generated
+Modules initialization.
 This execution is launched with PENE version 0.1
 Execution will stop now.

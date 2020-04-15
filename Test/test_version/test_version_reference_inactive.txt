@@ -1,1 +1,13 @@
+===============================================
+    PENE: Pin Enabled Numerical Exploration    
+===============================================
+Checking configuration: FP instructions count.
+Checking configuration: symbol list generation.
+No symbol file will be generated
+Modules initialization.
+Initialization: FP instructions count.
+Set counters to no instrumentation mode
+Initialization: symbol list generation.
+Modules initialized.
 This program is only used for test purposes.
+End of execution. Code returned 0.

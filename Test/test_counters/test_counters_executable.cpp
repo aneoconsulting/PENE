@@ -11,7 +11,7 @@ void main(int argc, char* argv[])
 
   if (argc == 1)
   {
-    argv = new char* [7]{ "main", "add", "float", "scalar", "10", "100", "1" };
+    argv = new char* [7]{ "main", "add", "double", "scalar", "100", "0", "0" };
   }
   std::string operation{ argv[1] };
   std::string precision{ argv[2] };
@@ -78,13 +78,13 @@ void main(int argc, char* argv[])
           accu = _mm_div_ps(accu, b_);
       }
     }
-    std::cout << argv[1] << " "
-              << argv[2] << " "
-              << argv[3] << " "
-              << argv[4] << " "
-              << argv[5] << " "
-              << argv[6] << " "
-              << "\nresult: " << reinterpret_cast<float*>(&accu)[0] << std::endl;
+    std::cout << "Testing information :" << std::endl;
+    std::cout << "Operation : " << argv[1] << std::endl;
+    std::cout << "Precision : " << argv[2] << std::endl;
+    std::cout << "Vectorization : " << argv[3] << std::endl;
+    std::cout << "Loop : " << argv[4] << std::endl;
+    std::cout << "Test number : " << argv[5] << "  " << argv[6] << std::endl;
+    std::cout << "result : " << reinterpret_cast<float*>(&accu)[0] << std::endl;
   }
   else if (precision.compare("double") == 0)
   {
@@ -147,12 +147,12 @@ void main(int argc, char* argv[])
           accu = _mm_div_pd(accu, b_);
       }
     }
-    std::cout << argv[1] << " "
-              << argv[2] << " "
-              << argv[3] << " "
-              << argv[4] << " "
-              << argv[5] << " "
-              << argv[6] << " "
-              << "\nresult: " << reinterpret_cast<double*>(&accu)[0] << std::endl;
+    std::cout << "Testing information :" << std::endl;
+    std::cout << "Operation : " << argv[1] << std::endl;
+    std::cout << "Precision : " << argv[2] << std::endl;
+    std::cout << "Vectorization : " << argv[3] << std::endl;
+    std::cout << "Loop : " << argv[4] << std::endl;
+    std::cout << "Test number : " << argv[5] << "  " << argv[6] << std::endl;
+    std::cout << "result : " << reinterpret_cast<float*>(&accu)[0] << std::endl;
   }
 }
