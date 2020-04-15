@@ -6,12 +6,12 @@ void main(int argc, char* argv[])
 {
   std::cout << "This program is used for tests purposes only. "
     << "If used to check the ability of the pintool to count operations, "
-    << "input have to be chosen so that the result is 0 to avoid fp->string conversion"
+    << "input have to be chosen so that the result is 0 to avoid fp->string conversion."
     << std::endl;
 
   if (argc == 1)
   {
-    argv = new char* [7]{ "main", "div", "float", "scalar", "10", "0", "1" };
+    argv = new char* [7]{ "main", "add", "float", "scalar", "10", "100", "1" };
   }
   std::string operation{ argv[1] };
   std::string precision{ argv[2] };
@@ -40,7 +40,6 @@ void main(int argc, char* argv[])
     }
     else if (operation.compare("sub") == 0)
     {
-
       if (mode.compare("scalar") == 0)
       {
         for (auto i = 0; i < nb_loop; ++i)

@@ -25,12 +25,12 @@ class flag_tests(unittest.TestCase):
         self.assertEqual(splittedOutput,result)
     
     def test_active(self):
-        """Test -version for displaying the actual version"""
-        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-version', '1', '--', self.execpath], "test_version_reference_active.txt")
+        """Test -counter-mode for using the counters pin tool"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath], "test_counters_reference_active.txt")
 
     def test_inactive(self):
-        """Test that version is not displayed withour the -version flag"""
-        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '--', self.execpath], "test_version_reference_inactive.txt")
+        """Test that counter is not displayed with the flag is equal to 0"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '--', self.execpath], "test_counters_reference_inactive.txt")
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,0 +1,6 @@
+This program is used for tests purposes only. If used to check the ability of the pintool to count operations, input have to be chosen so that the result is 0 to avoid fp->string conversion.
+
+---------------------------------------------------------------------
+Operation - Precision - Vectorization               Instruction count
+---------------------------------------------------------------------
+div - float - scalar               
