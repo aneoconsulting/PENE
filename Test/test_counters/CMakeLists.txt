@@ -7,7 +7,7 @@ set_property(TARGET test_counters_executable PROPERTY CXX_STANDARD 17)
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_counters.py
   COMMAND ${CMAKE_COMMAND} 
-          -D INFILE=${CMAKE_CURRENT_SOURCE_DIR}/test_counters.py.in
+          -D INFILE=${CMAKE_CURRENT_SOURCE_DIR}/test_counters.py
           -D OUTFILE=${CMAKE_CURRENT_BINARY_DIR}/test_counters.py
           -D COUNTERS_TESTS_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
           -D COUNTERS_TESTS_ECEXUTABLE=$<TARGET_FILE:test_counters_executable>
@@ -16,7 +16,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_counters.py
           -P ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
   DEPENDS
     ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/test_counters.py.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_counters.py
   COMMENT "Configuring test_counters.py"
   VERBATIM
 )
