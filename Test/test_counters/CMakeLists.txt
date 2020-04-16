@@ -26,12 +26,18 @@ set(REFERENCE_FILES test_counters_reference_inactive.txt
                     test_counters_reference_default.txt 
                     test_counters_reference_loop.txt 
                     test_counters_reference_result.txt 
-                    test_counters_reference_add_float_scalar.txt)
+                    test_counters_reference_add_float_scalar.txt
+                    test_counters_reference_mul_float_scalar.txt
+                    test_counters_reference_div_float_scalar.txt
+                    test_counters_reference_fma_float_scalar.txt)
 set(TEST_LIST test_counters.flag_tests.test_default 
               test_counters.flag_tests.test_inactive 
               test_counters.flag_tests.test_loop 
               test_counters.flag_tests.test_result 
-              test_counters.flag_tests.test_add_float_scalar)
+              test_counters.flag_tests.test_add_float_scalar
+              test_counters.flag_tests.test_mul_float_scalar
+              test_counters.flag_tests.test_div_float_scalar
+              test_counters.flag_tests.test_fma_float_scalar)
 
 
 

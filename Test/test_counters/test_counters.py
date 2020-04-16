@@ -61,6 +61,18 @@ class flag_tests(unittest.TestCase):
     def test_add_float_scalar(self):
         """Test the validity of couting add_float_scalar"""
         self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "add", "float", "scalar", "10", "0", "0"], "test_counters_reference_add_float_scalar.txt")
+        
+    def test_mul_float_scalar(self):
+        """Test the validity of couting mul_float_scalar"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "mul", "float", "scalar", "10", "0", "0"], "test_counters_reference_mul_float_scalar.txt")
+        
+    def test_div_float_scalar(self):
+        """Test the validity of couting div_float_scalar"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "div", "float", "scalar", "10", "0", "1"], "test_counters_reference_div_float_scalar.txt")
+        
+    def test_fma_float_scalar(self):
+        """Test the validity of couting fma_float_scalar"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "fma", "float", "scalar", "10", "0", "0"], "test_counters_reference_fma_float_scalar.txt")
 
 if __name__ == '__main__':
     unittest.main()
