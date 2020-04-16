@@ -25,11 +25,13 @@ set(TEST_SCRIPTS test_counters.py)
 set(REFERENCE_FILES test_counters_reference_inactive.txt 
                     test_counters_reference_default.txt 
                     test_counters_reference_loop.txt 
-                    test_counters_reference_result.txt)
+                    test_counters_reference_result.txt 
+                    test_counters_reference_add_float_scalar.txt)
 set(TEST_LIST test_counters.flag_tests.test_default 
               test_counters.flag_tests.test_inactive 
               test_counters.flag_tests.test_loop 
-              test_counters.flag_tests.test_result)
+              test_counters.flag_tests.test_result 
+              test_counters.flag_tests.test_add_float_scalar)
 
 
 

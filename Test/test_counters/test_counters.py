@@ -44,7 +44,7 @@ class flag_tests(unittest.TestCase):
     
     def test_default(self):
         """Test -counter-mode for using the counters pin tool"""
-        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath], "test_counters_reference_active.txt")
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath], "test_counters_reference_default.txt")
 
     def test_loop(self):
         """Test only if the counters pin tool disrupts the number of operations performed by the programme"""
@@ -57,6 +57,10 @@ class flag_tests(unittest.TestCase):
     def test_inactive(self):
         """Test that counter is not displayed with the flag is equal to 0"""
         self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '--', self.execpath], "test_counters_reference_inactive.txt")
+        
+    def test_add_float_scalar(self):
+        """Test the validity of couting add_float_scalar"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "add", "float", "scalar", "10", "0", "0"], "test_counters_reference_add_float_scalar.txt")
 
 if __name__ == '__main__':
     unittest.main()
