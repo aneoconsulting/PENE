@@ -22,8 +22,14 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_counters.py
 )
 
 set(TEST_SCRIPTS test_counters.py)
-set(REFERENCE_FILES test_counters_reference_inactive.txt test_counters_reference_active.txt)
-set(TEST_LIST test_counters.flag_tests.test_active test_counters.flag_tests.test_inactive)
+set(REFERENCE_FILES test_counters_reference_inactive.txt 
+                    test_counters_reference_default.txt 
+                    test_counters_reference_loop.txt 
+                    test_counters_reference_result.txt)
+set(TEST_LIST test_counters.flag_tests.test_default 
+              test_counters.flag_tests.test_inactive 
+              test_counters.flag_tests.test_loop 
+              test_counters.flag_tests.test_result)
 
 
 
