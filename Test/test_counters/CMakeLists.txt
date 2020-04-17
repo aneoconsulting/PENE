@@ -33,11 +33,11 @@ set(REFERENCE_FILES test_counters_reference_inactive.txt
 set(TEST_LIST test_counters.flag_tests.test_default 
               test_counters.flag_tests.test_inactive 
               test_counters.flag_tests.test_loop 
-              test_counters.flag_tests.test_result 
-              test_counters.flag_tests.test_add_float_scalar
-              test_counters.flag_tests.test_mul_float_scalar
-              test_counters.flag_tests.test_div_float_scalar
-              test_counters.flag_tests.test_fma_float_scalar)
+              test_counters.flag_tests.test_result )
+set(TEST_LIST2 test_counters.count_tests.test_add_float_scalar
+               test_counters.count_tests.test_mul_float_scalar
+               test_counters.count_tests.test_div_float_scalar
+               test_counters.count_tests.test_fma_float_scalar)
 
 
 
@@ -78,6 +78,10 @@ add_custom_target(${PROJECT_NAME} ALL DEPENDS
 
 find_package(Python REQUIRED Interpreter)
 foreach(unittest ${TEST_LIST})
+	add_test(NAME ${unittest}
+			COMMAND ${Python_EXECUTABLE} stderr2stdout.py ${Python_EXECUTABLE} -m unittest ${unittest})
+endforeach()
+foreach(unittest ${TEST_LIST2})
 	add_test(NAME ${unittest}
 			COMMAND ${Python_EXECUTABLE} stderr2stdout.py ${Python_EXECUTABLE} -m unittest ${unittest})
 endforeach()
