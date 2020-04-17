@@ -92,6 +92,56 @@ class count_tests(unittest.TestCase):
         """Test the validity of couting fma_float_scalar"""
         self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "fma", "float", "scalar", "10", "0", "0"], "test_counters_reference_fma_float_scalar.txt")
 
+    def test_add_double_scalar(self):
+        """Test the validity of couting add_double_scalar"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "add", "double", "scalar", "10", "0", "0"], "test_counters_reference_add_double_scalar.txt")
+
+    def test_mul_double_scalar(self):
+        """Test the validity of couting mul_double_scalar"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "mul", "double", "scalar", "10", "0", "0"], "test_counters_reference_mul_double_scalar.txt")
+        
+    def test_div_double_scalar(self):
+        """Test the validity of couting div_double_scalar"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "div", "double", "scalar", "10", "0", "1"], "test_counters_reference_div_double_scalar.txt")
+        
+    def test_fma_double_scalar(self):
+        """Test the validity of couting fma_double_scalar"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "fma", "double", "scalar", "10", "0", "0"], "test_counters_reference_fma_double_scalar.txt")
+              
+    def test_add_float_simd(self):
+        """Test the validity of couting add_float_simd"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "add", "float", "simd", "10", "0", "0"], "test_counters_reference_add_float_simd.txt")
+              
+    def test_mul_float_simd(self):
+        """Test the validity of couting mul_float_simd"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "mul", "float", "simd", "10", "0", "0"], "test_counters_reference_mul_float_simd.txt")
+        
+    def test_div_float_simd(self):
+        """Test the validity of couting div_float_simd"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "div", "float", "simd", "10", "0", "1"], "test_counters_reference_div_float_simd.txt")
+        
+    def test_fma_float_simd(self):
+        """Test the validity of couting fma_float_simd"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "fma", "float", "simd", "10", "0", "0"], "test_counters_reference_fma_float_simd.txt")
+        
+    def test_add_double_simd(self):
+        """Test the validity of couting add_double_simd"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "add", "double", "simd", "10", "0", "0"], "test_counters_reference_add_double_simd.txt")
+
+    def test_mul_double_simd(self):
+        """Test the validity of couting mul_double_simd"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "mul", "double", "simd", "10", "0", "0"], "test_counters_reference_mul_double_simd.txt")
+        
+    def test_div_double_simd(self):
+        """Test the validity of couting div_double_simd"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "div", "double", "simd", "10", "0", "1"], "test_counters_reference_div_double_simd.txt")
+        
+    def test_fma_double_simd(self):
+        """Test the validity of couting fma_double_simd"""
+        self.compareOutputWithReference([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '--', self.execpath, "fma", "double", "simd", "10", "0", "0"], "test_counters_reference_fma_double_simd.txt")
+
+
+
 if __name__ == '__main__':
     unittest.main()
 

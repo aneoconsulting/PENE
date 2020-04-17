@@ -29,7 +29,19 @@ set(REFERENCE_FILES test_counters_reference_inactive.txt
                     test_counters_reference_add_float_scalar.txt
                     test_counters_reference_mul_float_scalar.txt
                     test_counters_reference_div_float_scalar.txt
-                    test_counters_reference_fma_float_scalar.txt)
+                    test_counters_reference_fma_float_scalar.txt
+                    test_counters_reference_add_double_scalar.txt
+                    test_counters_reference_mul_double_scalar.txt
+                    test_counters_reference_div_double_scalar.txt
+                    test_counters_reference_fma_double_scalar.txt
+                    test_counters_reference_add_float_simd.txt
+                    test_counters_reference_mul_float_simd.txt
+                    test_counters_reference_div_float_simd.txt
+                    test_counters_reference_fma_float_simd.txt
+                    test_counters_reference_add_double_simd.txt
+                    test_counters_reference_mul_double_simd.txt
+                    test_counters_reference_div_double_simd.txt
+                    test_counters_reference_fma_double_simd.txt)
 set(TEST_LIST test_counters.flag_tests.test_default 
               test_counters.flag_tests.test_inactive 
               test_counters.flag_tests.test_loop 
@@ -37,7 +49,19 @@ set(TEST_LIST test_counters.flag_tests.test_default
 set(TEST_LIST2 test_counters.count_tests.test_add_float_scalar
                test_counters.count_tests.test_mul_float_scalar
                test_counters.count_tests.test_div_float_scalar
-               test_counters.count_tests.test_fma_float_scalar)
+               test_counters.count_tests.test_fma_float_scalar
+               test_counters.count_tests.test_add_double_scalar
+               test_counters.count_tests.test_mul_double_scalar
+               test_counters.count_tests.test_div_double_scalar
+               test_counters.count_tests.test_fma_double_scalar
+               test_counters.count_tests.test_add_float_simd
+               test_counters.count_tests.test_mul_float_simd
+               test_counters.count_tests.test_div_float_simd
+               test_counters.count_tests.test_fma_float_simd
+               test_counters.count_tests.test_add_double_simd
+               test_counters.count_tests.test_mul_double_simd
+               test_counters.count_tests.test_div_double_simd
+               test_counters.count_tests.test_fma_double_simd)
 
 
 

@@ -44,7 +44,7 @@ namespace pene
       break;
     case XED_ICLASS_MULPD:
     case XED_ICLASS_VMULPD:
-      counters.named.add_float_simd += 1;
+      counters.named.mul_double_simd += 1;
       break;
     case XED_ICLASS_DIVSS:
     case XED_ICLASS_VDIVSS:
