@@ -27,6 +27,7 @@ namespace pene {
   {
     for each (auto module_ptr in module::modules)
     {
+      std::cerr << "Validating inputs for " << module_ptr->name() << std::endl;
       if (!module_ptr->validate())
       {
         return false;

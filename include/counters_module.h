@@ -13,5 +13,6 @@ namespace pene {
     counters_module();
     bool validate() override;
     void init() override;
+    const std::string& name() override;
   };
 }

@@ -1,44 +1,53 @@
 #include "counters.h"
 
 #include <iostream>
+#include <iomanip>
 
+#define PRINT(prec, op, mode)                                                               \
+std::cerr                                                                                   \
+          << std::setw(17) << std::left << #prec                                            \
+          << std::setw(17) << std::left << #op                                              \
+          << std::setw(17) << std::left << #mode                                            \
+          << std::setw(17) << std::right << (*this)[counter_type::##op##_##prec##_##mode]   \
+          << std::endl
 
-#define SCRUTE14(a) \
-std::cout << #a << "                                             " << named.##a << std::endl
-#define SCRUTE15(a) \
-std::cout << #a << "                                            " << named.##a << std::endl
-#define SCRUTE16(a) \
-std::cout << #a << "                                           " << named.##a << std::endl
-#define SCRUTE17(a) \
-std::cout << #a << "                                          " << named.##a << std::endl
 
 namespace pene {
   counters::counters() : 
-    array{}
+    array{0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 }
   {}
+
+  counters::int_type& counters::operator[](const counter_type & ct)
+  {
+    return array[ct];
+  }
+  const counters::int_type& counters::operator[](const counter_type & ct) const 
+  {
+    return array[ct];
+  }
 
   void counters::print() const
   {
     std::cout << "Displaying counters' information : " << std::endl;
-    std::cout << "---------------------------------------------------------------------" << std::endl;
-    std::cout << "Operation_Precision_Vectorization                   Instruction count" << std::endl;
-    std::cout << "---------------------------------------------------------------------" << std::endl;
-    SCRUTE16(add_float_scalar);
-    SCRUTE16(mul_float_scalar);
-    SCRUTE16(div_float_scalar);
-    SCRUTE16(fma_float_scalar);
-    SCRUTE17(add_double_scalar);
-    SCRUTE17(mul_double_scalar);
-    SCRUTE17(div_double_scalar);
-    SCRUTE17(fma_double_scalar);
-    SCRUTE14(add_float_simd);
-    SCRUTE14(mul_float_simd);
-    SCRUTE14(div_float_simd);
-    SCRUTE14(fma_float_simd);
-    SCRUTE15(add_double_simd);
-    SCRUTE15(mul_double_simd);
-    SCRUTE15(div_double_simd);
-    SCRUTE15(fma_double_simd);
+    std::cout << "--------------------------------------------------------------------" << std::endl;
+    std::cout << "Operation        Precision        Vectorization    Instruction count" << std::endl;
+    std::cout << "--------------------------------------------------------------------" << std::endl;
+    PRINT(float, add, scalar);
+    PRINT(float, add, simd);
+    PRINT(float, mul, scalar);
+    PRINT(float, mul, simd);
+    PRINT(float, div, scalar);
+    PRINT(float, div, simd);
+    PRINT(float, fma, scalar);
+    PRINT(float, fma, simd);
+    PRINT(double, add, scalar);
+    PRINT(double, add, simd);
+    PRINT(double, mul, scalar);
+    PRINT(double, mul, simd);
+    PRINT(double, div, scalar);
+    PRINT(double, div, simd);
+    PRINT(double, fma, scalar);
+    PRINT(double, fma, simd);
     std::cout << "---------------------------------------------------------------------" << std::endl;
   }
 }

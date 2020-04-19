@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 namespace pene {
   struct module
@@ -12,6 +13,7 @@ namespace pene {
     virtual ~module();
     virtual bool validate();
     virtual void init() = 0;
+    virtual const std::string& name() = 0;
     static bool validate_all();
     static void init_all();
   protected:

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <emmintrin.h>
+#include <immintrin.h>
 #include <string>
 
 void main(int argc, char* argv[])
@@ -11,7 +11,7 @@ void main(int argc, char* argv[])
 
   if (argc == 1)
   {
-    argv = new char* [7]{ "main", "add", "double", "scalar", "100", "0", "0" };
+    argv = new char* [7]{ "main", "add", "float", "scalar", "100", "0", "0" };
   }
   std::string operation{ argv[1] };
   std::string precision{ argv[2] };
@@ -78,13 +78,26 @@ void main(int argc, char* argv[])
           accu = _mm_div_ps(accu, b_);
       }
     }
+    else if (operation.compare("fma") == 0)
+    {
+      if (mode.compare("scalar") == 0)
+      {
+        for (auto i = 0; i < nb_loop; ++i)
+          accu = _mm_fmadd_ss(accu, b_, accu);
+      }
+      else if (mode.compare("simd") == 0)
+      {
+        for (auto i = 0; i < nb_loop; ++i)
+          accu = _mm_fmadd_ps(accu, b_, accu);
+      }
+    }
     std::cout << "Testing information :" << std::endl;
     std::cout << "Operation : " << argv[1] << std::endl;
     std::cout << "Precision : " << argv[2] << std::endl;
     std::cout << "Vectorization : " << argv[3] << std::endl;
     std::cout << "Loop : " << argv[4] << std::endl;
     std::cout << "Test number : " << argv[5] << "  " << argv[6] << std::endl;
-    std::cout << "result : " << reinterpret_cast<float*>(&accu)[0] << std::endl;
+    std::cout << "Result : " << reinterpret_cast<float*>(&accu)[0] << std::endl;
   }
   else if (precision.compare("double") == 0)
   {
@@ -147,12 +160,25 @@ void main(int argc, char* argv[])
           accu = _mm_div_pd(accu, b_);
       }
     }
+    else if (operation.compare("fma") == 0)
+    {
+      if (mode.compare("scalar") == 0)
+      {
+        for (auto i = 0; i < nb_loop; ++i)
+          accu = _mm_fmadd_sd(accu, b_, accu);
+      }
+      else if (mode.compare("simd") == 0)
+      {
+        for (auto i = 0; i < nb_loop; ++i)
+          accu = _mm_fmadd_pd(accu, b_, accu);
+      }
+    }
     std::cout << "Testing information :" << std::endl;
     std::cout << "Operation : " << argv[1] << std::endl;
     std::cout << "Precision : " << argv[2] << std::endl;
     std::cout << "Vectorization : " << argv[3] << std::endl;
     std::cout << "Loop : " << argv[4] << std::endl;
     std::cout << "Test number : " << argv[5] << "  " << argv[6] << std::endl;
-    std::cout << "result : " << reinterpret_cast<float*>(&accu)[0] << std::endl;
+    std::cout << "Result : " << reinterpret_cast<double*>(&accu)[0] << std::endl;
   }
 }

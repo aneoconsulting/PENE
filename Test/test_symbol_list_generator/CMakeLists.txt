@@ -2,11 +2,12 @@ cmake_minimum_required (VERSION 3.14)
 
 project(test_symbol_list_generator)
 
+
 add_library(shared_funs SHARED "shared_funs.cpp")
-set_property(TARGET test_counters_executable PROPERTY CXX_STANDARD 17)
+set_property(TARGET shared_funs PROPERTY CXX_STANDARD 17)
 
 add_library(shared2_funs SHARED "shared2_funs.cpp")
-set_property(TARGET test_counters_executable PROPERTY CXX_STANDARD 17)
+set_property(TARGET shared2_funs PROPERTY CXX_STANDARD 17)
 target_link_libraries(shared2_funs PRIVATE shared_funs)
 
 add_executable(executable "executable.cpp")
@@ -25,8 +26,11 @@ foreach(test_script ${TEST_SCRIPTS})
               -D OUTFILE=${CMAKE_CURRENT_BINARY_DIR}/${test_script}
               -D FLAG_TESTS_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
               -D FLAG_TESTS_ECEXUTABLE=$<TARGET_FILE:executable>
+              -D EXECUTABLE=$<TARGET_FILE:executable>
               -D FLAG_TESTS_PINTOOL=$<TARGET_FILE:pene>
+              -D PINTOOL=$<TARGET_FILE:pene>
               -D PIN_EXECUTABLE=$<TARGET_FILE:pin>
+              -D PIN=$<TARGET_FILE:pin>
               -P ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
       DEPENDS
         ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake

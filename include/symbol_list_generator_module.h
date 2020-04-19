@@ -15,5 +15,6 @@ namespace pene {
     symbol_list_generator_module();
     bool validate() override;
     void init() override;
+    const std::string& name() override;
   };
 }

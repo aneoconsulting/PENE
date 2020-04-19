@@ -22,7 +22,6 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_version.py
 )
 
 set(TEST_SCRIPTS test_version.py)
-set(REFERENCE_FILES test_version_reference_inactive.txt test_version_reference_active.txt)
 set(TEST_LIST test_version.flag_tests.test_active test_version.flag_tests.test_inactive)
 
 
@@ -54,11 +53,9 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/stderr2stdout.py
 )
 
 
-list(TRANSFORM REFERENCE_FILES PREPEND ${CMAKE_CURRENT_BINARY_DIR}/)
 list(TRANSFORM TEST_SCRIPTS PREPEND ${CMAKE_CURRENT_BINARY_DIR}/)
 add_custom_target(${PROJECT_NAME} ALL DEPENDS 
     ${TEST_SCRIPTS}
-    ${REFERENCE_FILES}
     ${CMAKE_CURRENT_BINARY_DIR}/stderr2stdout.py
 )
 
