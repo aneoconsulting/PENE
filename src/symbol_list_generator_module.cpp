@@ -4,28 +4,28 @@
 
 namespace pene{
   namespace symbol_list_generator_module_internals {
-    static VOID write_loaded_symbols(IMG img, void* voided_stream)
-    {
-      auto & ofstream = *reinterpret_cast<std::ofstream*>(voided_stream);
+    static KNOB<std::string> knob_exclist_gen{ KNOB_MODE_WRITEONCE, "pintool", "gen-sym-list", "",
+      "Save the list of all symbols loaded durong the exceution in given file." };
 
+    static std::ofstream sym_list_stream{};
+
+    static VOID write_loaded_symbols(IMG img, void*)
+    {
       std::string img_name = IMG_Name(img);
       for (SEC sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec))
       {
         for (RTN rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn))
         {
-          ofstream << img_name << "\t" << RTN_Name(rtn) << "\n";
+          sym_list_stream << img_name << "\t" << RTN_Name(rtn) << "\n";
         }
       }
     }
   }
 
-
+  using namespace symbol_list_generator_module_internals;
 
   symbol_list_generator_module::symbol_list_generator_module():
-    module(true),
-    knob_exclist_gen(KNOB_MODE_WRITEONCE, "pintool", "gen-sym-list", "",
-      "Save the list of all symbols loaded durong the exceution in given file."),
-    sym_list_stream()
+    module(true)
   {
   }
 
@@ -60,13 +60,12 @@ namespace pene{
     std::cerr << "Initialization: symbol list generation." << std::endl;
     if (!knob_exclist_gen.Value().empty() && sym_list_stream.good())
     {
-      IMG_AddInstrumentFunction(symbol_list_generator_module_internals::write_loaded_symbols, &sym_list_stream);
-      PIN_AddFiniFunction([](INT32, void* voided_stream) 
+      IMG_AddInstrumentFunction(write_loaded_symbols, nullptr);
+      PIN_AddFiniFunction([](INT32, void*) 
         {
-          auto& ofstream = *(std::ofstream*)voided_stream;
-          ofstream.flush();
-          ofstream.close();
-        }, &sym_list_stream);
+          sym_list_stream.flush();
+          sym_list_stream.close();
+        }, nullptr);
     }
   }
 

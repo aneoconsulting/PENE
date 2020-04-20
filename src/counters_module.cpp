@@ -18,18 +18,18 @@ namespace pene {
   {
     if (INS_IsOriginal(ins))
     {
-      auto counters_ = reinterpret_cast<counters*>(void_counters);
-        auto tmp_counters = counters();
-        auto oc = INS_Opcode(ins);
-        update_counters(oc, tmp_counters);
+      auto& counters_ = *(counters*)void_counters;
+      auto tmp_counters = counters();
+      auto oc = INS_Opcode(ins);
+      update_counters(oc, tmp_counters);
 
-        for (UINT i = 0; i < counters::size; ++i)
+      for (UINT i = 0; i < counters::size; ++i)
+      {
+        if (tmp_counters.array[i] > 0)
         {
-            if (tmp_counters.array[i] > 0)
-            {
-              INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, counters_->array + i, IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
-            }
+          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &(counters_.array[i]), IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
         }
+      }
     }
   }
 

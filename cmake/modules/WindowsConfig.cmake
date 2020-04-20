@@ -100,7 +100,7 @@ else()
     set(TOOL_OPT_CXX /O2 /GL /Gw)
     set(TOOL_OPT_LD /LTCG /OPT:REF)
     set(DBG_INFO_CXX /Z7 /W4)
-    set(DBG_INFO_LD "")
+    set(DBG_INFO_LD /DEBUG:FULL)
 endif()
 
 
