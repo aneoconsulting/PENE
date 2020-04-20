@@ -2,7 +2,7 @@
 
 namespace pene
 {
-  void update_counters(OPCODE oc, counters& counters)
+  bool update_counters(OPCODE oc, counters& counters)
   {
     switch (oc)
     {
@@ -11,57 +11,57 @@ namespace pene
     case XED_ICLASS_VADDSS:
     case XED_ICLASS_VSUBSS:
       counters[add_float_scalar] += 1;
-      break;
+      return true;
     case XED_ICLASS_ADDPS:
     case XED_ICLASS_SUBPS:
     case XED_ICLASS_VADDPS:
     case XED_ICLASS_VSUBPS:
       counters[add_float_simd] += 1;
-      break;
+      return true;
     case XED_ICLASS_ADDSD:
     case XED_ICLASS_SUBSD:
     case XED_ICLASS_VADDSD:
     case XED_ICLASS_VSUBSD:
       counters[add_double_scalar] += 1;
-      break;
+      return true;
     case XED_ICLASS_ADDPD:
     case XED_ICLASS_SUBPD:
     case XED_ICLASS_VADDPD:
     case XED_ICLASS_VSUBPD:
       counters[add_double_simd] += 1;
-      break;
+      return true;
     case XED_ICLASS_MULSS:
     case XED_ICLASS_VMULSS:
       counters[mul_float_scalar] += 1;
-      break;
+      return true;
     case XED_ICLASS_MULPS:
     case XED_ICLASS_VMULPS:
       counters[mul_float_simd] += 1;
-      break;
+      return true;
     case XED_ICLASS_MULSD:
     case XED_ICLASS_VMULSD:
       counters[mul_double_scalar] += 1;
-      break;
+      return true;
     case XED_ICLASS_MULPD:
     case XED_ICLASS_VMULPD:
       counters[mul_double_simd] += 1;
-      break;
+      return true;
     case XED_ICLASS_DIVSS:
     case XED_ICLASS_VDIVSS:
       counters[div_float_scalar] += 1;
-      break;
+      return true;
     case XED_ICLASS_DIVPS:
     case XED_ICLASS_VDIVPS:
       counters[div_float_simd] += 1;
-      break;
+      return true;
     case XED_ICLASS_DIVSD:
     case XED_ICLASS_VDIVSD:
       counters[div_double_scalar] += 1;
-      break;
+      return true;
     case XED_ICLASS_DIVPD:
     case XED_ICLASS_VDIVPD:
       counters[div_double_simd] += 1;
-      break;
+      return true;
     case XED_ICLASS_VFMADD132SS:
     case XED_ICLASS_VFMADD213SS:
     case XED_ICLASS_VFMADD231SS:
@@ -79,7 +79,7 @@ namespace pene
     case XED_ICLASS_VFNMSUB231SS:
     case XED_ICLASS_VFNMSUBSS:
       counters[fma_float_scalar] += 1;
-      break;
+      return true;
     case XED_ICLASS_VFMADD132SD:
     case XED_ICLASS_VFMADD213SD:
     case XED_ICLASS_VFMADD231SD:
@@ -97,7 +97,7 @@ namespace pene
     case XED_ICLASS_VFNMSUB231SD:
     case XED_ICLASS_VFNMSUBSD:
       counters[fma_double_scalar] += 1;
-      break;
+      return true;
     case XED_ICLASS_VFMADD132PS:
     case XED_ICLASS_VFMADD213PS:
     case XED_ICLASS_VFMADD231PS:
@@ -123,7 +123,7 @@ namespace pene
     case XED_ICLASS_VFNMSUB231PS:
     case XED_ICLASS_VFNMSUBPS:
       counters[fma_float_simd] += 1;
-      break;
+      return true;
     case XED_ICLASS_VFMADD132PD:
     case XED_ICLASS_VFMADD213PD:
     case XED_ICLASS_VFMADD231PD:
@@ -149,9 +149,9 @@ namespace pene
     case XED_ICLASS_VFNMSUB231PD:
     case XED_ICLASS_VFNMSUBPD:
       counters[fma_double_simd] += 1;
-      break;
+      return true;
     default:
-      break;
+      return false;
     }
   }
 

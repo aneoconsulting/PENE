@@ -3,6 +3,7 @@
 
 #include <pin.H>
 #include <iostream>
+#include <cassert>
 
 #define SCRUTE(a) \
 std::cerr << #a << " " << tmp_counters.named.##a << std::endl
@@ -24,7 +25,7 @@ namespace pene {
     {
       if (tmp_counters.array[i] > 0) 
       {
-        INS_InsertCall(ins, IPOINT_ANYWHERE, (AFUNPTR)Add, IARG_FAST_ANALYSIS_CALL, IARG_PTR, &(counters_.array[i]), IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
+        INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_FAST_ANALYSIS_CALL, IARG_PTR, &(counters_.array[i]), IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
       }
     }
   }
@@ -37,10 +38,24 @@ namespace pene {
     {
       auto tmp_counters = counters{};
 
+      for (UINT i = 0; i < counters::size; ++i)
+      {
+        assert(tmp_counters.array[i] == 0);
+      }
+
       for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
       {
         auto oc = INS_Opcode(ins);
-        update_counters(oc, tmp_counters);
+        auto debug_v = false;
+        if (update_counters(oc, tmp_counters))
+        {
+          for (UINT i = 0; i < counters::size; ++i)
+          {
+            debug_v |= tmp_counters.array[i] > 0;
+          }
+          assert(debug_v);
+        }
+
       }
 
       for (UINT i = 0; i < counters::size; ++i)
