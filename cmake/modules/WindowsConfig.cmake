@@ -151,13 +151,12 @@ set(PIN64 ${PIN_ROOT}/intel64/bin/pin${EXE_SUFFIX})
 #    endif
 #endif
 
-if ("${COMPILER}" STREQUAL "MSVC")
-	if (${MSVC_TOOLSET_VERSION} VERSION_GREATER "140")
+if (${MSVC})
+	if (${MSVC_TOOLSET_VERSION} VERSION_GREATER_EQUAL "140")
         # Suppress thread-safe local static initialization feature of C++ 11 using VS2015/2017/2019 compilers
         set(TOOL_CXXFLAGS_NOOPT ${TOOL_CXXFLAGS_NOOPT} /Zc:threadSafeInit- /Zc:sizedDealloc-)
 	endif()
-	if (${MSVC_TOOLSET_VERSION} VERSION_GREATER "141")
-        # Suppress thread-safe local static initialization feature of C++ 11 using VS2015/2017/2019 compilers
+	if (${MSVC_TOOLSET_VERSION} VERSION_GREATER_EQUAL "141")
         set(TOOL_CXXFLAGS_NOOPT ${TOOL_CXXFLAGS_NOOPT} /experimental:external /external:W0 /external:anglebrackets /external:I ${PIN_ROOT})
 	endif()
 endif()
