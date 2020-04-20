@@ -5,28 +5,62 @@
 #include <iostream>
 #include <cassert>
 
-#define SCRUTE(a) \
-std::cerr << #a << " " << tmp_counters.named.##a << std::endl
+#define PENE_DEBUG !defined(NDEBUG) && true
 
 namespace pene {
-  void PIN_FAST_ANALYSIS_CALL Add(counters::int_type* a, UINT32 b)
+  counters::int_type* counter_double_div_scalar_adress = nullptr;
+
+  void debug_pre_add(void* a_)
   {
+    volatile auto a = reinterpret_cast<counters::int_type*>(a_);
+    if (a == counter_double_div_scalar_adress)
+    {
+      std::cerr << "will update counter_double_div_scalar_adress(" << a << ") :" << *a << std::endl;
+    }
+  }
+
+  void debug_post_add(void* a_)
+  {
+    volatile auto a = reinterpret_cast<counters::int_type*>(a_);
+    if (a == counter_double_div_scalar_adress)
+    {
+      std::cerr << "new value for counter_double_div_scalar_adress(" << a << ") :" << *a << std::endl;
+    }
+  }
+
+  void Add(void * a_, UINT32 b)
+  {
+    volatile auto a = reinterpret_cast<counters::int_type*>(a_);
     *a += b;
   }
 
+
   void INS_CountersInstrumentation(INS ins, void* void_counters)
   {
-    auto & counters_ = *(counters*)void_counters;
-    auto tmp_counters = counters{};
-    auto oc = INS_Opcode(ins);
-    update_counters(oc, tmp_counters);
-
-    for (UINT i = 0; i < counters::size; ++i)
+    if (INS_IsOriginal(ins))
     {
-      if (tmp_counters.array[i] > 0) 
-      {
-        INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_FAST_ANALYSIS_CALL, IARG_PTR, &(counters_.array[i]), IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
-      }
+      auto counters_ = reinterpret_cast<counters*>(void_counters);
+        auto tmp_counters = counters();
+        auto oc = INS_Opcode(ins);
+        update_counters(oc, tmp_counters);
+
+        for (UINT i = 0; i < counters::size; ++i)
+        {
+          if (i == counter_type::div_double_scalar) {
+            if (tmp_counters.array[i] > 0)
+            {
+#if PENE_DEBUG
+              INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)debug_pre_add, IARG_PTR, counters_->array + counter_type::div_double_scalar, IARG_END);
+#endif
+
+              INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, counters_->array + i, IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
+
+#if PENE_DEBUG
+              INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)debug_post_add, IARG_PTR, counters_->array + counter_type::div_double_scalar, IARG_END);
+#endif
+            }
+          }
+        }
     }
   }
 
@@ -45,17 +79,19 @@ namespace pene {
 
       for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
       {
-        auto oc = INS_Opcode(ins);
-        auto debug_v = false;
-        if (update_counters(oc, tmp_counters))
+        if (INS_IsOriginal(ins))
         {
-          for (UINT i = 0; i < counters::size; ++i)
+          auto oc = INS_Opcode(ins);
+          auto debug_v = false;
+          if (update_counters(oc, tmp_counters))
           {
-            debug_v |= tmp_counters.array[i] > 0;
+            for (UINT i = 0; i < counters::size; ++i)
+            {
+              debug_v |= tmp_counters.array[i] > 0;
+            }
+            assert(debug_v);
           }
-          assert(debug_v);
         }
-
       }
 
       for (UINT i = 0; i < counters::size; ++i)
@@ -69,7 +105,10 @@ namespace pene {
   }
 
   counters_module::counters_module() :module(), c(), knob_counter(KNOB_MODE_WRITEONCE, "pintool",
-    "counter-mode", "1", "Activate floating point instruction counting. 0: no counter, 1: fast counter, 2: slow counter (for debug purpose).") {}
+    "counter-mode", "1", "Activate floating point instruction counting. 0: no counter, 1: fast counter, 2: slow counter (for debug purpose).")
+  {
+    counter_double_div_scalar_adress = c.array + div_double_scalar;
+  }
 
   bool counters_module::validate() 
   {

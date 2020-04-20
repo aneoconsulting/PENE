@@ -94,12 +94,12 @@ if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
     set(TOOL_OPT_CXX /Od)
     set(TOOL_OPT_LD "")
     # Note: DBG_INFO_CXX is intentionally defined with deferred expansion.
-    set(DBG_INFO_CXX /Z7 /FC /Fd)
+    set(DBG_INFO_CXX /Z7 /FC /Fd /W4)
     set(DBG_INFO_LD /DEBUG:FULL)
 else()
     set(TOOL_OPT_CXX /O2 /GL /Gw)
     set(TOOL_OPT_LD /LTCG /OPT:REF)
-    set(DBG_INFO_CXX /Zo)
+    set(DBG_INFO_CXX /Z7 /W4)
     set(DBG_INFO_LD "")
 endif()
 
@@ -152,9 +152,13 @@ set(PIN64 ${PIN_ROOT}/intel64/bin/pin${EXE_SUFFIX})
 #endif
 
 if ("${COMPILER}" STREQUAL "MSVC")
-	if (MSVC_TOOLSET_VERSION VERSION_GREATER "140")
+	if (${MSVC_TOOLSET_VERSION} VERSION_GREATER "140")
         # Suppress thread-safe local static initialization feature of C++ 11 using VS2015/2017/2019 compilers
         set(TOOL_CXXFLAGS_NOOPT ${TOOL_CXXFLAGS_NOOPT} /Zc:threadSafeInit- /Zc:sizedDealloc-)
+	endif()
+	if (${MSVC_TOOLSET_VERSION} VERSION_GREATER "141")
+        # Suppress thread-safe local static initialization feature of C++ 11 using VS2015/2017/2019 compilers
+        set(TOOL_CXXFLAGS_NOOPT ${TOOL_CXXFLAGS_NOOPT} /experimental:external /external:W0 /external:anglebrackets /external:I ${PIN_ROOT})
 	endif()
 endif()
 

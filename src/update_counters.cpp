@@ -6,6 +6,18 @@ namespace pene
   {
     switch (oc)
     {
+    case XED_ICLASS_ADDSD:
+    case XED_ICLASS_SUBSD:
+    case XED_ICLASS_VADDSD:
+    case XED_ICLASS_VSUBSD:
+      counters[add_double_scalar] += 1;
+      return true;
+    case XED_ICLASS_ADDPD:
+    case XED_ICLASS_SUBPD:
+    case XED_ICLASS_VADDPD:
+    case XED_ICLASS_VSUBPD:
+      counters[add_double_simd] += 1;
+      return true;
     case XED_ICLASS_ADDSS:
     case XED_ICLASS_SUBSS:
     case XED_ICLASS_VADDSS:
@@ -18,17 +30,21 @@ namespace pene
     case XED_ICLASS_VSUBPS:
       counters[add_float_simd] += 1;
       return true;
-    case XED_ICLASS_ADDSD:
-    case XED_ICLASS_SUBSD:
-    case XED_ICLASS_VADDSD:
-    case XED_ICLASS_VSUBSD:
-      counters[add_double_scalar] += 1;
+    case XED_ICLASS_DIVSD:
+    case XED_ICLASS_VDIVSD:
+      counters[div_double_scalar] += 1;
       return true;
-    case XED_ICLASS_ADDPD:
-    case XED_ICLASS_SUBPD:
-    case XED_ICLASS_VADDPD:
-    case XED_ICLASS_VSUBPD:
-      counters[add_double_simd] += 1;
+    case XED_ICLASS_DIVPD:
+    case XED_ICLASS_VDIVPD:
+      counters[div_double_simd] += 1;
+      return true;
+    case XED_ICLASS_DIVSS:
+    case XED_ICLASS_VDIVSS:
+      counters[div_float_scalar] += 1;
+      return true;
+    case XED_ICLASS_DIVPS:
+    case XED_ICLASS_VDIVPS:
+      counters[div_float_simd] += 1;
       return true;
     case XED_ICLASS_MULSS:
     case XED_ICLASS_VMULSS:
@@ -45,22 +61,6 @@ namespace pene
     case XED_ICLASS_MULPD:
     case XED_ICLASS_VMULPD:
       counters[mul_double_simd] += 1;
-      return true;
-    case XED_ICLASS_DIVSS:
-    case XED_ICLASS_VDIVSS:
-      counters[div_float_scalar] += 1;
-      return true;
-    case XED_ICLASS_DIVPS:
-    case XED_ICLASS_VDIVPS:
-      counters[div_float_simd] += 1;
-      return true;
-    case XED_ICLASS_DIVSD:
-    case XED_ICLASS_VDIVSD:
-      counters[div_double_scalar] += 1;
-      return true;
-    case XED_ICLASS_DIVPD:
-    case XED_ICLASS_VDIVPD:
-      counters[div_double_simd] += 1;
       return true;
     case XED_ICLASS_VFMADD132SS:
     case XED_ICLASS_VFMADD213SS:

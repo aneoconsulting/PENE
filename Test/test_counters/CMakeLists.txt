@@ -40,9 +40,8 @@ function(configure_file FILENAME)
         ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
         ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}
       COMMENT "Configuring FILENAME"
-      VERBATIM
-    )
-endfunction(copy_file)
+      VERBATIM)
+endfunction(configure_file)
 
 foreach(test_script ${TEST_SCRIPTS})
     configure_file(${test_script})

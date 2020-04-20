@@ -17,7 +17,7 @@ endif()
 ###### Compiler and linker definitions ######
 
 # COMPILER may have already been defined during the build so don't override it with the hardcoded defaults below.
-if (NOT COMPILER)
+if (NOT ${COMPILER})
     set(COMPILER "MSVC")
 endif()
 
