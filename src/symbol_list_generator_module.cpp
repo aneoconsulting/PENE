@@ -27,8 +27,6 @@ namespace pene{
       "Save the list of all symbols loaded durong the exceution in given file."),
     sym_list_stream()
   {
-    if(std::find(module::modules.begin(), module::modules.end(), this) == module::modules.end())
-      PIN_WriteErrorMessage("symbol_list_generator_module has not been properly initialized", PIN_ERRTYPE::PIN_ERR_ACCESS_DENIED, PIN_ERR_SEVERITY_TYPE::PIN_ERR_FATAL, 0);
   }
 
   bool symbol_list_generator_module::validate()

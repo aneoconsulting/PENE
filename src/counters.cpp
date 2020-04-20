@@ -28,7 +28,6 @@ namespace pene {
 
   void counters::print() const
   {
-    std::cerr << "address for counter_double_div_scalar_adress: " << this->array + counter_type::div_double_scalar << std::endl;
     std::cout << "Displaying counters' information : " << std::endl;
     std::cout << "--------------------------------------------------------------------" << std::endl;
     std::cout << "Operation        Precision        Vectorization    Instruction count" << std::endl;
