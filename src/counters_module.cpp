@@ -8,7 +8,7 @@
 std::cerr << #a << " " << tmp_counters.named.##a << std::endl
 
 namespace pene {
-  void Add(counters::int_type* a, UINT32 b)
+  void PIN_FAST_ANALYSIS_CALL Add(counters::int_type* a, UINT32 b)
   {
     *a += b;
   }
@@ -22,9 +22,9 @@ namespace pene {
 
     for (UINT i = 0; i < counters::size; ++i)
     {
-      //if (tmp_counters.array[i] > 0) 
+      if (tmp_counters.array[i] > 0) 
       {
-        INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)Add, IARG_PTR, &(counters_.array[i]), IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
+        INS_InsertCall(ins, IPOINT_ANYWHERE, (AFUNPTR)Add, IARG_FAST_ANALYSIS_CALL, IARG_PTR, &(counters_.array[i]), IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
       }
     }
   }
@@ -47,7 +47,7 @@ namespace pene {
       {
         if (tmp_counters.array[i] > 0)
         {
-          BBL_InsertCall(bbl, IPOINT_ANYWHERE, (AFUNPTR)Add, IARG_PTR, &(counters_.array[i]), IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
+          BBL_InsertCall(bbl, IPOINT_ANYWHERE, (AFUNPTR)Add, IARG_FAST_ANALYSIS_CALL, IARG_PTR, &(counters_.array[i]), IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
         }
       }
     }

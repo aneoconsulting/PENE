@@ -19,11 +19,11 @@ namespace pene {
 
   counters::int_type& counters::operator[](const counter_type & ct)
   {
-    return array[ct];
+    return array[(UINT)ct];
   }
   const counters::int_type& counters::operator[](const counter_type & ct) const 
   {
-    return array[ct];
+    return array[(UINT)ct];
   }
 
   void counters::print() const

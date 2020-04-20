@@ -21,14 +21,14 @@ class float_sub_scalar_tests(testCounterGenerator.testsBase):
 	def setUp(self):
 		self.counterMode = counterMode
 		self.precision = "float"
-		self.operation = "mul"
+		self.operation = "sub"
 		self.mode = "scalar"
 
 class float_sub_simd_tests(testCounterGenerator.testsBase):
 	def setUp(self):
 		self.counterMode = counterMode
 		self.precision = "float"
-		self.operation = "mul"
+		self.operation = "sub"
 		self.mode = "simd"
 
 class float_mul_scalar_tests(testCounterGenerator.testsBase):
@@ -91,14 +91,14 @@ class double_sub_scalar_tests(testCounterGenerator.testsBase):
 	def setUp(self):
 		self.counterMode = counterMode
 		self.precision = "double"
-		self.operation = "mul"
+		self.operation = "sub"
 		self.mode = "scalar"
 
 class double_sub_simd_tests(testCounterGenerator.testsBase):
 	def setUp(self):
 		self.counterMode = counterMode
 		self.precision = "double"
-		self.operation = "mul"
+		self.operation = "sub"
 		self.mode = "simd"
 
 class double_mul_scalar_tests(testCounterGenerator.testsBase):
