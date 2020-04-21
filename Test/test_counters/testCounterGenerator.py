@@ -13,16 +13,17 @@ class testCounterGenerator(unittest.TestCase):
     modes = ["scalar", "simd"]
 
     def launch(self, counterMode, prec, op, mode, nLoop, a, b):
-        cmdLine = "{pin} -t {tool} -counter-mode {counterMode} -- {executable} {op} {prec} {mode} {nLoop} {a} {b}".format(pin = self.pin,
-                                                                                                                          tool = self.tool,
-                                                                                                                          counterMode = counterMode,
-                                                                                                                          executable = self.executable,
-                                                                                                                          op = op,
-                                                                                                                          prec = prec,
-                                                                                                                          mode = mode,
-                                                                                                                          nLoop = str(nLoop), 
-                                                                                                                          a = str(a), 
-                                                                                                                          b = str(b))
+        cmdLine = ("{pin} -t {tool} -counter-mode {counterMode} -- " +
+                   " {executable} {op} {prec} {mode} {nLoop} {a} {b}").format(pin = self.pin,
+                                                                              tool = self.tool,
+                                                                              counterMode = counterMode,
+                                                                              executable = self.executable,
+                                                                              op = op,
+                                                                              prec = prec,
+                                                                              mode = mode,
+                                                                              nLoop = str(nLoop), 
+                                                                              a = str(a), 
+                                                                              b = str(b))
         out = subprocess.run(cmdLine.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell = True)
         print(cmdLine)
         #self.assertEqual(0, out.returncode)

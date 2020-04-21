@@ -9,6 +9,7 @@
 namespace pene {
   class symbol_list_generator_module : public module
   { 
+    KNOB<std::string> knob_exclist_gen;
   public:
     symbol_list_generator_module();
     bool validate() override;

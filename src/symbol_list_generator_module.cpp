@@ -4,9 +4,6 @@
 
 namespace pene{
   namespace symbol_list_generator_module_internals {
-    static KNOB<std::string> knob_exclist_gen{ KNOB_MODE_WRITEONCE, "pintool", "gen-sym-list", "",
-      "Save the list of all symbols loaded durong the exceution in given file." };
-
     static std::ofstream sym_list_stream{};
 
     static VOID write_loaded_symbols(IMG img, void*)
@@ -24,8 +21,10 @@ namespace pene{
 
   using namespace symbol_list_generator_module_internals;
 
-  symbol_list_generator_module::symbol_list_generator_module():
-    module(true)
+  symbol_list_generator_module::symbol_list_generator_module()
+    : module(true)
+    , knob_exclist_gen{ KNOB_MODE_WRITEONCE, "pintool", "gen-sym-list", "",
+      "Save the list of all symbols loaded durong the exceution in given file." }
   {
   }
 
