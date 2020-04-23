@@ -4,6 +4,7 @@
 #include "version_module.h"
 #include "counters_module.h"
 #include "symbol_list_generator_module.h"
+#include "replace_module.h"
 
 using namespace pene;
 
@@ -34,6 +35,7 @@ int main(int argc, char* argv[])
     version_module versionModule{};
     counters_module countersModule{};
     symbol_list_generator_module symlistgenModule{};
+    replace_module replacemodule{};
 
     if (PIN_Init(argc, argv) || !module::validate_all())
     {

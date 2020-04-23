@@ -6,7 +6,7 @@
 namespace pene {
 
     replace_module::replace_module() : module(), knob_replace(KNOB_MODE_WRITEONCE, "pintool",
-        "replace", "1", "swith add and multiply"){
+        "replace", "1", "switch add and multiply"){
     }
 
     void TODO(){}
@@ -16,13 +16,14 @@ namespace pene {
             auto oc = INS_Opcode(ins);
             switch (oc) {
             case XED_ICLASS_ADDSS:
+
             case XED_ICLASS_VADDSS:
             case XED_ICLASS_MULSS:
             case XED_ICLASS_VMULSS:
                 INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)TODO, IARG_END);
             }
         }
-        //INS_Delete(ins);
+        INS_Delete(ins);
     }
 
     void replace_module::init() {
