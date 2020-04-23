@@ -25,11 +25,11 @@ class replace_tests(unittest.TestCase):
     
     def test_replace(self):
         """Test -replace for switching between add and mul"""
-        self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-replace', '1', '--', self.execpath], self.activePattern, self.inactivePattern)
+        self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '-replace', '1', '--', self.execpath], self.activePattern, self.inactivePattern)
 
     def test_replace_inactive(self):
         """Test -replace for switching between add and mul"""
-        self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-replace', '0', '--', self.execpath], self.inactivePattern, self.activePattern)
+        self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '-replace', '0', '--', self.execpath], self.inactivePattern, self.activePattern)
 
 if __name__ == '__main__':
     unittest.main()

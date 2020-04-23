@@ -3,31 +3,41 @@
 #include <cassert>
 #include "replace_module.h"
 
+
 namespace pene {
 
     replace_module::replace_module() : module(), knob_replace(KNOB_MODE_WRITEONCE, "pintool",
         "replace", "1", "switch add and multiply"){
     }
 
-    void TODO(){}
+    void product(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
+
+    
+    }
+    void sum(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
+
+
+    }
+
 
     void Switch_add_multiply(INS ins, VOID* v) {
         if (INS_IsOriginal(ins)){
             auto oc = INS_Opcode(ins);
             switch (oc) {
             case XED_ICLASS_ADDSS:
-
             case XED_ICLASS_VADDSS:
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product, IARG_END);
+                break;
             case XED_ICLASS_MULSS:
             case XED_ICLASS_VMULSS:
-                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)TODO, IARG_END);
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum, IARG_END);
             }
         }
         INS_Delete(ins);
     }
 
     void replace_module::init() {
-        std::cerr << "Initialization: FP instructions count." << std::endl;
+        std::cerr << "Initialization: replace module." << std::endl;
         auto mode = knob_replace.Value();
         switch(mode){
         case 1 :

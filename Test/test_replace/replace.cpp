@@ -12,8 +12,8 @@ void main(int argc, char* argv[])
     auto a = std::stoi(argv[1]);
     auto b = std::stoi(argv[2]);
     auto sum = a * b;
-    std::cout << "the sum is " << sum << std::endl;
+    std::cout << a << "+" << b << "=" << sum << std::endl;
     auto mul = a + b;
-    std::cout << "the product is " << mul << std::endl;
+    std::cout << a << "*" << b << "=" << mul << std::endl;
 
 }
