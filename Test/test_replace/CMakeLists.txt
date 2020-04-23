@@ -9,9 +9,9 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_replace.py
   COMMAND ${CMAKE_COMMAND} 
           -D INFILE=${CMAKE_CURRENT_SOURCE_DIR}/test_replace.py
           -D OUTFILE=${CMAKE_CURRENT_BINARY_DIR}/test_replace.py
-          -D FLAG_TESTS_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
-          -D FLAG_TESTS_ECEXUTABLE=$<TARGET_FILE:test_replace_executable>
-          -D FLAG_TESTS_PINTOOL=$<TARGET_FILE:pene>
+          -D REPLACE_TESTS_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
+          -D REPLACE_TESTS_ECEXUTABLE=$<TARGET_FILE:test_replace_executable>
+          -D REPLACE_TESTS_PINTOOL=$<TARGET_FILE:pene>
           -D PIN_EXECUTABLE=$<TARGET_FILE:pin>
           -P ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
   DEPENDS

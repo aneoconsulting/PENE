@@ -22,7 +22,7 @@ namespace pene {
                 INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)TODO, IARG_END);
             }
         }
-        INS_Delete(ins);
+        //INS_Delete(ins);
     }
 
     void replace_module::init() {
