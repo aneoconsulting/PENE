@@ -24,7 +24,7 @@ namespace pene{
   symbol_list_generator_module::symbol_list_generator_module()
     : module(true)
     , knob_exclist_gen{ KNOB_MODE_WRITEONCE, "pintool", "gen-sym-list", "",
-      "Save the list of all symbols loaded durong the exceution in given file." }
+      "Save the list of all symbols loaded during the exceution in given file." }
   {
   }
 

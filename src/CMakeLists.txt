@@ -16,7 +16,10 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Set source files
-set(SOURCES "pene.cpp" "version_module.cpp" "counters.cpp" "counters_module.cpp"  "update_counters.cpp" "module.cpp" "symbol_list_generator_module.cpp")
+set(SOURCES "pene.cpp" "module.cpp" "version_module.cpp" 
+			"counters.cpp" "counters_module.cpp"  "update_counters.cpp" 
+			"symbol_list_generator_module.cpp"
+			"replace_module.cpp")
 set(PIN_TOOL pene)
 
 # Add target
