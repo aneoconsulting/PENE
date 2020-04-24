@@ -9,8 +9,8 @@ void main(int argc, char* argv[])
     if (argc == 1) {
         argv = new char* [3]{ "main", "4", "6" };
     }
-    auto a = std::stoi(argv[1]);
-    auto b = std::stoi(argv[2]);
+    auto a = std::stof(argv[1]);
+    auto b = std::stof(argv[2]);
     auto sum = a * b;
     std::cout << a << "+" << b << "=" << sum << std::endl;
     auto mul = a + b;
