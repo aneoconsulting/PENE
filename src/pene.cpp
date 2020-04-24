@@ -12,9 +12,9 @@ INT32 Usage()
   std::cerr << "===============================================" << std::endl;
   std::cerr << "    PENE: command line options                 " << std::endl;
   std::cerr << "===============================================" << std::endl;
-    std::cerr << "This tool instruments the execution with an Interflop backend\n" << std::endl;
-    std::cerr << KNOB_BASE::StringKnobSummary() << std::endl;
-    return -1;
+  std::cerr << "This tool instruments the execution with an Interflop backend\n" << std::endl;
+  std::cerr << KNOB_BASE::StringKnobSummary() << std::endl;
+  PIN_ExitProcess(1);
 }
 
 /*!

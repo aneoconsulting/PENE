@@ -15,7 +15,7 @@ namespace pene {
     {
       std::cerr << "This execution is launched with PENE version " << pene_version << std::endl;
       std::cerr << "Execution will stop now." <<  std::endl;
-      exit(0);
+      PIN_ExitProcess(1);
     }
   }
 
