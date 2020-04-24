@@ -10,46 +10,70 @@ namespace pene {
     "replace", "0", "switch add and multiply") {
   }
 
-  void product(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
-    std::cerr << (*ra).flt[0] << std::endl;
-    std::cerr << (*rb).flt[0] << std::endl;
-    std::cerr << (*rc).flt[0] << std::endl;
+  void product_sse(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
     rc->flt[0] = ra->flt[0] * rb->flt[0];
   }
-  void sum(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
-    std::cerr << (*ra).dbl[1] << std::endl;
-    std::cerr << (*rb).dbl[1] << std::endl;
-    std::cerr << (*rc).dbl[1] << std::endl;
+  void sum_sse(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
     rc->flt[0] = ra->flt[0] + rb->flt[0];
+  }
+
+  void product_avx(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
+    rc->flt[0] = ra->flt[0] * rb->flt[0];
+    rc->flt[1] = 0;
+    rc->flt[2] = 0;
+    rc->flt[3] = 0;
+  }
+  void sum_avx(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
+    rc->flt[0] = ra->flt[0] + rb->flt[0];
+    rc->flt[1] = 0;
+    rc->flt[2] = 0;
+    rc->flt[3] = 0;
   }
 
 
   void Switch_add_multiply(INS ins, VOID* v) {
-    if (INS_IsOriginal(ins)) {
+    //if (INS_IsOriginal(ins)) 
+    {
       auto oc = INS_Opcode(ins);
 
       switch (oc) {
         //case XED_ICLASS_ADDSD:
         //case XED_ICLASS_VADDSD:
+        case XED_ICLASS_VADDSS:
+          std::cerr << "vaddss case" << std::endl;
+          if (INS_OperandIsMemory(ins, 1))
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+          else
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+          INS_Delete(ins);
+          break;
       case XED_ICLASS_ADDSS:
-        //case XED_ICLASS_VADDSS:
-        std::cerr << "add case" << std::endl;
-
+        std::cerr << "addss case" << std::endl;
         if (INS_OperandIsMemory(ins, 1))
-          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
         else
-          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+        INS_Delete(ins);
         break;
         //case XED_ICLASS_MULSD:
         //case XED_ICLASS_VMULSD:
+        case XED_ICLASS_VMULSS:
+          std::cerr << "vmul case" << std::endl;
+
+          if (INS_OperandIsMemory(ins, 1))
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+          else
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+          INS_Delete(ins);
+          break;
       case XED_ICLASS_MULSS:
-        //case XED_ICLASS_VMULSS:
         std::cerr << "mul case" << std::endl;
 
         if (INS_OperandIsMemory(ins, 1))
-          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
         else
-          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+          INS_Delete(ins);
         break;
       }
     }
@@ -62,7 +86,7 @@ namespace pene {
     switch (mode) {
     case 1:
       std::cerr << "switching add and multiply" << std::endl;
-      INS_AddInstrumentFunction(Switch_add_multiply, 0);
+      INS_AddInstrumentFunction(Switch_add_multiply, nullptr);
       std::cerr << "Switch compelet." << std::endl;
       break;
     default: // case 0
