@@ -12,11 +12,12 @@ class testCounterGenerator(unittest.TestCase):
     operations = ["add", "sub", "mul", "div", "fma"]
     modes = ["scalar", "simd"]
 
-    def launch(self, counterMode, prec, op, mode, nLoop, a, b):
-        cmdLine = ("{pin} -t {tool} -counter-mode {counterMode} -- " +
+    def launch(self, counterMode, tls, prec, op, mode, nLoop, a, b):
+        cmdLine = ("{pin} -t {tool} -counter-mode {counterMode} -counter-tls {tls} -- " +
                    " {executable} {op} {prec} {mode} {nLoop} {a} {b}").format(pin = self.pin,
                                                                               tool = self.tool,
                                                                               counterMode = counterMode,
+                                                                              tls = "1" if tls else "0",
                                                                               executable = self.executable,
                                                                               op = op,
                                                                               prec = prec,
@@ -40,7 +41,8 @@ class testCounterGenerator(unittest.TestCase):
             "sub": lambda a1, b1:a1-b1,
             "mul": lambda a1, b1:a1*b1,
             "div": lambda a1, b1:a1/b1,
-            "fma": lambda a1, b1:a1+a1*b1
+            "fma": lambda a1, b1:a1+a1*b1,
+            "mix": lambda a1, b1:a1+2
         }
         for i in range(int(nLoop)):
             a = switcher[op](a,b)
@@ -62,17 +64,22 @@ class testCounterGenerator(unittest.TestCase):
         m = p.search(output)
         return float(m.group("value"))
 
-    def checkExec(self, counterMode, prec, op, mode, nLoop, a, b):
-        output = self.launch(counterMode, prec, op, mode, nLoop, a, b)
+    def checkExec(self, counterMode, tls, prec, op, mode, nLoop, a, b):
+        output = self.launch(counterMode, tls, prec, op, mode, nLoop, a, b)
         if counterMode == "1" or counterMode == "2":
+            if tls:
+                self.assertRegex(output, re.compile(r"TLS has been activated for counters."))
             expected = self.expectResult(op, nLoop, a, b)
             result = self.getResult(output, prec, op, mode)
             self.assertEqual(expected, result)
-            nbOps = self.getNbOps(output, prec, op, mode)
-            if result == 0:
-                self.assertEqual(nLoop, nbOps)
+            if op!="mix":
+                nbOps = self.getNbOps(output, prec, op, mode)
+                if result == 0:
+                    self.assertEqual(nLoop, nbOps)
+                else:
+                    self.assertGreaterEqual(nbOps, nLoop)
             else:
-                self.assertGreaterEqual(nbOps, nLoop)
+                nbOps = self.getNbOps(output, prec, "add", mode)
         elif counterMode == "0":
             regex = r"(?m)^Set counters to no instrumentation mode$"
             p = re.compile(regex)
@@ -91,26 +98,27 @@ class testsBase(testCounterGenerator):
     precision = None
     operation = None
     mode = None
+    tls = False
     
     def test_result(self):
         """Checks that instruction behavior is not modified by instrumentation"""
         with self.subTest("nLoop:4  a:400   b:2"):
-            self.checkExec(self.counterMode, self.precision, self.operation, self.mode, 4, 400, 2)
+            self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode, 4, 400, 2)
         with self.subTest("nLoop:3  a:81   b:3"):
-            self.checkExec(self.counterMode, self.precision, self.operation, self.mode, 3, 81, 3)
+            self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode, 3, 81, 3)
 
     def test_count(self):
         """Checks that instruction instruction count is correct"""
         if self.operation == 'div':
             with self.subTest("nLoop:2  a:0   b:1"):
-                self.checkExec(self.counterMode, self.precision, self.operation, self.mode,  2, 0, 1)
+                self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 1)
             with self.subTest("nLoop:0  a:0   b:1"):
-                self.checkExec(self.counterMode, self.precision, self.operation, self.mode, 9, 0, 1)
+                self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode, 9, 0, 1)
         elif self.operation == 'add' or self.operation == 'sub' or self.operation == 'mul' or self.operation == 'fma':
             with self.subTest("nLoop:2  a:0   b:0"):
-                self.checkExec(self.counterMode, self.precision, self.operation, self.mode,  2, 0, 0)
+                self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 0)
             with self.subTest("nLoop:9  a:0   b:0"):
-                self.checkExec(self.counterMode, self.precision, self.operation, self.mode, 9, 0, 0)
+                self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode, 9, 0, 0)
         else:
             self.fail()
 
