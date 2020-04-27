@@ -10,9 +10,9 @@ class replace_tests(unittest.TestCase):
     pinpath = "${PIN_EXECUTABLE}"
     toolpath = "@REPLACE_TESTS_PINTOOL@"
 
-    activeRegex = r"This execution is launched with PENE version \d{1,2}.\d{1,2}[\r\n]{1,2}Execution will stop now.[\r\n]$\Z"
+    activeRegex = r"3\*7=21"
     activePattern = re.compile(activeRegex)
-    inactiveRegex = r"[\r\n]{1,2}This program is only used for test purposes.[\r\n]{1,2}"
+    inactiveRegex = r"3\*7=10"
     inactivePattern = re.compile(inactiveRegex)
         
 
@@ -29,7 +29,7 @@ class replace_tests(unittest.TestCase):
 
     def test_replace_inactive(self):
         """Test -replace for switching between add and mul"""
-        self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '-replace', '0', '--', self.execpath], self.inactivePattern, self.activePattern)
+        self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '-replace', '0', '--', self.execpath, '3', '7'], self.inactivePattern, self.activePattern)
 
 if __name__ == '__main__':
     unittest.main()

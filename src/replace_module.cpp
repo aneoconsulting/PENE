@@ -34,50 +34,49 @@ namespace pene {
   void Switch_add_multiply(INS ins, VOID* v) {
     //if (INS_IsOriginal(ins)) 
     {
-      auto oc = INS_Opcode(ins);
+        auto oc = INS_Opcode(ins);
 
-      switch (oc) {
+        switch (oc) {
         //case XED_ICLASS_ADDSD:
         //case XED_ICLASS_VADDSD:
         case XED_ICLASS_VADDSS:
-          std::cerr << "vaddss case" << std::endl;
-          if (INS_OperandIsMemory(ins, 1))
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
-          else
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
-          INS_Delete(ins);
-          break;
-      case XED_ICLASS_ADDSS:
-        std::cerr << "addss case" << std::endl;
-        if (INS_OperandIsMemory(ins, 1))
-          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
-        else
-          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
-        INS_Delete(ins);
-        break;
+            std::cerr << "vaddss case" << std::endl;
+            if (INS_OperandIsMemory(ins, 1))
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+            else
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+            INS_Delete(ins);
+            break;
+        case XED_ICLASS_ADDSS:
+            std::cerr << "addss case" << std::endl;
+            if (INS_OperandIsMemory(ins, 1))
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+            else
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+            INS_Delete(ins);
+            break;
         //case XED_ICLASS_MULSD:
         //case XED_ICLASS_VMULSD:
         case XED_ICLASS_VMULSS:
-          std::cerr << "vmul case" << std::endl;
+            std::cerr << "vmul case" << std::endl;
 
-          if (INS_OperandIsMemory(ins, 1))
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
-          else
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
-          INS_Delete(ins);
-          break;
-      case XED_ICLASS_MULSS:
-        std::cerr << "mul case" << std::endl;
+            if (INS_OperandIsMemory(ins, 1))
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+            else
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+            INS_Delete(ins);
+            break;
+        case XED_ICLASS_MULSS:
+            std::cerr << "mul case" << std::endl;
 
-        if (INS_OperandIsMemory(ins, 1))
-          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
-        else
-          INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
-          INS_Delete(ins);
-        break;
-      }
+            if (INS_OperandIsMemory(ins, 1))
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+            else
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+            INS_Delete(ins);
+            break;
+        }
     }
-    //INS_Delete(ins);
   }
 
   void replace_module::init() {
