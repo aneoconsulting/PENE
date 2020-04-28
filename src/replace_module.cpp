@@ -19,15 +19,40 @@ namespace pene {
 
   void product_avx(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
     rc->flt[0] = ra->flt[0] * rb->flt[0];
-    rc->flt[1] = 0;
-    rc->flt[2] = 0;
-    rc->flt[3] = 0;
+    rc->flt[1] = ra->flt[1];
+    rc->flt[2] = ra->flt[2];
+    rc->flt[3] = ra->flt[3];
+    rc->flt[4] = 0;
+    rc->flt[5] = 0;
+    rc->flt[6] = 0;
+    rc->flt[7] = 0;
+    rc->flt[8] = 0;
+    rc->flt[9] = 0;
+    rc->flt[10] = 0;
+    rc->flt[11] = 0;
+    rc->flt[12] = 0;
+    rc->flt[13] = 0;
+    rc->flt[14] = 0;
+    rc->flt[15] = 0;
+
   }
   void sum_avx(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
     rc->flt[0] = ra->flt[0] + rb->flt[0];
-    rc->flt[1] = 0;
-    rc->flt[2] = 0;
-    rc->flt[3] = 0;
+    rc->flt[1] = ra->flt[1];
+    rc->flt[2] = ra->flt[2];
+    rc->flt[3] = ra->flt[3];
+    rc->flt[4] = 0;
+    rc->flt[5] = 0;
+    rc->flt[6] = 0;
+    rc->flt[7] = 0;
+    rc->flt[8] = 0;
+    rc->flt[9] = 0;
+    rc->flt[10] = 0;
+    rc->flt[11] = 0;
+    rc->flt[12] = 0;
+    rc->flt[13] = 0;
+    rc->flt[14] = 0;
+    rc->flt[15] = 0;
   }
 
 
@@ -41,10 +66,10 @@ namespace pene {
         //case XED_ICLASS_VADDSD:
         case XED_ICLASS_VADDSS:
             std::cerr << "vaddss case" << std::endl;
-            if (INS_OperandIsMemory(ins, 1))
-                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+            if (INS_OperandIsMemory(ins, 2))
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_REFERENCE, INS_OperandReg(ins, 1), IARG_MEMORYREAD_EA, IARG_END);
             else
-                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 2), IARG_END);
             INS_Delete(ins);
             break;
         case XED_ICLASS_ADDSS:
@@ -60,10 +85,10 @@ namespace pene {
         case XED_ICLASS_VMULSS:
             std::cerr << "vmul case" << std::endl;
 
-            if (INS_OperandIsMemory(ins, 1))
-                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+            if (INS_OperandIsMemory(ins, 2))
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_REFERENCE, INS_OperandReg(ins, 1), IARG_MEMORYREAD_EA, IARG_END);
             else
-                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 2), IARG_END);
             INS_Delete(ins);
             break;
         case XED_ICLASS_MULSS:

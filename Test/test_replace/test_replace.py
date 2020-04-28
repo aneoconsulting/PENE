@@ -9,10 +9,11 @@ class replace_tests(unittest.TestCase):
     execpath = "@REPLACE_TESTS_ECEXUTABLE@"
     pinpath = "${PIN_EXECUTABLE}"
     toolpath = "@REPLACE_TESTS_PINTOOL@"
-
-    activeRegex = r"3\*7=21"
+    a = 3
+    b = 7
+    activeRegex = str(a)+r"\*"+str(b)+"="+str(a*b)
     activePattern = re.compile(activeRegex)
-    inactiveRegex = r"3\*7=10"
+    inactiveRegex = str(a)+r"\*"+str(b)+"="+str(a+b)
     inactivePattern = re.compile(inactiveRegex)
         
 
@@ -25,11 +26,11 @@ class replace_tests(unittest.TestCase):
     
     def test_replace(self):
         """Test -replace for switching between add and mul"""
-        self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '-replace', '1', '--', self.execpath, '3', '7'], self.activePattern, self.inactivePattern)
+        self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-counter-mode', '1', '-replace', '1', '--', self.execpath, str(self.a), str(self.b)], self.activePattern, self.inactivePattern)
 
     def test_replace_inactive(self):
         """Test -replace for switching between add and mul"""
-        self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '-replace', '0', '--', self.execpath, '3', '7'], self.inactivePattern, self.activePattern)
+        self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-counter-mode', '0', '-replace', '0', '--', self.execpath, str(self.a), str(self.b)], self.inactivePattern, self.activePattern)
 
 if __name__ == '__main__':
     unittest.main()
