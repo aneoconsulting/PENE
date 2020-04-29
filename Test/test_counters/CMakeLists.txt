@@ -12,7 +12,7 @@ set(TEST_LIST test_flags.instruction_count_flag_tests.test_disable_instruction_c
               )
 
 foreach(precision float double)
-    foreach(operation add sub mul div fma)
+    foreach(operation add sub mul div fma mix)
         foreach(mode scalar simd)
             list(APPEND TEST_LIST test_trace_counters.${precision}_${operation}_${mode}_tests.test_result 
                                   test_trace_counters.${precision}_${operation}_${mode}_tests.test_count

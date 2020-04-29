@@ -81,6 +81,22 @@ class float_fma_simd_tests(testCounterGenerator.testsBase):
 		self.mode = "simd"
 		self.tls = True;
 
+class float_mix_scalar_tests(testCounterGenerator.testsBase):
+	def setUp(self):
+		self.counterMode = "2"
+		self.precision = "float"
+		self.operation = "mix"
+		self.mode = "scalar"
+		self.tls = True;
+
+class float_mix_simd_tests(testCounterGenerator.testsBase):
+	def setUp(self):
+		self.counterMode = "2"
+		self.precision = "float"
+		self.operation = "mix"
+		self.mode = "simd"
+		self.tls = True;
+
 class double_add_scalar_tests(testCounterGenerator.testsBase):
 	def setUp(self):
 		self.counterMode = "2"
@@ -158,6 +174,22 @@ class double_fma_simd_tests(testCounterGenerator.testsBase):
 		self.counterMode = "2"
 		self.precision = "double"
 		self.operation = "fma"
+		self.mode = "simd"
+		self.tls = True;
+
+class double_mix_scalar_tests(testCounterGenerator.testsBase):
+	def setUp(self):
+		self.counterMode = "2"
+		self.precision = "double"
+		self.operation = "mix"
+		self.mode = "scalar"
+		self.tls = True;
+
+class double_mix_simd_tests(testCounterGenerator.testsBase):
+	def setUp(self):
+		self.counterMode = "2"
+		self.precision = "double"
+		self.operation = "mix"
 		self.mode = "simd"
 		self.tls = True;
 

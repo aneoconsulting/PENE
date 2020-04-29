@@ -42,7 +42,7 @@ class testCounterGenerator(unittest.TestCase):
             "mul": lambda a1, b1:a1*b1,
             "div": lambda a1, b1:a1/b1,
             "fma": lambda a1, b1:a1+a1*b1,
-            "mix": lambda a1, b1:a1+2
+            "mix": lambda a1, b1:a1
         }
         for i in range(int(nLoop)):
             a = switcher[op](a,b)
@@ -80,6 +80,28 @@ class testCounterGenerator(unittest.TestCase):
                     self.assertGreaterEqual(nbOps, nLoop)
             else:
                 nbOps = self.getNbOps(output, prec, "add", mode)
+                if result == 0:
+                    self.assertEqual(nLoop*6, nbOps)
+                else:
+                    self.assertGreaterEqual(nbOps, nLoop*6)
+
+                nbOps = self.getNbOps(output, prec, "mul", mode)
+                if result == 0:
+                    self.assertEqual(nLoop*2, nbOps)
+                else:
+                    self.assertGreaterEqual(nbOps, nLoop*2)
+
+                nbOps = self.getNbOps(output, prec, "div", mode)
+                if result == 0:
+                    self.assertEqual(nLoop*4, nbOps)
+                else:
+                    self.assertGreaterEqual(nbOps, nLoop*4)
+
+                nbOps = self.getNbOps(output, prec, "fma", mode)
+                if result == 0:
+                    self.assertEqual(nLoop*2, nbOps)
+                else:
+                    self.assertGreaterEqual(nbOps, nLoop*2)
         elif counterMode == "0":
             regex = r"(?m)^Set counters to no instrumentation mode$"
             p = re.compile(regex)
@@ -109,7 +131,7 @@ class testsBase(testCounterGenerator):
 
     def test_count(self):
         """Checks that instruction instruction count is correct"""
-        if self.operation == 'div':
+        if self.operation == "div":
             with self.subTest("nLoop:2  a:0   b:1"):
                 self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 1)
             with self.subTest("nLoop:0  a:0   b:1"):
@@ -119,6 +141,9 @@ class testsBase(testCounterGenerator):
                 self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 0)
             with self.subTest("nLoop:9  a:0   b:0"):
                 self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode, 9, 0, 0)
+        elif self.operation == "mix":
+            with self.subTest("nLoop:217  a:0   b:1"):
+                self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode,  217, 0, 1)
         else:
             self.fail()
 

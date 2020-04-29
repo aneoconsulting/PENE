@@ -104,10 +104,12 @@ void main(int argc, char* argv[])
           accu = _mm_mul_ss(accu, b_);
           accu = _mm_div_ss(accu, b_);
           accu = _mm_fmadd_ss(accu, b_, b_);
+          accu = _mm_sub_ss(accu, b_);
           accu = _mm_div_ss(accu, b_);
           accu = _mm_mul_ss(accu, b_);
           accu = _mm_div_ss(accu, b_);
           accu = _mm_fmadd_ss(accu, b_, b_);
+          accu = _mm_sub_ss(accu, b_);
           accu = _mm_div_ss(accu, b_);
         }
       }
@@ -122,10 +124,12 @@ void main(int argc, char* argv[])
           accu = _mm_mul_ps(accu, b_);
           accu = _mm_div_ps(accu, b_);
           accu = _mm_fmadd_ps(accu, b_, b_);
+          accu = _mm_sub_ps(accu, b_);
           accu = _mm_div_ps(accu, b_);
           accu = _mm_mul_ps(accu, b_);
           accu = _mm_div_ps(accu, b_);
           accu = _mm_fmadd_ps(accu, b_, b_);
+          accu = _mm_sub_ps(accu, b_);
           accu = _mm_div_ps(accu, b_);
         }
       }
@@ -225,10 +229,12 @@ void main(int argc, char* argv[])
           accu = _mm_mul_sd(accu, b_);
           accu = _mm_div_sd(accu, b_);
           accu = _mm_fmadd_sd(accu, b_, b_);
+          accu = _mm_sub_sd(accu, b_);
           accu = _mm_div_sd(accu, b_);
           accu = _mm_mul_sd(accu, b_);
           accu = _mm_div_sd(accu, b_);
           accu = _mm_fmadd_sd(accu, b_, b_);
+          accu = _mm_sub_sd(accu, b_);
           accu = _mm_div_sd(accu, b_);
         }
       }
@@ -243,10 +249,12 @@ void main(int argc, char* argv[])
           accu = _mm_mul_pd(accu, b_);
           accu = _mm_div_pd(accu, b_);
           accu = _mm_fmadd_pd(accu, b_, b_);
+          accu = _mm_sub_pd(accu, b_);
           accu = _mm_div_pd(accu, b_);
           accu = _mm_mul_pd(accu, b_);
           accu = _mm_div_pd(accu, b_);
           accu = _mm_fmadd_pd(accu, b_, b_);
+          accu = _mm_sub_pd(accu, b_);
           accu = _mm_div_pd(accu, b_);
         }
       }
