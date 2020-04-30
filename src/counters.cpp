@@ -5,8 +5,8 @@
 
 #define PRINT(prec, op, mode)                                                               \
 std::cerr                                                                                   \
-          << std::setw(17) << std::left << #op                                            \
-          << std::setw(17) << std::left << #prec                                              \
+          << std::setw(17) << std::left << #prec                                            \
+          << std::setw(17) << std::left << #op                                              \
           << std::setw(17) << std::left << #mode                                            \
           << std::setw(17) << std::right << (*this)[counter_type::##op##_##prec##_##mode]   \
           << std::endl
@@ -30,7 +30,7 @@ namespace pene {
   {
     std::cout << "Displaying counters' information : " << std::endl;
     std::cout << "--------------------------------------------------------------------" << std::endl;
-    std::cout << "Operation        Precision        Vectorization    Instruction count" << std::endl;
+    std::cout << "Precision        Operation        Vectorization    Instruction count" << std::endl;
     std::cout << "--------------------------------------------------------------------" << std::endl;
     PRINT(float, add, scalar);
     PRINT(float, add, simd);

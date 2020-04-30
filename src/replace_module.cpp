@@ -54,7 +54,8 @@ namespace pene {
     rc->flt[14] = 0;
     rc->flt[15] = 0;
   }
-
+  void add_avx(const PIN_REGISTER* ra, const PIN_REGISTER* rb, PIN_REGISTER* rc) {
+  }
 
   void Switch_add_multiply(INS ins, VOID* v) {
     //if (INS_IsOriginal(ins)) 
@@ -62,14 +63,14 @@ namespace pene {
         auto oc = INS_Opcode(ins);
 
         switch (oc) {
-        //case XED_ICLASS_ADDSD:
-        //case XED_ICLASS_VADDSD:
+            //case XED_ICLASS_ADDSD:
+            //case XED_ICLASS_VADDSD:
         case XED_ICLASS_VADDSS:
             std::cerr << "vaddss case" << std::endl;
             if (INS_OperandIsMemory(ins, 2))
-                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_REFERENCE, INS_OperandReg(ins, 1), IARG_MEMORYREAD_EA, IARG_END);
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
             else
-                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 2), IARG_END);
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 2), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
             INS_Delete(ins);
             break;
         case XED_ICLASS_ADDSS:
@@ -80,15 +81,15 @@ namespace pene {
                 INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)product_sse, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
             INS_Delete(ins);
             break;
-        //case XED_ICLASS_MULSD:
-        //case XED_ICLASS_VMULSD:
+            //case XED_ICLASS_MULSD:
+            //case XED_ICLASS_VMULSD:
         case XED_ICLASS_VMULSS:
             std::cerr << "vmul case" << std::endl;
 
             if (INS_OperandIsMemory(ins, 2))
-                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_REFERENCE, INS_OperandReg(ins, 1), IARG_MEMORYREAD_EA, IARG_END);
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_MEMORYREAD_EA, IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
             else
-                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_REFERENCE, INS_OperandReg(ins, 2), IARG_END);
+                INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)sum_avx, IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1), IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 2), IARG_REG_REFERENCE, INS_OperandReg(ins, 0), IARG_END);
             INS_Delete(ins);
             break;
         case XED_ICLASS_MULSS:
@@ -101,7 +102,7 @@ namespace pene {
             INS_Delete(ins);
             break;
         }
-    }
+      }
   }
 
   void replace_module::init() {
