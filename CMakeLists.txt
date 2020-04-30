@@ -65,4 +65,5 @@ add_subdirectory ("Test/test_version")
 add_subdirectory ("Test/test_counters")
 add_subdirectory ("Test/test_symbol_list_generator")
 add_subdirectory ("Test/test_replace")
+add_subdirectory ("Test/test_replace_avx")
 
