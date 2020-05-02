@@ -1,8 +1,9 @@
+#pragma once
+
+#include "traits.h"
 
 namespace pene {
-  namespace utils {
-    template<class A, class B> struct is_same { static constexpr bool value = false; };
-    template<class A> struct is_same<A, A> { static constexpr bool value = true; };
+  namespace pin_utils {
 
     template<class LOC, class ... ARGS> void insertCall(LOC loc, ARGS... args) {
       if constexpr (is_same<LOC, TRACE>::value)

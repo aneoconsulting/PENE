@@ -4,176 +4,165 @@
 #include <pin.H>
 #include <iostream>
 #include <cassert>
-#include "utils.h"
+#include "pin_utils/insert_call.h"
+#include "pin_utils/instrumenter.h"
+#include "pin_utils/tls_reg.h"
 
 namespace pene {
-  using namespace utils;
+  using namespace pin_utils;
   namespace counter_module_internals {
 
-    static TLS_KEY tls_counters_key = INVALID_TLS_KEY;
-    static REG tls_counter_reg;
-
-    void init_tls() {
-      tls_counters_key = PIN_CreateThreadDataKey(NULL);
-      if (tls_counters_key == INVALID_TLS_KEY)
-      {
-        std::cerr << "number of already allocated keys reached the MAX_CLIENT_TLS_KEYS limit(" << MAX_CLIENT_TLS_KEYS << ")" << std::endl;
-        PIN_WriteErrorMessage("number of already allocated keys reached the MAX_CLIENT_TLS_KEYS limit", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_FATAL, 0);
-        PIN_ExitProcess(1);
-      }
-      tls_counter_reg = PIN_ClaimToolRegister();
-      if (!REG_valid_for_iarg_reg_value(tls_counter_reg))
-      {
-        std::cerr << "Cannot allocate tls register for counters" << std::endl;
-        PIN_WriteErrorMessage("Cannot allocate tls register for counters", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_FATAL, 0);
-        PIN_ExitProcess(1);
-      }
-    }
-
-    static VOID ThreadStart(THREADID threadid, CONTEXT*, INT32, VOID*)
+    class counters_instrumenters : public instrumenter<counters_instrumenters>
     {
-      if (tls_counters_key != INVALID_TLS_KEY)
-      {
-        counters* tdata = new counters;
-        if (PIN_SetThreadData(tls_counters_key, tdata, threadid) == FALSE)
+      class tls_life_cycle_manager : public tls<counters>::life_cycle_manager {
+        counters& c;
+      public:
+        tls_life_cycle_manager(counters& c) :c(c) {}
+        virtual counters* create() override
         {
-          std::cerr << "PIN_SetThreadData failed" << std::endl;
-          PIN_WriteErrorMessage("PIN_SetThreadData failed", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_FATAL, 0);
-          PIN_ExitProcess(1);
+          return new counters();
         }
-      }
-    }
-
-    static VOID ThreadFini(THREADID threadIndex, const CONTEXT*, INT32, VOID* voided_counters)
-    {
-      if (tls_counters_key != INVALID_TLS_KEY)
-      {
-        counters* local_counters = static_cast<counters*>(PIN_GetThreadData(tls_counters_key, threadIndex));
-        counters* global_counters = static_cast<counters*>(voided_counters);
-        for (int i = 0; i < counters::size; ++i)
+        virtual void destroy(counters* local_counters) override
         {
-          global_counters->array[i] += local_counters->array[i];
-        }
-        delete local_counters;
-      }
-    }
-
-    static void PIN_FAST_ANALYSIS_CALL Add(void* a_, UINT32 b)
-    {
-      volatile auto a = reinterpret_cast<counters::int_type*>(a_);
-      *a += b;
-    }
-
-    static counters* PIN_FAST_ANALYSIS_CALL get_counters_tls(THREADID threadid)
-    {
-      return static_cast<counters*>(PIN_GetThreadData(tls_counters_key, threadid));
-    }
-
-    template<int I>
-    static void PIN_FAST_ANALYSIS_CALL Addi(void* voided_counters, UINT32 b)
-    {
-      volatile auto c = static_cast<counters*>(voided_counters);
-      Add(c->array + I, b);
-    }
-
-    template <class LOC, int N=0>
-    void add_counters_tls(LOC loc, IPOINT ipoint, UINT32 index, UINT32 value)
-    {
-      if (index < N)
-      {
-        std::cerr << "ERROR: index(" << index << ")<N(" << N << ")\n";
-        PIN_WriteErrorMessage("ERROR: index<N)", 1000, PIN_ERR_FATAL, 0);
-        PIN_ExitApplication(-1);
-      }
-      if constexpr(N < counters::size)
-      {
-        if (index > N)
-        {
-          add_counters_tls<LOC, N + 1>(loc, ipoint, index, value);
-          return;
-        }
-      }
-      insertCall(loc, ipoint, (AFUNPTR)Addi<N>, IARG_FAST_ANALYSIS_CALL, IARG_REG_VALUE, tls_counter_reg, IARG_UINT32, value, IARG_END);
-    }
-
-    template <class LOC>
-    static void counters_instrumentation(LOC loc, IPOINT ipoint, counters& c, const counters& tmp)
-    {
-      if (tls_counters_key == INVALID_TLS_KEY)
-      {
-        for (UINT32 i = 0; i < counters::size; ++i)
-        {
-          if (tmp.array[i] > 0)
+          for (int i = 0; i < counters::size; ++i)
           {
-            insertCall(loc, ipoint, (AFUNPTR)Add, IARG_FAST_ANALYSIS_CALL, IARG_PTR, &(c.array[i]), IARG_UINT32, (UINT32)tmp.array[i], IARG_END);
+            c.array[i] += local_counters->array[i];
           }
+          delete local_counters;
+        }
+      };
+
+      counters c;
+      tls_life_cycle_manager tlcm;
+      pin_utils::tls_reg<counters> * tls;
+      bool use_tls;
+      counters tmp_counters;
+
+    public:
+      counters_instrumenters()
+        : instrumenter<counters_instrumenters>()
+        , c(), tlcm(c), tls(nullptr), use_tls(false)
+        , tmp_counters()
+      {
+        PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
+      }
+
+      ~counters_instrumenters()
+      {
+        if (tls)
+          delete tls;
+        tls = nullptr;
+      }
+
+      void activate_tls()
+      {
+        if (tls == nullptr)
+        {
+          tls = new pin_utils::tls_reg<counters>(tlcm);
+        }
+        use_tls = true;
+        std::cerr << "TLS has been activated for counters." << std::endl;
+      }
+
+      void init_instrument(TRACE trace) { }
+
+      void init_instrument(BBL bbl) 
+      {
+        this->bbl = bbl;
+        tmp_counters = counters{};
+      }
+
+      void instrument(INS ins)
+      {
+        this->ins = ins;
+
+        if (INS_IsOriginal(ins))
+        {
+          auto oc = INS_Opcode(ins);
+          update_counters(oc, tmp_counters);
         }
       }
-      else
-      {
-        bool is_init = false;
+
+      void end_instrument(BBL bbl) 
+      { 
         for (UINT32 i = 0; i < counters::size; ++i)
         {
-          if (tmp.array[i] > 0)
+          if (tmp_counters.array[i] > 0)
           {
-            if (!is_init)
+            if (!use_tls)
             {
-              insertCall(loc, ipoint, (AFUNPTR)get_counters_tls, IARG_FAST_ANALYSIS_CALL, IARG_THREAD_ID, IARG_RETURN_REGS, tls_counter_reg, IARG_END);
+              dispatch_insertCall_bbl_ins((AFUNPTR)Add, IARG_FAST_ANALYSIS_CALL, IARG_PTR, &(c.array[i]), IARG_UINT32, (UINT32)tmp_counters.array[i], IARG_END);
             }
-            add_counters_tls(loc, ipoint, i, (UINT32)tmp.array[i]);
+            else
+            {
+              add_counters_tls(i);
+            }
           }
         }
       }
-    }
 
-    static void INS_CountersInstrumentation(INS ins, void* void_counters)
-    {
-      if (INS_IsOriginal(ins))
+      void end_instrument(TRACE trace) {}
+
+    private:
+      template <int N = 0>
+      void add_counters_tls(UINT32 index)
       {
-        auto& counters_ = *(counters*)void_counters;
-        auto tmp_counters = counters();
-        auto oc = INS_Opcode(ins);
-        update_counters(oc, tmp_counters);
-
-        counters_instrumentation(ins, IPOINT_BEFORE, counters_, tmp_counters);
-      }
-    }
-
-    static VOID TRACE_CountersInstrumentation(TRACE trace, VOID* void_counters)
-    {
-      auto& counters_ = *(counters*)void_counters;
-
-      for (BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
-      {
-        auto tmp_counters = counters{};
-
-        for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
+        if (index < N)
         {
-          if (INS_IsOriginal(ins))
+          std::cerr << "ERROR: index(" << index << ")<N(" << N << ")\n";
+          PIN_WriteErrorMessage("ERROR: index<N)", 1000, PIN_ERR_FATAL, 0);
+          PIN_ExitApplication(-1);
+        }
+        if constexpr (N < counters::size)
+        {
+          if (index > N)
           {
-            auto oc = INS_Opcode(ins);
-            update_counters(oc, tmp_counters);
+            add_counters_tls<N + 1>(index);
+            return;
           }
         }
-
-        counters_instrumentation(bbl, IPOINT_ANYWHERE, counters_, tmp_counters);
+        dispatch_insertCall_bbl_ins((AFUNPTR)Addi<N>, IARG_FAST_ANALYSIS_CALL, IARG_REG_VALUE, tls->get_reg(), IARG_UINT32, (UINT32)tmp_counters.array[index], IARG_END);
       }
-    }
+
+      // cannot be lighter than this. avoids all unnecessary adress offset calculations
+      static void PIN_FAST_ANALYSIS_CALL Add(void* a_, UINT32 b)
+      {
+        volatile auto a = reinterpret_cast<counters::int_type*>(a_);
+        *a += b;
+      }
+
+      // I could be a function argument. This approach ends up using less registers for function call
+      // Hopefully, pin will be able to perform a less expensive code insertion
+      template<int I>
+      static void PIN_FAST_ANALYSIS_CALL Addi(void* voided_counters, UINT32 b)
+      {
+        volatile auto c = static_cast<counters*>(voided_counters);
+        Add(c->array + I, b);
+      }
+    };
   }
 
   using namespace counter_module_internals;
 
-  counters_module::counters_module() :module(), c(), knob_counter_instrumentation_mode(KNOB_MODE_WRITEONCE, "pintool",
-    "counter-mode", "1", "Activate floating point instruction counting. 0: no counter, 1: fast counter, 2: slow counter (for debug purpose)."),
-    knob_counters_use_tls(KNOB_MODE_WRITEONCE, "pintool", "counter-tls", "0", "Activate use of the Thread Local Storage (TLS) for the counters")
+  counters_module::counters_module()
+    : module(), knob_counter_instrumentation_mode(KNOB_MODE_WRITEONCE, "pintool"
+    , "counter-mode", "1", "Activate floating point instruction counting. 0: no counter, 1: fast counter, 2: slow counter (for debug purpose).")
+    , knob_counters_use_tls(KNOB_MODE_WRITEONCE, "pintool", "counter-tls", "0", "Activate use of the Thread Local Storage (TLS) for the counters")
+    , data(nullptr)
+  {}
+
+  counters_module::~counters_module()
   {
+    if (data != nullptr)
+      delete reinterpret_cast<counters_instrumenters*>(data);
+    data = 0;
   }
 
   bool counters_module::validate() 
   {
     auto mode = knob_counter_instrumentation_mode.Value();
     std::cerr << "Checking configuration: FP instructions count with counter-mode=" << mode << std::endl;
-    if (mode < 0 || mode > 2)
+    if (mode > 2)
     {
       std::cerr << "ERROR: -counter-mode option only accepts values 0, 1 or 2." << std::endl;
       PIN_WriteErrorMessage("-counter-mode option only accepts values 0, 1 or 2.", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_NONFATAL, 0);
@@ -190,30 +179,26 @@ namespace pene {
     switch (mode)
     {
     case 1:
+      data = new counters_instrumenters();
       std::cerr << "Set counters to \"trace\" instrumentation mode." << std::endl;
-      TRACE_AddInstrumentFunction(TRACE_CountersInstrumentation, &c);
-      PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
+      data->TRACE_AddInstrumentFunction();
       break;
     case 2:
+      data = new counters_instrumenters();
       std::cerr << "Set counters to \"instructions\" instrumentation mode." << std::endl;
-      INS_AddInstrumentFunction(INS_CountersInstrumentation, &c);
-      PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
+      data->INS_AddInstrumentFunction();
       break;
     default: // case 0
       std::cerr << "Set counters to no instrumentation mode" << std::endl;
       return;
     }
+
     if (knob_counters_use_tls.Value())
     {
-      init_tls();
-      if (tls_counters_key != INVALID_TLS_KEY)
-      {
-        std::cerr << "TLS has been activated for counters." << std::endl;
-        PIN_AddThreadStartFunction(ThreadStart, 0);
-        PIN_AddThreadFiniFunction(ThreadFini, &c);
-      }
+      static_cast<counters_instrumenters*>(data)->activate_tls();
     }
   }
+
   const std::string& counters_module::name() { 
     static const std::string name_{ "counters_module" };
     return name_;
