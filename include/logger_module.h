@@ -12,7 +12,8 @@ namespace pene
       info,
       debug,
       trace,
-      default = info
+      default = info,
+      max = debug
     };
     logger();
     std::ostream& get(const level &);
