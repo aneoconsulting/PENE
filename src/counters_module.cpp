@@ -64,17 +64,17 @@ namespace pene {
         std::cerr << "TLS has been activated for counters." << std::endl;
       }
 
-      void init_instrument(TRACE trace) { }
+      void init_instrument(TRACE) { }
 
-      void init_instrument(BBL bbl) 
+      void init_instrument(BBL bbl_) 
       {
-        this->bbl = bbl;
+        bbl = bbl_;
         tmp_counters = counters{};
       }
 
-      void instrument(INS ins)
+      void instrument(INS ins_)
       {
-        this->ins = ins;
+        ins = ins_;
 
         if (INS_IsOriginal(ins))
         {
@@ -83,7 +83,7 @@ namespace pene {
         }
       }
 
-      void end_instrument(BBL bbl) 
+      void end_instrument(BBL) 
       { 
         for (UINT32 i = 0; i < counters::size; ++i)
         {
@@ -101,7 +101,7 @@ namespace pene {
         }
       }
 
-      void end_instrument(TRACE trace) {}
+      void end_instrument(TRACE) {}
 
     private:
       template <int N = 0>

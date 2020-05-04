@@ -6,7 +6,7 @@
 namespace pene {
     class replace_module : public module
     {
-        KNOB<int> knob_replace;
+        KNOB<bool> knob_replace;
     public:
         replace_module();
         void init() override;

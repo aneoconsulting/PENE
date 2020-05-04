@@ -24,10 +24,10 @@ namespace pene {
       void end_instrument(BBL bbl) { derived().end_instrument(bbl); }
       void end_instrument(TRACE trace) { derived().end_instrument(trace); }
 
-      void instrument_callback(TRACE trace)
+      void instrument_callback(TRACE trace_)
       {
-        init_instrument(trace);
-        for (auto bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
+        init_instrument(trace_);
+        for (auto bbl = TRACE_BblHead(trace_); BBL_Valid(bbl); bbl = BBL_Next(bbl))
         {
           init_instrument(bbl);
           for (auto ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
@@ -36,26 +36,26 @@ namespace pene {
           }
           end_instrument(bbl);
         }
-        end_instrument(trace);
+        end_instrument(trace_);
       }
 
-      void instrument_callback(INS ins)
+      void instrument_callback(INS ins_)
       {
         init_instrument(nullptr);
         init_instrument(MAKE_BBL(0));
-        instrument(ins);
+        instrument(ins_);
         end_instrument(MAKE_BBL(0));
         end_instrument(nullptr);
       }
 
       virtual void INS_AddInstrumentFunction() override
       {
-        ::INS_AddInstrumentFunction([](INS ins, void* voided_instrumenter) { reinterpret_cast<instrumenter*>(voided_instrumenter)->instrument_callback(ins); }, this);
+        ::INS_AddInstrumentFunction([](INS ins_, void* voided_instrumenter) { reinterpret_cast<instrumenter*>(voided_instrumenter)->instrument_callback(ins_); }, this);
       }
 
       virtual void TRACE_AddInstrumentFunction() override
       {
-        ::TRACE_AddInstrumentFunction([](TRACE trace, void* voided_instrumenter) { reinterpret_cast<instrumenter*>(voided_instrumenter)->instrument_callback(trace); }, this);
+        ::TRACE_AddInstrumentFunction([](TRACE trace_, void* voided_instrumenter) { reinterpret_cast<instrumenter*>(voided_instrumenter)->instrument_callback(trace_); }, this);
       }
 
     protected:

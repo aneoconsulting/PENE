@@ -9,11 +9,16 @@ void main(int argc, char* argv[])
     if (argc == 1) {
         argv = new char* [3]{ "main", "4", "6" };
     }
-    auto a = std::stof(argv[1]);
-    auto b = std::stof(argv[2]);
-    auto sum = a * b;
-    std::cout << a << "+" << b << "=" << sum << std::endl;
-    auto mul = a + b;
-    std::cout << a << "*" << b << "=" << mul << std::endl;
+    float a = std::stof(argv[1]);
+    float b = std::stof(argv[2]);
+    float sum = a * b;
+    float mul = a + b;
+    
+    std::cout << "following lines will be OK only if the addss and mulss operations are swapped by the pintool" << std::endl;
+    std::cout << a << "+" << b << "=" << std::defaultfloat << sum << std::endl;
+    std::cout << a << "*" << b << "=" << std::defaultfloat << mul << std::endl;
+
+    auto c = sum-b;
+    std::cout << c << std::endl;
 
 }

@@ -1,9 +1,10 @@
 #pragma once
 
 #include "interflop_functions_wrapper.h"
-#include "pin.H"
-#include "xed-iclass-enum.h"
-#include "xed-decoded-inst.h"
+#include <pin.H>
+#include <xed-iclass-enum.h>
+#include <xed-decoded-inst.h>
+#include <xed-decoded-inst-api.h>
 #include <iostream>
 
 namespace interflop
