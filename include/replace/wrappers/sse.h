@@ -13,6 +13,7 @@ namespace pene
       {
         template<typename T, void (*op)(T, T, T*, void*)>
         struct wrap {
+
           template <int N, int I=0>
           static void apply(T* const a, T* const b, T* c, void* ctx)
           {
@@ -37,7 +38,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -46,7 +47,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -57,7 +58,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -66,7 +67,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -77,7 +78,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -86,7 +87,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -97,7 +98,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -106,7 +107,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -119,7 +120,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -128,7 +129,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -139,7 +140,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -148,7 +149,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -159,7 +160,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -168,7 +169,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -179,7 +180,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -188,7 +189,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -205,7 +206,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -214,7 +215,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -225,7 +226,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -234,7 +235,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -245,7 +246,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -254,7 +255,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -265,7 +266,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -274,7 +275,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -287,7 +288,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -296,7 +297,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -307,7 +308,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -316,7 +317,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -327,7 +328,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -336,7 +337,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -347,7 +348,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -356,7 +357,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_ADDRINT, nullptr,
+              IARG_PTR, nullptr,
               IARG_END);
             INS_Delete(ins);
             break;

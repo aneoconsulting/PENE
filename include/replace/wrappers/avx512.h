@@ -70,10 +70,6 @@ namespace pene
               AFUNPTR func = is_broadcast ? (AFUNPTR)compute<true, I> : (AFUNPTR)compute<false, I>;
               INS ins2 = INS_Next(ins);
 
-              INS_InsertIfCall(ins2, IPOINT_BEFORE, (AFUNPTR)check_mask<I>,
-                IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
-                IARG_END
-              );
 
               if (is_memory)
               {
@@ -85,20 +81,30 @@ namespace pene
                     IARG_END);
                 }
 
+                INS_InsertIfCall(ins2, IPOINT_BEFORE, (AFUNPTR)check_mask<I>,
+                  IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
+                  IARG_END
+                );
+
                 INS_InsertThenCall(ins2, IPOINT_BEFORE, (AFUNPTR)func,
                   IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 2),
                   IARG_REG_CONST_REFERENCE, tmp_reg,
                   IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-                  IARG_ADDRINT, nullptr,
+                  IARG_PTR, nullptr,
                   IARG_END);
               }
               else
               {
+
+                INS_InsertIfCall(ins2, IPOINT_BEFORE, (AFUNPTR)check_mask<I>,
+                  IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
+                  IARG_END
+                );
                 INS_InsertThenCall(ins2, IPOINT_BEFORE, (AFUNPTR)func,
                   IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 2),
                   IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 3),
                   IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-                  IARG_ADDRINT, nullptr,
+                  IARG_PTR, nullptr,
                   IARG_END);
               }
               apply<N, I + 1>(ins, is_broadcast, is_memory, tmp_reg);

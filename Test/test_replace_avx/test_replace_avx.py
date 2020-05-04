@@ -9,8 +9,8 @@ class replace_tests(unittest.TestCase):
     execpath = "@REPLACE_TESTS_ECEXUTABLE@"
     pinpath = "${PIN_EXECUTABLE}"
     toolpath = "@REPLACE_TESTS_PINTOOL@"
-    a = 3
-    b = 7
+    a = 3.5
+    b = 7.2
     activeRegex = str(a)+r"\*"+str(b)+"="+str(a*b)
     activePattern = re.compile(activeRegex)
     inactiveRegex = str(a)+r"\*"+str(b)+"="+str(a+b)

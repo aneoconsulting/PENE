@@ -28,7 +28,6 @@ namespace pene
           }
         };
 
-
         template<int size>
         static void DoLoad(ADDRINT* dst, ADDRINT* addr)
         {
@@ -221,7 +220,7 @@ namespace pene
                 IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
                 IARG_REG_CONST_REFERENCE, tmp_reg,
                 IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-                IARG_ADDRINT, nullptr,
+                IARG_PTR, nullptr,
                 IARG_END);
             }
             else
@@ -230,7 +229,7 @@ namespace pene
                 IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
                 IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 2),
                 IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-                IARG_ADDRINT, nullptr,
+                IARG_PTR, nullptr,
                 IARG_END);
             }
           }

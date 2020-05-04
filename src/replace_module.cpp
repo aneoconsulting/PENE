@@ -52,6 +52,12 @@ namespace pene {
       std::cerr << "Switch compelet." << std::endl;
 
       tmp_reg = PIN_ClaimToolRegister();
+      if (!REG_valid(tmp_reg))
+      {
+        std::cerr << "Cannot allocate a scratch register.\n";
+        std::cerr << std::flush;
+        PIN_ExitApplication(1);
+      }
 
       break;
     default: // case 0
