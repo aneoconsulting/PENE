@@ -13,24 +13,24 @@
 
 
 namespace pene {
-  REG tmp_reg;
+  REG tmp_reg1;
+  REG tmp_reg2;
 
   template <class OPERATION_IMPL>
   VOID overlaod_fp_operations(INS ins, VOID*)
   {
-    auto xed = INS_XedDec(ins); // TODO check that pointer does not need to be freed
-    auto iform = xed_decoded_inst_get_iform_enum(xed);
+
 
     switch (INS_Category(ins))
     {
     case xed_category_enum_t::XED_CATEGORY_SSE:
-      replace::wrappers::sse::instrument<OPERATION_IMPL>(ins, xed, iform, tmp_reg);
+      replace::wrappers::sse::instrument<OPERATION_IMPL>(ins);
       break;
     case xed_category_enum_t::XED_CATEGORY_AVX:
-      replace::wrappers::avx::instrument<OPERATION_IMPL>(ins, xed, iform, tmp_reg);
+      replace::wrappers::avx::instrument<OPERATION_IMPL>(ins, tmp_reg1, tmp_reg2);
       break;
     case xed_category_enum_t::XED_CATEGORY_AVX512:
-      replace::wrappers::avx512::instrument<OPERATION_IMPL>(ins, xed, iform, tmp_reg);
+      replace::wrappers::avx512::instrument<OPERATION_IMPL>(ins, tmp_reg1);
       break;
     default:
       break;
@@ -51,8 +51,15 @@ namespace pene {
       INS_AddInstrumentFunction(overlaod_fp_operations<replace::backend::invert_add_mul_impl>, nullptr);
       std::cerr << "Switch compelet." << std::endl;
 
-      tmp_reg = PIN_ClaimToolRegister();
-      if (!REG_valid(tmp_reg))
+      tmp_reg1 = PIN_ClaimToolRegister();
+      if (!REG_valid(tmp_reg1))
+      {
+        std::cerr << "Cannot allocate a scratch register.\n";
+        std::cerr << std::flush;
+        PIN_ExitApplication(1);
+      }
+      tmp_reg2 = PIN_ClaimToolRegister();
+      if (!REG_valid(tmp_reg2))
       {
         std::cerr << "Cannot allocate a scratch register.\n";
         std::cerr << std::flush;

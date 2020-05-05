@@ -29,8 +29,10 @@ namespace pene
         };
 
         template <typename OPERATION_IMPL>
-        void instrument(INS ins, xed_decoded_inst_t* xed, xed_iform_enum_t iform, REG tmp_reg)
+        void instrument(INS ins)
         {
+          auto xed = INS_XedDec(ins); // TODO check that pointer does not need to be freed
+          auto iform = xed_decoded_inst_get_iform_enum(xed);
           switch (iform)
           {
           case xed_iform_enum_t::XED_IFORM_ADDSS_XMMss_XMMss:

@@ -67,7 +67,6 @@ namespace pene
           {
             if constexpr (I < N)
             {
-              AFUNPTR func = is_broadcast ? (AFUNPTR)compute<true, I> : (AFUNPTR)compute<false, I>;
               INS ins2 = INS_Next(ins);
 
 
@@ -81,6 +80,7 @@ namespace pene
                     IARG_END);
                 }
 
+                AFUNPTR func = is_broadcast ? (AFUNPTR)compute<true, I> : (AFUNPTR)compute<false, I>;
                 INS_InsertIfCall(ins2, IPOINT_BEFORE, (AFUNPTR)check_mask<I>,
                   IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
                   IARG_END
@@ -100,7 +100,7 @@ namespace pene
                   IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
                   IARG_END
                 );
-                INS_InsertThenCall(ins2, IPOINT_BEFORE, (AFUNPTR)func,
+                INS_InsertThenCall(ins2, IPOINT_BEFORE, (AFUNPTR)compute<false, I>,
                   IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 2),
                   IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 3),
                   IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
@@ -114,9 +114,10 @@ namespace pene
 
 
         template <typename OPERATION_IMPL>
-        void instrument(INS ins, xed_decoded_inst_t* xed, xed_iform_enum_t iform, REG tmp_reg)
+        void instrument(INS ins, REG tmp_reg)
         {
-
+          auto xed = INS_XedDec(ins); // TODO check that pointer does not need to be freed
+          auto iform = xed_decoded_inst_get_iform_enum(xed);
           switch (iform)
           {
           case xed_iform_enum_t::XED_IFORM_VADDSS_XMMf32_MASKmskw_XMMf32_XMMf32_AVX512:
