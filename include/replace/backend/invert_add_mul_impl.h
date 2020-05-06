@@ -16,7 +16,11 @@ namespace pene
         static constexpr void sub_double(double a, double b, double* cptr, void*) noexcept { *cptr = a - b; }
         static constexpr void mul_double(double a, double b, double* cptr, void*) noexcept { *cptr = a * b; }
         static constexpr void div_double(double a, double b, double* cptr, void*) noexcept { *cptr = a / b; }
+        static void* init() noexcept { return nullptr; }
       };
+
+
+
     }
   }
 }

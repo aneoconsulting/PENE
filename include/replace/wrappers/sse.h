@@ -1,6 +1,9 @@
 #pragma once
 #include <pin.h>
-#include <xed-decoded-inst-api.h>
+extern "C"
+{
+# include <xed-decoded-inst-api.h>
+}
 
 
 namespace pene 
@@ -29,7 +32,7 @@ namespace pene
         };
 
         template <typename OPERATION_IMPL>
-        void instrument(INS ins)
+        void instrument(void* backend_ctx, INS ins)
         {
           auto xed = INS_XedDec(ins); // TODO check that pointer does not need to be freed
           auto iform = xed_decoded_inst_get_iform_enum(xed);
@@ -40,7 +43,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -49,7 +52,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -60,7 +63,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -69,7 +72,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -80,7 +83,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -89,7 +92,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -100,7 +103,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -109,7 +112,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -122,7 +125,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -131,7 +134,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -142,7 +145,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -151,7 +154,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -162,7 +165,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -171,7 +174,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -182,7 +185,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;
@@ -191,7 +194,7 @@ namespace pene
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
               IARG_REG_REFERENCE, INS_OperandReg(ins, 0),
-              IARG_PTR, nullptr,
+              IARG_PTR, backend_ctx,
               IARG_END);
             INS_Delete(ins);
             break;

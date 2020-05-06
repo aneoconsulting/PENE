@@ -73,7 +73,7 @@ set(CXX_LIBS "")
 # On Unix, ASM_FLAGS is identical to APP_CXXFLAGS, therefore it is built at
 # the end of this file, same as APP_CXXFLAGS.
 
-set(TOOL_CXXFLAGS_NOOPT -Wall -Wno-unknown-pragmas -D__PIN__=1 -DPIN_CRT=1) # TODO Is it required to add -Werror ??
+set(TOOL_CXXFLAGS_NOOPT -Wall -Wno-unknown-pragmas -D__PIN__=1 -DPIN_CRT=1 -DXED_DLL) # TODO Is it required to add -Werror ??
 set(DLL_CXXFLAGS "")
 set(ENABLE_DEPRECATED -DPIN_DEPRECATED_WARNINGS=0)
 set(CPP11FLAGS -std=c++11)
