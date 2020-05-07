@@ -6,5 +6,5 @@
 
 namespace pene 
 {
-  bool update_counters(OPCODE, counters&);
+  bool update_counters(INS, counters&);
 }

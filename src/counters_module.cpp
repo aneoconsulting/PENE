@@ -78,8 +78,7 @@ namespace pene {
 
         if (INS_IsOriginal(ins))
         {
-          auto oc = INS_Opcode(ins);
-          update_counters(oc, tmp_counters);
+          update_counters(ins, tmp_counters);
         }
       }
 
