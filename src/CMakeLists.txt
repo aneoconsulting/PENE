@@ -19,7 +19,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(SOURCES "pene.cpp" "module.cpp" "version_module.cpp" 
 			"counters.cpp" "counters_module.cpp"  "update_counters.cpp" 
 			"symbol_list_generator_module.cpp"
-			"replace_module.cpp")
+			"replace_module.cpp" "pin_utils/instrumenter.cpp")
 set(PIN_TOOL pene)
 
 # Add target
