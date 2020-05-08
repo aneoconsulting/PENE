@@ -1,0 +1,26 @@
+#include "pin_utils/filter.h"
+
+
+namespace pene
+{
+  namespace pin_utils
+  {
+    BOOL filter::is_instrumented(TRACE trace) const
+    {
+      return is_instrumented(TRACE_Address(trace));
+    }
+    BOOL filter::is_instrumented(BBL bbl) const
+    {
+      return is_instrumented(BBL_Address(bbl));
+    }
+    BOOL filter::is_instrumented(INS ins) const
+    {
+      return is_instrumented(INS_Address(ins));
+    }
+
+    BOOL null_filter::is_instrumented(ADDRINT) const
+    {
+      return true;
+    }
+  }
+}

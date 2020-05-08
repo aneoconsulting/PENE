@@ -12,7 +12,7 @@ namespace pene {
   using namespace pin_utils;
   namespace counter_module_internals {
 
-    class counters_instrumenters : public instrumenter<counters_instrumenters>
+    class counters_element_instrumenters final : public element_instrumenter
     {
       class tls_life_cycle_manager : public tls<counters>::life_cycle_manager {
         counters& c;
@@ -32,6 +32,9 @@ namespace pene {
         }
       };
 
+      TRACE trace;
+      BBL bbl;
+      INS ins;
       counters c;
       tls_life_cycle_manager tlcm;
       pin_utils::tls_reg<counters> * tls;
@@ -39,15 +42,18 @@ namespace pene {
       counters tmp_counters;
 
     public:
-      counters_instrumenters()
-        : instrumenter<counters_instrumenters>()
+      counters_element_instrumenters()
+        : element_instrumenter()
+        , trace(nullptr)
+        , bbl(MAKE_BBL(0))
+        , ins(MAKE_INS(0))
         , c(), tlcm(c), tls(nullptr), use_tls(false)
         , tmp_counters()
       {
         PIN_AddFiniFunction([](INT32, void* void_counters) {((counters*)void_counters)->print(); }, &c);
       }
 
-      ~counters_instrumenters()
+      ~counters_element_instrumenters()
       {
         if (tls)
           delete tls;
@@ -104,6 +110,23 @@ namespace pene {
       void end_instrument(TRACE) {}
 
     private:
+      template<class ... Args>
+      VOID dispatch_insertCall_bbl_ins(Args... args)
+      {
+        if (trace != nullptr)
+        {
+          insertCall(trace, IPOINT_ANYWHERE, args...);
+        }
+        else if (bbl.is_valid())
+        {
+          insertCall(bbl, IPOINT_ANYWHERE, args...);
+        }
+        else
+        {
+          insertCall(ins, IPOINT_BEFORE, args...);
+        }
+      }
+
       template <int N = 0>
       void add_counters_tls(UINT32 index)
       {
@@ -154,7 +177,7 @@ namespace pene {
   counters_module::~counters_module()
   {
     if (data != nullptr)
-      delete reinterpret_cast<counters_instrumenters*>(data);
+      delete reinterpret_cast<counters_element_instrumenters*>(data);
     data = 0;
   }
 
@@ -176,15 +199,18 @@ namespace pene {
   {
     std::cerr << "Initialization: FP instructions count." << std::endl;
     auto mode = knob_counter_instrumentation_mode.Value();
+    counters_element_instrumenters* cei = nullptr;
     switch (mode)
     {
     case 1:
-      data = new counters_instrumenters();
+      cei = new counters_element_instrumenters();
+      data = new instrumenter(cei);
       std::cerr << "Set counters to \"trace\" instrumentation mode." << std::endl;
       data->TRACE_AddInstrumentFunction();
       break;
     case 2:
-      data = new counters_instrumenters();
+      cei = new counters_element_instrumenters();
+      data = new instrumenter(cei);
       std::cerr << "Set counters to \"instructions\" instrumentation mode." << std::endl;
       data->INS_AddInstrumentFunction();
       break;
@@ -193,9 +219,9 @@ namespace pene {
       return;
     }
 
-    if (knob_counters_use_tls.Value())
+    if (cei!=nullptr && knob_counters_use_tls.Value())
     {
-      static_cast<counters_instrumenters*>(data)->activate_tls();
+      cei->activate_tls();
     }
   }
 

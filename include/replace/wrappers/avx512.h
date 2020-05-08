@@ -99,7 +99,7 @@ namespace pene
           template <int I>
           static bool check_mask(mask_t* const mask)
           {
-            return ((*mask) & (1 << I)) != 0;
+            return ((*mask) & ((1) << (I))) != 0;
           }
 
           template <bool broadcast, int I>
@@ -140,6 +140,15 @@ namespace pene
                 IARG_END);
 
               apply<N, I + 1>(backend_ctx, ins, is_broadcast, is_memory, tmp_reg1, tmp_reg2);
+            }
+            else // To remove C4100 warning with Visual Studio
+            {
+              tmp_reg1;
+              tmp_reg2;
+              is_memory;
+              is_broadcast;
+              ins;
+              backend_ctx;
             }
           }
         };

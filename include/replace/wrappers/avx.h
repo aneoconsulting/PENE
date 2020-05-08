@@ -32,6 +32,13 @@ namespace pene
               // this call replaces a static for loop from 0 to N-1
               compute<N, I + 1>(a, b, c, ctx);
             }
+            else // To remove C4100 warning with Visual Studio 2019
+            {
+              a;
+              b;
+              c;
+              ctx;
+            }
           }
 
           template <int SIZE>

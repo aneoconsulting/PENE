@@ -31,16 +31,16 @@ namespace pene {
       DEBUG_END
     };
 
-    template<class OPERATION_IMPL, class BASE_INSTRUMENTER = base_instrumenter>
-    class replace_instrumenters : public BASE_INSTRUMENTER
+    template<class OPERATION_IMPL>
+    class replace_inst_instrumenters final : public element_instrumenter
     {
       REG tmp_reg1;
       REG tmp_reg2;
       void* backend_ctx;
 
     public:
-      replace_instrumenters()
-        : BASE_INSTRUMENTER()
+      replace_inst_instrumenters()
+        : element_instrumenter()
         , tmp_reg1(PIN_ClaimToolRegister())
         , tmp_reg2(PIN_ClaimToolRegister())
         , backend_ctx(OPERATION_IMPL::init())
@@ -52,7 +52,7 @@ namespace pene {
           PIN_ExitApplication(1);
         }
       }
-      void instrument(INS ins) {
+      virtual void instrument(INS ins) override {
         switch (INS_Category(ins))
         {
         case xed_category_enum_t::XED_CATEGORY_SSE:
@@ -131,7 +131,7 @@ namespace pene {
       break;
     case replace_module_internals::replace_modes::DEBUG_FLOAT_ADD_MULL_SWAP:
       std::cerr << "fp-replace single precision debug mode - swapping single precision additions and multiplications" << std::endl;
-      data = new replace_module_internals::replace_instrumenters< replace::backend::invert_add_mul_impl, base_instrumenter>();
+      data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::invert_add_mul_impl>());
       data->INS_AddInstrumentFunction();
       break;
     case replace_module_internals::replace_modes::DEBUG_ADD_MULL_SWAP:

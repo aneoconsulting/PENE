@@ -28,6 +28,13 @@ namespace pene
               // this call replaces a static for loop from 0 to N-1
               apply<N, I + 1>(a, b, c, ctx);
             }
+            else // To remove C4100 warning with VS2019
+            {
+              a;
+              b;
+              c;
+              ctx;
+            }
           }
         };
 

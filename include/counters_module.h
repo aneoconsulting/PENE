@@ -9,7 +9,7 @@ namespace pene {
   {
     KNOB<UINT> knob_counter_instrumentation_mode;
     KNOB<bool> knob_counters_use_tls;
-    pin_utils::base_instrumenter* data;
+    pin_utils::instrumenter* data;
   public:
     counters_module();
     ~counters_module();

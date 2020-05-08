@@ -1,61 +1,27 @@
 #pragma once
 
 #include <pin.H>
+#include "filter.h"
+#include "element_instrumenter.h"
 
 namespace pene {
   namespace pin_utils {
 
-    class base_instrumenter
+    class instrumenter
     {
     public:
-      virtual void INS_AddInstrumentFunction();
-      virtual void TRACE_AddInstrumentFunction();
+      void INS_AddInstrumentFunction();
+      void TRACE_AddInstrumentFunction();
+      instrumenter() = delete;
+      instrumenter(element_instrumenter* then_i, filter* f = new null_filter());
+      virtual ~instrumenter();
 
     protected:
-      virtual void init_instrument(TRACE);
-      virtual void init_instrument(BBL);
-      virtual void instrument(INS);
-      virtual void end_instrument(BBL);
-      virtual void end_instrument(TRACE);
 
-      virtual void instrument_callback(TRACE);
-      virtual void instrument_callback(INS);
-    };
-
-    template <class BASE_INSTRUMENTER>
-    class instrumenter : public base_instrumenter
-    {
-    protected:
-      // TODO move to counter_instrumenter
-      TRACE trace;
-      // TODO move to counter_instrumenter
-      BBL bbl;
-      // TODO move to counter_instrumenter
-      INS ins;
-
-      instrumenter()
-        : trace(nullptr)
-        , bbl(MAKE_BBL(0))
-        , ins(MAKE_INS(0))
-      {}
-
-      // TODO move to counter_instrumenter
-      template<class ... Args>
-      void dispatch_insertCall_bbl_ins(Args... args)
-      {
-        if (trace != nullptr)
-        {
-          insertCall(trace, IPOINT_ANYWHERE, args...);
-        }
-        else if (bbl.is_valid())
-        {
-          insertCall(bbl, IPOINT_ANYWHERE, args...);
-        }
-        else
-        {
-          insertCall(ins, IPOINT_BEFORE, args...);
-        }
-      }
+      virtual VOID instrument_callback(TRACE);
+      virtual VOID instrument_callback(INS);
+      filter* filter_;
+      element_instrumenter* el_instrumenter;
     };
   }
 }

@@ -4,44 +4,64 @@ namespace pene
 {
   namespace pin_utils
   {
-    void base_instrumenter::init_instrument(TRACE trace_) {}
-    void base_instrumenter::init_instrument(BBL bbl_) {}
-    void base_instrumenter::instrument(INS ins_) {}
-    void base_instrumenter::end_instrument(BBL bbl_) {}
-    void base_instrumenter::end_instrument(TRACE trace_) {}
-
-    void base_instrumenter::instrument_callback(TRACE trace)
+    void instrumenter::INS_AddInstrumentFunction()
     {
-      init_instrument(trace);
-      for (auto bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
+      ::INS_AddInstrumentFunction([](INS ins, void* voided_instrumenter) { reinterpret_cast<instrumenter*>(voided_instrumenter)->instrument_callback(ins); }, this);
+    }
+
+    void instrumenter::TRACE_AddInstrumentFunction()
+    {
+      ::TRACE_AddInstrumentFunction([](TRACE trace, void* voided_instrumenter) { reinterpret_cast<instrumenter*>(voided_instrumenter)->instrument_callback(trace); }, this);
+    }
+
+    instrumenter::instrumenter(element_instrumenter* then_i, filter* f)
+      : el_instrumenter(then_i)
+      , filter_(f)
+    {}
+
+    instrumenter::~instrumenter()
+    {
+      if (filter_ != nullptr)
       {
-        init_instrument(bbl);
-        for (auto ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
-        {
-          instrument(ins);
-        }
-        end_instrument(bbl);
+        delete filter_;
+        filter_ = nullptr;
       }
-      end_instrument(trace);
     }
 
-    void base_instrumenter::instrument_callback(INS ins_)
+    void instrumenter::instrument_callback(TRACE trace)
     {
-      init_instrument(nullptr);
-      init_instrument(MAKE_BBL(0));
-      instrument(ins_);
-      end_instrument(MAKE_BBL(0));
-      end_instrument(nullptr);
+      if (filter_->is_instrumented(trace))
+      {
+        el_instrumenter->init_instrument(trace);
+        for (auto bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
+        {
+          if (filter_->is_instrumented(bbl))
+          {
+            el_instrumenter->init_instrument(bbl);
+            for (auto ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
+            {
+              if (filter_->is_instrumented(ins))
+              {
+                el_instrumenter->instrument(ins);
+              }
+            }
+            el_instrumenter->end_instrument(bbl);
+          }
+        }
+        el_instrumenter->end_instrument(trace);
+      }
     }
 
-    void base_instrumenter::INS_AddInstrumentFunction()
+    void instrumenter::instrument_callback(INS ins)
     {
-      ::INS_AddInstrumentFunction([](INS ins, void* voided_instrumenter) { reinterpret_cast<base_instrumenter*>(voided_instrumenter)->instrument_callback(ins); }, this);
-    }
-
-    void base_instrumenter::TRACE_AddInstrumentFunction()
-    {
-      ::TRACE_AddInstrumentFunction([](TRACE trace, void* voided_instrumenter) { reinterpret_cast<base_instrumenter*>(voided_instrumenter)->instrument_callback(trace); }, this);
+      if (filter_->is_instrumented(ins))
+      {
+        el_instrumenter->init_instrument(nullptr);
+        el_instrumenter->init_instrument(MAKE_BBL(0));
+        el_instrumenter->instrument(ins);
+        el_instrumenter->end_instrument(MAKE_BBL(0));
+        el_instrumenter->end_instrument(nullptr);
+      }
     }
   }
 }
