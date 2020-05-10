@@ -16,6 +16,6 @@ namespace pene {
 
     bool validate() override;
     void init() override;
-    const std::string& name() override;
+    const std::string&& name() override;
   };
 }

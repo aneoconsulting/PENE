@@ -11,6 +11,6 @@ namespace pene {
   public:
     version_module();
     void init() override;
-    const std::string& name() override;
+    const std::string&& name() override;
   };
 }

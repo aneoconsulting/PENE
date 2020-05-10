@@ -7,6 +7,7 @@
 #include "pin_utils/insert_call.h"
 #include "pin_utils/instrumenter.h"
 #include "pin_utils/tls_reg.h"
+#include "utils/move.h"
 
 namespace pene {
   using namespace pin_utils;
@@ -225,8 +226,7 @@ namespace pene {
     }
   }
 
-  const std::string& counters_module::name() { 
-    static const std::string name_{ "counters_module" };
-    return name_;
+  const std::string&& counters_module::name() { 
+    return tr1::move(std::string("counters_module"));
   }
 }

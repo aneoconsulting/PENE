@@ -2,7 +2,6 @@
 
 #include <immintrin.h>
 #include <pin.H>
-
 namespace pene
 {
   namespace utils

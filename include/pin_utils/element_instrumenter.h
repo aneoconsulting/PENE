@@ -9,6 +9,7 @@ namespace pene {
     class element_instrumenter
     {
     public:
+      virtual ~element_instrumenter(){}
       virtual VOID init_instrument(TRACE);
       virtual VOID init_instrument(BBL);
       virtual VOID instrument(INS) = 0;

@@ -20,8 +20,8 @@ namespace pene {
 
       virtual VOID instrument_callback(TRACE);
       virtual VOID instrument_callback(INS);
-      filter* filter_;
       element_instrumenter* el_instrumenter;
+      filter* filter_;
     };
   }
 }

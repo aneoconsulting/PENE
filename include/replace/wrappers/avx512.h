@@ -40,7 +40,7 @@ namespace pene
 
 
         template <int SIZE>
-        static auto save_registers(INS ins, bool is_memory, REG tmp_reg1, REG tmp_reg2)
+        static auto save_registers(INS ins, xed_bool_t is_memory, REG tmp_reg1, REG tmp_reg2)
         {
           REG reg1 = INS_OperandReg(ins, 2);
           if (INS_OperandReg(ins, 0) == reg1)
@@ -116,7 +116,7 @@ namespace pene
           }
 
           template<int N = NB_ELTS_IN_REG, int I = 0>
-          static void apply(void* backend_ctx, INS ins, bool is_broadcast, bool is_memory, REG tmp_reg1, REG tmp_reg2)
+          static void apply(void* backend_ctx, INS ins, xed_bool_t is_broadcast, xed_bool_t is_memory, REG tmp_reg1, REG tmp_reg2)
           {
             if constexpr (I < N)
             {

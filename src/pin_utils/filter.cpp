@@ -5,6 +5,8 @@ namespace pene
 {
   namespace pin_utils
   {
+    filter::~filter() {};
+
     BOOL filter::is_instrumented(TRACE trace) const
     {
       return is_instrumented(TRACE_Address(trace));

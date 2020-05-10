@@ -12,6 +12,7 @@ namespace pene
     public:
       class life_cycle_manager {
       public:
+        virtual ~life_cycle_manager() {}
         virtual T* create() = 0;
         virtual void destroy(T*) = 0;
       };
@@ -37,6 +38,7 @@ namespace pene
         PIN_AddThreadFiniFunction(
           [](THREADID threadid, const CONTEXT* ctx, INT32 flags, VOID* voided_this) {reinterpret_cast<tls*>(voided_this)->ThreadFini(threadid, ctx, flags); }, this);
       }
+      virtual ~tls(){}
 
       bool is_tls_valid() const
       {

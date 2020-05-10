@@ -1,19 +1,50 @@
 #include "symbol_list_generator_module.h"
 #include <cassert>
 
+#include <unordered_set>
+#include <unordered_map>
+#include "counters.h"
+#include "counters_utils.h"
+#include "utils/move.h"
+
 
 namespace pene{
   namespace symbol_list_generator_module_internals {
     static std::ofstream sym_list_stream{};
 
-    static VOID write_loaded_symbols(IMG img, void*)
+    static size_t img_name_max_size = 0;
+
+    using rtn_name_list_t = std::tr1::unordered_set<std::string>;
+    using rtn_name_list_by_img_name_t = std::tr1::unordered_map<std::string, rtn_name_list_t>;
+    // sym_list[img_name] => rtn_name_list
+    rtn_name_list_by_img_name_t sym_list;
+
+
+    static VOID store_loaded_symbols(IMG img, void*)
     {
       std::string img_name = IMG_Name(img);
+      img_name_max_size = std::max(img_name.length(), img_name_max_size);
       for (SEC sec = IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec))
       {
         for (RTN rtn = SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn))
         {
-          sym_list_stream << img_name << "\t" << RTN_Name(rtn) << "\n";
+          counters c;
+          bool has_fp_inst = false;
+
+          for (INS ins = RTN_InsHead(rtn); INS_Valid(ins); ins = INS_Next(ins))
+          {
+            auto op = INS_Opcode(ins);
+            update_counters(op, c);
+          }
+
+          for (int i = 0; i < counters::size && !has_fp_inst; ++i)
+          {
+            has_fp_inst |= c.array[i] > 0;
+          }
+          if (has_fp_inst)
+          {
+            sym_list[img_name].insert(RTN_Name(rtn));
+          }
         }
       }
     }
@@ -59,18 +90,25 @@ namespace pene{
     std::cerr << "Initialization: symbol list generation." << std::endl;
     if (!knob_exclist_gen.Value().empty() && sym_list_stream.good())
     {
-      IMG_AddInstrumentFunction(write_loaded_symbols, nullptr);
+      IMG_AddInstrumentFunction(store_loaded_symbols, nullptr);
       PIN_AddFiniFunction([](INT32, void*) 
         {
+          for (auto img_name_it : sym_list)
+          {
+            auto img_name = img_name_it.first;
+            for (auto rtn_name : img_name_it.second)
+            {
+              sym_list_stream << std::left << std::setw(int(img_name_max_size) + 4) << img_name << rtn_name << "\n";
+            }
+          }
           sym_list_stream.flush();
           sym_list_stream.close();
         }, nullptr);
     }
   }
 
-  const std::string& symbol_list_generator_module::name() {
-    static const std::string name_{ "symbol_list_generator_module" };
-    return name_;
+  const std::string&& symbol_list_generator_module::name() {
+    return tr1::move(std::string("symbol_list_generator_module"));
   }
 }
 

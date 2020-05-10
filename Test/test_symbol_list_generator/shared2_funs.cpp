@@ -3,6 +3,6 @@
 #define LIBRARY_EXPORTS
 #include "shared2_funs.h"
 
-LIBRARY_API void func2_1() { func1(); }
-LIBRARY_API void func2_2() {}
-LIBRARY_API void func2_3() {}
+LIBRARY_API float func2_1(float a) { return func1(a + 1); }
+LIBRARY_API float func2_2(float a) { return func1(a + 2); }
+LIBRARY_API float func2_3(float a) { return func1(a + 3); }

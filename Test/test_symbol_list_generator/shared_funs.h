@@ -12,6 +12,6 @@
 #  endif
 #endif
 
-LIBRARY_API void func1();
-LIBRARY_API void func2();
-LIBRARY_API void func3();
+LIBRARY_API float func1(float a);
+LIBRARY_API float func2(float a);
+LIBRARY_API float func3(float a);

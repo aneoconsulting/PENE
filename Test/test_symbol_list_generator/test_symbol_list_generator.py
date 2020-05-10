@@ -20,7 +20,7 @@ class symbols_list_generation_tests(unittest.TestCase):
         out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell = True)
         print(out.stdout.decode('utf-8'))
 
-        regexes = r"\A" + "".join([r"(?=.*?^\S*?" + elem[0] + r"\S*?\t" + sym +r"$)" for elem in self.elements for sym in elem[1]])
+        regexes = r"\A" + "".join([r"(?=.*?^\S*?" + elem[0] + r"\S*?\s+" + sym +r"$)" for elem in self.elements for sym in elem[1]])
     
         with open('list.txt') as ref:
             input = ref.read()
