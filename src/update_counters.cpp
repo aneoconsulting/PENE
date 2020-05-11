@@ -270,6 +270,10 @@ namespace pene
             counters[fma_double_simd_avx] += 1;
             return true;
         }
+    case XED_ICLASS_CVTPI2PS:
+        counters[cvt_i2f_simd_sse] += 1;
+    case XED_ICLASS_CVTPS2PI:
+        counters[cvt_f2i_simd_sse] += 1;
     default:
       return false;
     }
