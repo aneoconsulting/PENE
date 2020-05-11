@@ -274,6 +274,8 @@ namespace pene
         counters[cvt_i2f_simd_sse] += 1;
     case XED_ICLASS_CVTPS2PI:
         counters[cvt_f2i_simd_sse] += 1;
+    case XED_ICLASS_CVTSI2SS:
+        counters[cvt_i2f_scalar_sse] += 1;
     default:
       return false;
     }

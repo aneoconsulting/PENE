@@ -49,9 +49,9 @@ class testCounterGenerator(unittest.TestCase):
         return a
 
     def getNbOps(self, output, prec, op, mode):
-        regex = prec + r" *?" + op + r" *?" + mode + r" *?(?P<value>\d+)"
+        regex = prec + r" *?" + op + r" *?" + mode + r" *?" + r"\w{3,6}" + r" *?(?P<value>\d+)"
         if op == "sub":
-            regex = prec + r" *?add *?" + mode + r" *?(?P<value>\d+)"
+            regex = prec + r" *?add *?" + mode + r" *?" + r"\w{3,6}" + r" *?(?P<value>\d+)"
         p = re.compile(regex)
         self.assertRegex(output, p)
         m = p.search(output)
