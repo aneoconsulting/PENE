@@ -7,8 +7,8 @@
 std::cerr                                                                                   \
           << std::setw(17) << std::left << #prec                                            \
           << std::setw(17) << std::left << #op                                              \
-          << std::setw(17) << std::left << #mode                                            \
-          << std::setw(17) << std::left << #ins                                            \
+          << std::setw(21) << std::left << #mode                                            \
+          << std::setw(13) << std::left << #ins                                            \
           << std::setw(17) << std::right << (*this)[counter_type::##op##_##prec##_##mode##_##ins]   \
           << std::endl : std::cerr << "")
 
