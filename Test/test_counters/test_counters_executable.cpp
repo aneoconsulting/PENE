@@ -28,61 +28,69 @@ void main(int argc, char* argv[])
     auto b_ = _mm_set1_ps(b);
     if (precision.compare("i2f") == 0)
     {
-        if (mode.compare("scalar") == 0) {
-            for (auto i = 0; i < nb_loop; ++i)
-                accu = _mm_cvt_si2ss(accu, b);
+      if (mode.compare("scalar") == 0) {
+        for (auto i = 0; i < nb_loop; ++i)
+        {
+          accu = _mm_cvt_si2ss(accu, int(b));
         }
-        else if (mode.compare("simd") == 0) {
-            for (auto i = 0; i < nb_loop; ++i)
-                //accu = _mm_cvt_pi2ps(accu, b_);
+      }
+      else if (mode.compare("simd") == 0) {
+        for (auto i = 0; i < nb_loop; ++i)
+        {
+          //accu = _mm_cvt_pi2ps(accu, b_);
         }
+      }
     }
     if (precision.compare("i2d") == 0)
     {
-        if (mode.compare("scalar") == 0) {
-            for (auto i = 0; i < nb_loop; ++i)
-                accud = _mm_cvtsi32_sd(accud, b);
+      if (mode.compare("scalar") == 0) {
+        for (auto i = 0; i < nb_loop; ++i)
+        {
+          accud = _mm_cvtsi32_sd(accud, int(b));
         }
-        else if (mode.compare("simd") == 0) {
-            for (auto i = 0; i < nb_loop; ++i)
-                //accud = _mm_cvtpi32_pd();
+      }
+      else if (mode.compare("simd") == 0) {
+        for (auto i = 0; i < nb_loop; ++i)
+        {
+          //accud = _mm_cvtpi32_pd();
         }
+      }
     }
     if (precision.compare("f2i") == 0)
     {
-        if (mode.compare("scalar") == 0) {
+      if (mode.compare("scalar") == 0) {
 
-        }
-        else if (mode.compare("simd") == 0) {
+      }
+      else if (mode.compare("simd") == 0) {
 
-        }
+      }
     }
     if (precision.compare("f2d") == 0)
     {
-        if (mode.compare("scalar") == 0) {
+      if (mode.compare("scalar") == 0) {
 
-        }
-        else if (mode.compare("simd") == 0) {
+      }
+      else if (mode.compare("simd") == 0) {
 
-        }
+      }
     }
     if (precision.compare("d2i") == 0)
     {
-        if (mode.compare("scalar") == 0) {
+      if (mode.compare("scalar") == 0) {
 
-        }
-        else if (mode.compare("simd") == 0) {
+      }
+      else if (mode.compare("simd") == 0) {
 
-        }
+      }
     }
     if (precision.compare("d2f") == 0)
     {
-        if (mode.compare("scalar") == 0) {
+      if (mode.compare("scalar") == 0) {
 
-        }
-        else if (mode.compare("simd") == 0) {
+      }
+      else if (mode.compare("simd") == 0) {
 
-        }
+      }
     }
   }
 

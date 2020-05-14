@@ -32,8 +32,7 @@ namespace pene{
           RTN_Open(rtn);
           for (INS ins = RTN_InsHead(rtn); INS_Valid(ins); ins = INS_Next(ins))
           {
-            auto op = INS_Opcode(ins);
-            update_counters(op, c);
+            update_counters(ins, c);
           }
 
           for (int i = 0; i < counters::size && !has_fp_inst; ++i)
