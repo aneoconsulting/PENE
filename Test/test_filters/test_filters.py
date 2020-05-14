@@ -107,6 +107,25 @@ class filters_tests(unittest.TestCase):
         self.assertEqual(-2, self.get_value(output, "func_d::compute1"))
         self.assertEqual(-8, self.get_value(output, "func_d::compute2"))
         self.assertEqual(8, self.get_value(output, "func_d"))
+
+    @unittest.expectedFailure
+    def test_excl_tree_func_f(self):
+        output = self.checkOutputWithRegex([self.pinpath, '-t', self.toolpath, '-fp-replace', '102', '-exclude-tree', 'excl_func_f.lst', '--', self.execpath])
+        self.assertEqual(-2, self.get_value(output, "shared_func_f::compute1"))
+        self.assertEqual(-8, self.get_value(output, "shared_func_f::compute2"))
+        self.assertEqual(8, self.get_value(output, "shared_func_f::"))
+        self.assertEqual(8, self.get_value(output, "shared_func_f"))        
+        self.assertEqual(-2, self.get_value(output, "func_f::compute1"))
+        self.assertEqual(-8, self.get_value(output, "func_f::compute2"))
+        self.assertEqual(8, self.get_value(output, "func_f"))
+        self.assertEqual(5, self.get_value(output, "shared_func_d::compute1"))
+        self.assertEqual(5, self.get_value(output, "shared_func_d::compute2"))
+        self.assertEqual(5, self.get_value(output, "shared_func_d::"))
+        self.assertEqual(5, self.get_value(output, "shared_func_d"))        
+        self.assertEqual(5, self.get_value(output, "func_d::compute1"))
+        self.assertEqual(5, self.get_value(output, "func_d::compute2"))
+        self.assertEqual(5, self.get_value(output, "func_d"))
+
         
 
 if __name__ == '__main__':

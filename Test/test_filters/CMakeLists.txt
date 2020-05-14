@@ -16,6 +16,7 @@ set(TEST_SCRIPTS test_filters.py
                  excl_shared.lst
                  excl_shared_all.lst
                  excl_shared_double.lst
+                 test_excl_tree_func_f.lst
                  )
 set(TEST_LIST 
               test_filters.filters_tests.test_excl_all
@@ -23,6 +24,7 @@ set(TEST_LIST
               test_filters.filters_tests.test_excl_shared
               test_filters.filters_tests.test_excl_shared_all
               test_filters.filters_tests.test_excl_shared_double
+              test_filters.filters_tests.test_excl_tree_func_f
 )
 
 
