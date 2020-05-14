@@ -110,7 +110,7 @@ class testCounterGenerator(unittest.TestCase):
             result = self.getResult(output, prec, op, mode)
             self.assertEqual(expected, result)
         else:
-            regex = r"(?m)^ERROR: -counter-mode option only accepts values 0, 1 or 2.$"
+            regex = r"(?m)^ERROR: -counter-mode option only accepts values [A-Za-z0-9 ]+.$"
             p = re.compile(regex)
             self.assertRegex(output, p)
 

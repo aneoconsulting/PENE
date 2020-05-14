@@ -8,8 +8,8 @@ class symbols_list_generation_tests(unittest.TestCase):
     toolpath = "@FLAG_TESTS_PINTOOL@"
 
 
-    elements = [["executable", ["main", "func2_2"]],
-                ["shared2_funs", ["func2_1", "func2_2", "func2_3", "func1"]],
+    elements = [["executable", ["main"]],
+                ["shared2_funs", ["func2_1", "func2_2", "func2_3"]],
                 ["shared_funs", ["func1", "func2", "func3"]]]
 
         
