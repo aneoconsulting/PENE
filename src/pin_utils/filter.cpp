@@ -24,5 +24,8 @@ namespace pene
     {
       return true;
     }
+    BOOL null_filter::check_trace() const { return false; }
+    BOOL null_filter::check_bbl() const { return false; }
+    BOOL null_filter::check_ins() const { return false; }
   }
 }

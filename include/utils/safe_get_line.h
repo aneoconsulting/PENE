@@ -10,7 +10,7 @@ namespace pene
       const char* WhiteSpace = " \t\v\r\n";
       std::size_t start = line.find_first_not_of(WhiteSpace);
       std::size_t end = line.find_last_not_of(WhiteSpace);
-      return start == end ? std::string() : line.substr(start, end - start + 1);
+      return line.substr(start, end - start + 1);
     }
 
     // same as std::getline but also handling \r to get windows/linux/macos portability.

@@ -186,10 +186,10 @@ namespace pene {
   {
     auto mode = knob_counter_instrumentation_mode.Value();
     std::cerr << "Checking configuration: FP instructions count with counter-mode=" << mode << std::endl;
-    if (mode > 2)
+    if (mode > 1)
     {
-      std::cerr << "ERROR: -counter-mode option only accepts values 0, 1 or 2." << std::endl;
-      PIN_WriteErrorMessage("-counter-mode option only accepts values 0, 1 or 2.", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_NONFATAL, 0);
+      std::cerr << "ERROR: -counter-mode option only accepts values 0 or 1." << std::endl;
+      PIN_WriteErrorMessage("-counter-mode option only accepts values 0 or 1.", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_NONFATAL, 0);
       return false;
     }
     std::cerr << "Checking configuration: FP instructions count with counter-tls=" << knob_counters_use_tls.Value() << std::endl;
@@ -209,12 +209,6 @@ namespace pene {
       std::cerr << "Set counters to \"trace\" instrumentation mode." << std::endl;
       data->TRACE_AddInstrumentFunction();
       break;
-    case 2:
-      cei = new counters_element_instrumenters();
-      data = new instrumenter(cei);
-      std::cerr << "Set counters to \"instructions\" instrumentation mode." << std::endl;
-      data->INS_AddInstrumentFunction();
-      break;
     default: // case 0
       std::cerr << "Set counters to no instrumentation mode" << std::endl;
       return;
@@ -226,7 +220,9 @@ namespace pene {
     }
   }
 
-  const std::string&& counters_module::name() { 
-    return tr1::move(std::string("counters_module"));
+  const std::string& counters_module::name() 
+  {
+    static const std::string name_("counters_module");
+    return name_;
   }
 }

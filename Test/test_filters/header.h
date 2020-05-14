@@ -1,21 +1,15 @@
 #pragma once
+#ifndef LIBRARY_API
+#  ifdef _WIN32
+#      ifdef LIBRARY_EXPORTS
+#          define LIBRARY_API extern "C" __declspec(dllexport)
+#      else
+#          define LIBRARY_API extern "C" __declspec(dllimport)
+#      endif
+#  elif
+#      define LIBRARY_API extern "C"
+#  endif
+#endif
 
-float compute1(float a, float b)
-{
-  return (((a * a) - (b * b)) / (a + b)) + b
-}
-
-float compute2(float a, float b)
-{
-  return (((a * a) - (b * b)) / (a + b)) + b
-}
-
-double compute1(double a, double b)
-{
-  return (((a * a) - (b * b)) / (a + b)) + b
-}
-
-double compute2(double a, double b)
-{
-  return (((a * a) - (b * b)) / (a + b)) + b
-}
+#define compute1(a, b) ((((a * a) - (b * b)) / (a + b)) + b)
+#define compute2(a, b) ((((a * a) - (b * b)) / (a - b)) - b)

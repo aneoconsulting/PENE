@@ -50,12 +50,14 @@ set(SATOOL_LIBS ${NO_STDLIBS} ${SATOOL_LIBS} ntdll-${BITS}.lib kernel32.lib)
 # /EHs- /EHa-	Disable exception handling in the tool, otherwise it could interfere in
 #				the apllication's exception handling.
 # /wd4530              Turn off the warning about not having /EHsc turned on
-set(TOOL_CXXFLAGS_NOOPT /MT /EHs- /EHa- /wd4530 /DTARGET_WINDOWS /nologo /Gy)
+set(TOOL_CXXFLAGS_NOOPT /MT /EHs- /EHa- /wd4640 /wd4530 /wd4505 /wd5045 /wd4266 
+                        /wd4626 /wd4625 /wd4820 /wd4191 /wd4577 /wd5026 /wd5027 
+                        /wd4435 /wd4061 /wd4514 /wd4555 /DTARGET_WINDOWS /nologo /Gy)
 set(DLL_CXXFLAGS "")
 set(ENABLE_DEPRECATED /DPIN_DEPRECATED_WARNINGS=0)
 
 
-set(TOOL_CXXFLAGS_NOOPT ${TOOL_CXXFLAGS_NOOPT} /GR- /GS- /EHs- /EHa- /FP:strict /Oi- /D__PIN__=1 /DPIN_CRT=1 /DXED_DLL)
+set(TOOL_CXXFLAGS_NOOPT ${TOOL_CXXFLAGS_NOOPT} /GR- /GS- /EHs- /EHa- /fp:strict /Oi- /D__PIN__=1 /DPIN_CRT=1 /DXED_DLL /Wall )
 if ("${TARGET}" STREQUAL "ia32")
     set(TOOL_CXXFLAGS_NOOPT ${TOOL_CXXFLAGS_NOOPT} /D__i386__)
 else()
@@ -77,7 +79,7 @@ set(RTM_FLAGS "")
 # /EXPORT:main	Main function of the tool has to be exported.
 # /NODEFAULTLIB	Do not link and use any system library except for those listed explicitly
 #				to avoid conflicts with an application using the same library.
-set(TOOL_LDFLAGS_NOOPT /DLL /EXPORT:main ${NO_STDLIBS} /NOLOGO /INCREMENTAL:NO /IGNORE:4210 /IGNORE:4049 /FORCE:MULTIPLE)
+set(TOOL_LDFLAGS_NOOPT /DLL /EXPORT:main ${NO_STDLIBS} /NOLOGO /INCREMENTAL:NO /IGNORE:4210 /IGNORE:4049 /IGNORE:4281)
 # Assume options /DYNAMICBASE and /NXCOMPAT are accepted by all supported Windows linkers.
 set(TOOL_LDFLAGS_NOOPT ${TOOL_LDFLAGS_NOOPT} /DYNAMICBASE /NXCOMPAT)
 set(SATOOL_LDFLAGS_NOOPT "")
@@ -94,12 +96,12 @@ if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
     set(TOOL_OPT_CXX /Od)
     set(TOOL_OPT_LD "")
     # Note: DBG_INFO_CXX is intentionally defined with deferred expansion.
-    set(DBG_INFO_CXX /Z7 /FC /Fd /W4)
+    set(DBG_INFO_CXX /Z7 /FC )
     set(DBG_INFO_LD /DEBUG:FULL)
 else()
     set(TOOL_OPT_CXX /O2 /GL /Gw)
     set(TOOL_OPT_LD /LTCG /OPT:REF)
-    set(DBG_INFO_CXX /Z7 /W4)
+    set(DBG_INFO_CXX /Z7 /Wall)
     set(DBG_INFO_LD /DEBUG:FULL)
 endif()
 

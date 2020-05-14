@@ -2,7 +2,6 @@
 #include <iostream>
 #include <cassert>
 
-#include "utils/move.h"
 #include "replace_module.h"
 
 #include "replace/backend/invert_add_mul_impl.h"
@@ -76,7 +75,7 @@ namespace pene {
 
 
   replace_module::replace_module() 
-    : module()
+    : module(true)
     , knob_replace_mode(KNOB_MODE_WRITEONCE, "pintool", "fp-replace", "0", "Enables fp operation replacement.\n\t0: disabled\n\t1: ieee\n\t3: double2float\n\t4: random rounding")
     , knob_exl_symbols(KNOB_MODE_WRITEONCE, "pintool", "exclude", "", "When this option is present, symbols listed in file will be left uninstrumented")
     , knob_incl_source_lines(KNOB_MODE_WRITEONCE, "pintool", "source", "", "When this option is present, only instructions coming from source code lines listed in file are instrumented. [NOT WORKING YET]")
@@ -193,25 +192,23 @@ namespace pene {
       break;
     case replace_module_internals::replace_modes::DEBUG_FLOAT_ADD_MULL_SWAP:
       std::cerr << "fp-replace single precision debug mode - swapping single precision additions and multiplications" << std::endl;
-      data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::invert_add_mul_impl>(), filter);
-      data->INS_AddInstrumentFunction();
+      data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::invert_add_mul_float_impl>(), filter);
+      data->TRACE_AddInstrumentFunction();
       break;
     case replace_module_internals::replace_modes::DEBUG_ADD_MULL_SWAP:
-      std::cerr << "fp-replace fp debug mode - swapping fp dditions and multiplications" << std::endl;
-      std::cerr << "fp debug mode not working yet. Exiting now" << std::endl;
-      PIN_WriteErrorMessage("fp debug mode not working yet. Exiting now", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_FATAL, 0);
-      PIN_ExitApplication(1);
+      std::cerr << "fp-replace fp debug mode - swapping fp additions and multiplications" << std::endl;
+      data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::invert_add_mul_impl>(), filter);
+      data->TRACE_AddInstrumentFunction();
       break;
-    case replace_module_internals::replace_modes::END_PUBLIC:
-    case replace_module_internals::replace_modes::DEBUG:
-    case replace_module_internals::replace_modes::DEBUG_END:
     default:
       std::cerr << "no replacement mode" << std::endl;
       break;
     }
   }
 
-  const std::string&& replace_module::name() {
-    return tr1::move(std::string("replace_module"));
+  const std::string& replace_module::name()
+  {
+    static const std::string name_("replace_module");
+    return name_;
   }
 }

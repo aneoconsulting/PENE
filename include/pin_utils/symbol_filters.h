@@ -1,7 +1,7 @@
 #pragma once
 #include <pin.H>
-#include <unordered_set>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 #include <fstream>
 
@@ -15,16 +15,23 @@ namespace pene
     {
     public:
       symbol_filter_base() = delete;
+      virtual BOOL check_trace() const override;
+      virtual BOOL check_bbl() const override;
+      virtual BOOL check_ins() const override;
 
     protected:
       symbol_filter_base(const std::string& sym_lis_filename);
+      BOOL is_in_list(const std::string& img_name, const std::string& rtn_name)const;
       BOOL is_in_list(ADDRINT) const;
 
     private:
+      void load(std::istream& istream);
       using name_list_t = std::tr1::unordered_set<std::string>;
       using name_list_by_obj_name_t = std::tr1::unordered_map<std::string, name_list_t>;
       // sym_exlude_list[obj_name] => func_name_list
-      name_list_by_obj_name_t sym_list;
+      mutable name_list_by_obj_name_t sym_list;
+      name_list_by_obj_name_t wildcarded_sym_list;
+      mutable name_list_t unmatched_img_names;
     };
 
     class symbol_exclude_filter final : public virtual symbol_filter_base

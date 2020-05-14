@@ -1,7 +1,6 @@
 #include "version_module.h"
 
 #include <iostream>
-#include "utils/move.h"
 
 #include "version.h"
 
@@ -20,7 +19,9 @@ namespace pene {
     }
   }
 
-  const std::string&& version_module::name() {
-    return tr1::move(std::string("version_module"));
+  const std::string& version_module::name() 
+  {
+    static const std::string name_("version_module");
+    return name_;
   }
 }

@@ -18,6 +18,6 @@ namespace pene {
     ~replace_module();
     virtual void init() override;
     virtual bool validate() override;
-    virtual const std::string&& name() override;
+    virtual const std::string& name() override;
   };
 }

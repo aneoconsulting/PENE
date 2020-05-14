@@ -10,7 +10,6 @@ namespace pene {
     class instrumenter
     {
     public:
-      void INS_AddInstrumentFunction();
       void TRACE_AddInstrumentFunction();
       instrumenter() = delete;
       instrumenter(element_instrumenter* then_i, filter* f = new null_filter());
@@ -19,7 +18,6 @@ namespace pene {
     protected:
 
       virtual VOID instrument_callback(TRACE);
-      virtual VOID instrument_callback(INS);
       element_instrumenter* el_instrumenter;
       filter* filter_;
     };

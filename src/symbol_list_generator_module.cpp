@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include "counters.h"
 #include "counters_utils.h"
-#include "utils/move.h"
 
 
 namespace pene{
@@ -30,7 +29,7 @@ namespace pene{
         {
           counters c;
           bool has_fp_inst = false;
-
+          RTN_Open(rtn);
           for (INS ins = RTN_InsHead(rtn); INS_Valid(ins); ins = INS_Next(ins))
           {
             auto op = INS_Opcode(ins);
@@ -45,6 +44,7 @@ namespace pene{
           {
             sym_list[img_name].insert(RTN_Name(rtn));
           }
+          RTN_Close(rtn);
         }
       }
     }
@@ -96,6 +96,7 @@ namespace pene{
           for (auto img_name_it : sym_list)
           {
             auto img_name = img_name_it.first;
+
             for (auto rtn_name : img_name_it.second)
             {
               sym_list_stream << std::left << std::setw(int(img_name_max_size) + 4) << img_name << rtn_name << "\n";
@@ -107,8 +108,10 @@ namespace pene{
     }
   }
 
-  const std::string&& symbol_list_generator_module::name() {
-    return tr1::move(std::string("symbol_list_generator_module"));
+  const std::string& symbol_list_generator_module::name()
+  {
+    static const std::string name_("symbol_list_generator_module");
+    return name_;
   }
 }
 
