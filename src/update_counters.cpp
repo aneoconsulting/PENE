@@ -270,12 +270,207 @@ namespace pene
             counters[fma_double_simd_avx] += 1;
             return true;
         }
+    case XED_ICLASS_CVTDQ2PS:
     case XED_ICLASS_CVTPI2PS:
         counters[cvt_i2f_simd_sse] += 1;
-    case XED_ICLASS_CVTPS2PI:
-        counters[cvt_f2i_simd_sse] += 1;
+        return true;
     case XED_ICLASS_CVTSI2SS:
         counters[cvt_i2f_scalar_sse] += 1;
+        return true;
+    case XED_ICLASS_CVTDQ2PD:
+    case XED_ICLASS_CVTPI2PD:
+        counters[cvt_i2d_simd_sse] += 1;
+        return true;
+    case XED_ICLASS_CVTSI2SD:
+        counters[cvt_i2d_scalar_sse] += 1;
+        return true;
+    case XED_ICLASS_CVTPS2DQ:
+    case XED_ICLASS_CVTTPS2DQ:
+    case XED_ICLASS_CVTPS2PI:
+    case XED_ICLASS_CVTTPS2PI:
+        counters[cvt_f2i_simd_sse] += 1;
+        return true;
+    case XED_ICLASS_CVTSS2SI:
+    case XED_ICLASS_CVTTSS2SI:
+        counters[cvt_f2i_scalar_sse] += 1;
+        return true;
+    case XED_ICLASS_CVTPS2PD:
+        counters[cvt_f2d_simd_sse] += 1;
+        return true;
+    case XED_ICLASS_CVTSS2SD:
+        counters[cvt_f2d_scalar_sse] += 1;
+        return true;
+    case XED_ICLASS_CVTPD2DQ:
+    case XED_ICLASS_CVTTPD2DQ:
+    case XED_ICLASS_CVTPD2PI:
+    case XED_ICLASS_CVTTPD2PI:
+        counters[cvt_d2i_simd_sse] += 1;
+        return true;
+    case XED_ICLASS_CVTSD2SI:
+    case XED_ICLASS_CVTTSD2SI:
+        counters[cvt_d2i_scalar_sse] += 1;
+        return true;
+    case XED_ICLASS_CVTPD2PS:
+        counters[cvt_d2f_simd_sse] += 1;
+        return true;
+    case XED_ICLASS_CVTSD2SS:
+        counters[cvt_d2f_scalar_sse] += 1;
+        return true;
+    case XED_ICLASS_VCVTDQ2PD:
+    case XED_ICLASS_VCVTQQ2PD:
+    case XED_ICLASS_VCVTUQQ2PD:
+    case XED_ICLASS_VCVTUDQ2PD:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_i2d_simd_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_i2d_simd_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTDQ2PS:
+    case XED_ICLASS_VCVTQQ2PS:
+    case XED_ICLASS_VCVTUDQ2PS:
+    case XED_ICLASS_VCVTUQQ2PS:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_i2f_simd_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_i2f_simd_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTUSI2SD:
+    case XED_ICLASS_VCVTSI2SD:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_i2d_scalar_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_i2d_scalar_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTUSI2SS:
+    case XED_ICLASS_VCVTSI2SS:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_i2f_scalar_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_i2f_scalar_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTTPD2DQ:
+    case XED_ICLASS_VCVTTPD2QQ:
+    case XED_ICLASS_VCVTTPD2UDQ:
+    case XED_ICLASS_VCVTTPD2UQQ:
+    case XED_ICLASS_VCVTPD2DQ:
+    case XED_ICLASS_VCVTPD2QQ:
+    case XED_ICLASS_VCVTPD2UDQ:
+    case XED_ICLASS_VCVTPD2UQQ:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_d2i_simd_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_d2i_simd_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTPD2PS:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_d2f_simd_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_d2f_simd_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTSD2USI:
+    case XED_ICLASS_VCVTSD2SI:
+    case XED_ICLASS_VCVTTSD2SI:
+    case XED_ICLASS_VCVTTSD2USI:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_d2i_scalar_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_d2i_scalar_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTSD2SS:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_d2f_scalar_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_d2f_scalar_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTTPS2DQ:
+    case XED_ICLASS_VCVTTPS2QQ:
+    case XED_ICLASS_VCVTTPS2UDQ:
+    case XED_ICLASS_VCVTTPS2UQQ:
+    case XED_ICLASS_VCVTPS2DQ:
+    case XED_ICLASS_VCVTPS2QQ:
+    case XED_ICLASS_VCVTPS2UDQ:
+    case XED_ICLASS_VCVTPS2UQQ:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_f2i_simd_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_f2i_simd_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTPS2PD:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_f2d_simd_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_f2d_simd_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTSS2USI:
+    case XED_ICLASS_VCVTSS2SI:
+    case XED_ICLASS_VCVTTSS2USI:
+    case XED_ICLASS_VCVTTSS2SI:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_f2i_scalar_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_f2i_scalar_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTSS2SD:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_f2d_scalar_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_f2d_scalar_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTPH2PS:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_h2f_simd_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_h2f_simd_avx] += 1;
+            return true;
+        }
+    case XED_ICLASS_VCVTPS2PH:
+        if (INS_Category(ins) == xed_category_enum_t::XED_CATEGORY_AVX512) {
+            counters[cvt_f2h_simd_avx512] += 1;
+            return true;
+        }
+        else {
+            counters[cvt_f2h_simd_avx] += 1;
+            return true;
+        }
+
     default:
       return false;
     }
