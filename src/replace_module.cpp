@@ -5,6 +5,8 @@
 #include "replace_module.h"
 
 #include "replace/backend/invert_add_mul_impl.h"
+#include "replace/backend/ieee.h"
+#include "replace/backend/double2float.h"
 #include "replace/wrappers/sse.h"
 #include "replace/wrappers/avx.h"
 #include "replace/wrappers/avx512.h"
@@ -174,15 +176,13 @@ namespace pene {
       break;
     case replace_module_internals::replace_modes::IEEE:
       std::cerr << "fp-replace ieee mode : instrumentation should not change anything" << std::endl;
-      std::cerr << "ieee mode not working yet. Exiting now" << std::endl;
-      PIN_WriteErrorMessage("ieee mode not working yet. Exiting now", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_FATAL, 0);
-      PIN_ExitApplication(1);
+      data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::ieee>(), filter);
+      data->TRACE_AddInstrumentFunction();
       break;
     case replace_module_internals::replace_modes::DOUBLE2FLOAT:
       std::cerr << "fp-replace double2float mode : double precision instructions are replaced by single precision ones" << std::endl;
-      std::cerr << "double2float mode not working yet. Exiting now" << std::endl;
-      PIN_WriteErrorMessage("double2float mode not working yet. Exiting now", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_FATAL, 0);
-      PIN_ExitApplication(1);
+      data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::double2float>(), filter);
+      data->TRACE_AddInstrumentFunction();
       break;
     case replace_module_internals::replace_modes::RANDOM_ROUNDING:
       std::cerr << "fp-replace random rounding mode : rounding mode is randomly changed for each instruction" << std::endl;

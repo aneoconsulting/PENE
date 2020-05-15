@@ -97,13 +97,13 @@ namespace pene
           using mask_t = typename get_mask<NB_ELTS_IN_REG>::type;
 
           template <int I>
-          static bool check_mask(mask_t* const mask)
+          static bool PIN_FAST_ANALYSIS_CALL check_mask(mask_t* const mask)
           {
             return ((*mask) & ((1) << (I))) != 0;
           }
 
           template <bool broadcast, int I>
-          static void compute(T* const a, T* const b, T* c, void* ctx)
+          static void PIN_FAST_ANALYSIS_CALL compute(T* const a, T* const b, T* c, void* ctx)
           {
             if constexpr (broadcast)
             {
@@ -127,12 +127,13 @@ namespace pene
                 tmp_reg2 = reg2;
               }
 
-
               INS_InsertIfCall(ins, IPOINT_AFTER, (AFUNPTR)check_mask<I>,
+                IARG_FAST_ANALYSIS_CALL,
                 IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
                 IARG_END
               );
               INS_InsertThenCall(ins, IPOINT_AFTER, (AFUNPTR)compute<false, I>,
+                IARG_FAST_ANALYSIS_CALL,
                 IARG_REG_CONST_REFERENCE, tmp_reg1,
                 IARG_REG_CONST_REFERENCE, tmp_reg2,
                 IARG_REG_REFERENCE, INS_OperandReg(ins, 0),

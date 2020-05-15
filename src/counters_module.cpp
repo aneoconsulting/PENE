@@ -33,7 +33,6 @@ namespace pene {
         }
       };
 
-      TRACE trace;
       BBL bbl;
       INS ins;
       counters c;
@@ -45,7 +44,6 @@ namespace pene {
     public:
       counters_element_instrumenters()
         : element_instrumenter()
-        , trace(nullptr)
         , bbl(MAKE_BBL(0))
         , ins(MAKE_INS(0))
         , c(), tlcm(c), tls(nullptr), use_tls(false)
@@ -113,11 +111,7 @@ namespace pene {
       template<class ... Args>
       VOID dispatch_insertCall_bbl_ins(Args... args)
       {
-        if (trace != nullptr)
-        {
-          insertCall(trace, IPOINT_ANYWHERE, args...);
-        }
-        else if (bbl.is_valid())
+        if (bbl.is_valid())
         {
           insertCall(bbl, IPOINT_ANYWHERE, args...);
         }
@@ -144,7 +138,10 @@ namespace pene {
             return;
           }
         }
-        dispatch_insertCall_bbl_ins((AFUNPTR)Addi<N>, IARG_FAST_ANALYSIS_CALL, IARG_REG_VALUE, tls->get_reg(), IARG_UINT32, (UINT32)tmp_counters.array[index], IARG_END);
+        if (index == N)
+        {
+          dispatch_insertCall_bbl_ins((AFUNPTR)Addi<N>, IARG_FAST_ANALYSIS_CALL, IARG_REG_VALUE, tls->get_reg(), IARG_UINT32, (UINT32)tmp_counters.array[N], IARG_END);
+        }
       }
 
       // cannot be lighter than this. avoids all unnecessary adress offset calculations
