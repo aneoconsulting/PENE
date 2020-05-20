@@ -114,6 +114,22 @@ class testCounterGenerator(unittest.TestCase):
             p = re.compile(regex)
             self.assertRegex(output, p)
 
+    def checkCVT(self, counterMode, tls, prec, op, mode, nLoop, a, b):
+        output = self.launch(counterMode, tls, prec, op, mode, nLoop, a, b)
+        if counterMode == "1" or counterMode == "2":
+            if tls:
+                self.assertRegex(output, re.compile(r"TLS has been activated for counters."))
+            nbOps = self.getNbOps(output, prec, op, mode)
+            self.assertGreaterEqual(nbOps, nLoop)
+        elif counterMode == "0":
+            regex = r"(?m)^Set counters to no instrumentation mode$"
+            p = re.compile(regex)
+            self.assertRegex(output, p)
+        else:
+            regex = r"(?m)^ERROR: -counter-mode option only accepts values [A-Za-z0-9 ]+.$"
+            p = re.compile(regex)
+            self.assertRegex(output, p)
+
 
 class testsBase(testCounterGenerator):
     counterMode = None
@@ -131,10 +147,15 @@ class testsBase(testCounterGenerator):
 
     def test_count(self):
         """Checks that instruction instruction count is correct"""
-        if self.operation == "div":
+        if self.operation == "cvt":
+            with self.subTest("nLoop:2  a:0   b:1"):
+                self.checkCVT(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 1)
+            with self.subTest("nLoop:9  a:0   b:1"):
+                self.checkCVT(self.counterMode, self.tls, self.precision, self.operation, self.mode, 9, 0, 1)
+        elif self.operation == "div":
             with self.subTest("nLoop:2  a:0   b:1"):
                 self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 1)
-            with self.subTest("nLoop:0  a:0   b:1"):
+            with self.subTest("nLoop:9  a:0   b:1"):
                 self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode, 9, 0, 1)
         elif self.operation == 'add' or self.operation == 'sub' or self.operation == 'mul' or self.operation == 'fma':
             with self.subTest("nLoop:2  a:0   b:0"):

@@ -3,6 +3,7 @@
 #include <xmmintrin.h>
 #include <string>
 
+
 void main(int argc, char* argv[])
 {
   std::cout << "This program is used for tests purposes only. "
@@ -25,19 +26,20 @@ void main(int argc, char* argv[])
     auto b = std::stof(argv[6]);
     auto accu = _mm_set1_ps(a);
     auto accud = _mm_set1_pd(a);
+    auto accui = int(a);
     auto b_ = _mm_set1_ps(b);
     if (precision.compare("i2f") == 0)
     {
       if (mode.compare("scalar") == 0) {
         for (auto i = 0; i < nb_loop; ++i)
         {
-          accu = _mm_cvt_si2ss(accu, int(b));
+          accu = _mm_cvtsi32_ss(accu, int(b));
         }
       }
       else if (mode.compare("simd") == 0) {
         for (auto i = 0; i < nb_loop; ++i)
         {
-          //accu = _mm_cvt_pi2ps(accu, b_);
+            accu = _mm_cvtepi32_ps(_mm_castps_si128(accu));
         }
       }
     }
@@ -52,44 +54,68 @@ void main(int argc, char* argv[])
       else if (mode.compare("simd") == 0) {
         for (auto i = 0; i < nb_loop; ++i)
         {
-          //accud = _mm_cvtpi32_pd();
+          accud = _mm_cvtepi32_pd(_mm_castps_si128(accu));
         }
       }
     }
     if (precision.compare("f2i") == 0)
     {
       if (mode.compare("scalar") == 0) {
-
+          for (auto i = 0; i < nb_loop; ++i)
+          {
+              accui = _mm_cvtss_i32(accu);
+          }
       }
       else if (mode.compare("simd") == 0) {
-
+          for (auto i = 0; i < nb_loop; ++i)
+          {
+              _mm_castps_si128(accu) = _mm_cvtps_epi32(accu);
+          }
       }
     }
     if (precision.compare("f2d") == 0)
     {
       if (mode.compare("scalar") == 0) {
-
+          for (auto i = 0; i < nb_loop; ++i)
+          {
+              accud = _mm_cvtss_sd(accud,b_);
+          }
       }
       else if (mode.compare("simd") == 0) {
-
+          for (auto i = 0; i < nb_loop; ++i)
+          {
+              accud = _mm_cvtps_pd(accu);
+          }
       }
     }
     if (precision.compare("d2i") == 0)
     {
       if (mode.compare("scalar") == 0) {
-
+          for (auto i = 0; i < nb_loop; ++i)
+          {
+              accui = _mm_cvtsd_si32(accud);
+          }
       }
       else if (mode.compare("simd") == 0) {
-
+          for (auto i = 0; i < nb_loop; ++i)
+          {
+              _mm_castps_si128(accu) = _mm_cvtpd_epi32(accud);
+          }
       }
     }
     if (precision.compare("d2f") == 0)
     {
       if (mode.compare("scalar") == 0) {
-
+          for (auto i = 0; i < nb_loop; ++i)
+          {
+              accu = _mm_cvtsd_ss(accu, _mm_set1_pd(b));
+          }
       }
       else if (mode.compare("simd") == 0) {
-
+          for (auto i = 0; i < nb_loop; ++i)
+          {
+              accu = _mm_cvtpd_ps(accud);
+          }
       }
     }
   }

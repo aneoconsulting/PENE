@@ -166,7 +166,7 @@ namespace pene {
 
   counters_module::counters_module()
     : module(), knob_counter_instrumentation_mode(KNOB_MODE_WRITEONCE, "pintool"
-    , "counter-mode", "1", "Activate floating point instruction counting. 0: no counter, 1: fast counter, 2: slow counter (for debug purpose).")
+    , "counter-mode", "1", "Activate floating point instruction counting. 0: no counter, 1: fast counter with trace." /*2: slow counter (for debug purpose).DELETED"*/)
     , knob_counters_use_tls(KNOB_MODE_WRITEONCE, "pintool", "counter-tls", "0", "Activate use of the Thread Local Storage (TLS) for the counters")
     , data(nullptr)
   {}
