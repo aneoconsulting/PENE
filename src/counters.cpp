@@ -3,15 +3,22 @@
 #include <iostream>
 #include <iomanip>
 
-#define PRINT(prec, op, mode,ins) ((*this)[counter_type::##op##_##prec##_##mode##_##ins] ? \
+#define PRINT(prec, op, mode) (((*this)[counter_type::##op##_##prec##_##mode##_sse] || (*this)[counter_type::##op##_##prec##_##mode##_avx] || (*this)[counter_type::##op##_##prec##_##mode##_avx512]) ? \
 std::cerr                                                                                   \
           << std::setw(17) << std::left << #prec                                            \
           << std::setw(17) << std::left << #op                                              \
           << std::setw(21) << std::left << #mode                                            \
-          << std::setw(13) << std::left << #ins                                            \
-          << std::setw(17) << std::right << (*this)[counter_type::##op##_##prec##_##mode##_##ins]   \
+          << std::setw(17) << std::right << (*this)[counter_type::##op##_##prec##_##mode##_sse] + (*this)[counter_type::##op##_##prec##_##mode##_avx] + (*this)[counter_type::##op##_##prec##_##mode##_avx512]  \
+<< " (" << (*this)[counter_type::##op##_##prec##_##mode##_sse] << "/" << (*this)[counter_type::##op##_##prec##_##mode##_avx] << "/" << (*this)[counter_type::##op##_##prec##_##mode##_avx512] << ")"     \
           << std::endl : std::cerr << "")
-
+#define NO_SSE_PRINT(prec, op, mode) (((*this)[counter_type::##op##_##prec##_##mode##_avx] || (*this)[counter_type::##op##_##prec##_##mode##_avx512]) ? \
+std::cerr                                                                                   \
+          << std::setw(17) << std::left << #prec                                            \
+          << std::setw(17) << std::left << #op                                              \
+          << std::setw(21) << std::left << #mode                                            \
+          << std::setw(17) << std::right << (*this)[counter_type::##op##_##prec##_##mode##_avx] + (*this)[counter_type::##op##_##prec##_##mode##_avx512]  \
+<< " (0/" << (*this)[counter_type::##op##_##prec##_##mode##_avx] << "/" << (*this)[counter_type::##op##_##prec##_##mode##_avx512] << ")"     \
+          << std::endl : std::cerr << "")
 
 namespace pene {
   counters::counters() : 
@@ -30,93 +37,39 @@ namespace pene {
   void counters::print() const
   {
     std::cout << "Displaying counters' information : " << std::endl;
-    std::cout << "-------------------------------------------------------------------------------------------" << std::endl;
-    std::cout << "Precision        Operation        Vectorization        Instruction        Instruction count" << std::endl;
-    std::cout << "-------------------------------------------------------------------------------------------" << std::endl;
-    PRINT(float, add, scalar, sse);
-    PRINT(float, add, simd, sse);
-    PRINT(float, mul, scalar, sse);
-    PRINT(float, mul, simd, sse);
-    PRINT(float, div, scalar, sse);
-    PRINT(float, div, simd, sse);
-    PRINT(double, add, scalar, sse);
-    PRINT(double, add, simd, sse);
-    PRINT(double, mul, scalar, sse);
-    PRINT(double, mul, simd, sse);
-    PRINT(double, div, scalar, sse);
-    PRINT(double, div, simd, sse);
-    PRINT(float, add, scalar, avx);
-    PRINT(float, add, simd, avx);
-    PRINT(float, mul, scalar, avx);
-    PRINT(float, mul, simd, avx);
-    PRINT(float, div, scalar, avx);
-    PRINT(float, div, simd, avx);
-    PRINT(float, fma, scalar, avx);
-    PRINT(float, fma, simd, avx);
-    PRINT(double, add, scalar, avx);
-    PRINT(double, add, simd, avx);
-    PRINT(double, mul, scalar, avx);
-    PRINT(double, mul, simd, avx);
-    PRINT(double, div, scalar, avx);
-    PRINT(double, div, simd, avx);
-    PRINT(double, fma, scalar, avx);
-    PRINT(double, fma, simd, avx);
-    PRINT(float, add, scalar, avx512);
-    PRINT(float, add, simd, avx512);
-    PRINT(float, mul, scalar, avx512);
-    PRINT(float, mul, simd, avx512);
-    PRINT(float, div, scalar, avx512);
-    PRINT(float, div, simd, avx512);
-    PRINT(float, fma, scalar, avx512);
-    PRINT(float, fma, simd, avx512);
-    PRINT(double, add, scalar, avx512);
-    PRINT(double, add, simd, avx512);
-    PRINT(double, mul, scalar, avx512);
-    PRINT(double, mul, simd, avx512);
-    PRINT(double, div, scalar, avx512);
-    PRINT(double, div, simd, avx512);
-    PRINT(double, fma, scalar, avx512);
-    PRINT(double, fma, simd, avx512);
-    PRINT(i2f, cvt, scalar, sse);
-    PRINT(i2d, cvt, scalar, sse);
-    PRINT(f2i, cvt, scalar, sse);
-    PRINT(f2d, cvt, scalar, sse);
-    PRINT(d2i, cvt, scalar, sse);
-    PRINT(d2f, cvt, scalar, sse);
-    PRINT(i2f, cvt, scalar, avx);
-    PRINT(i2d, cvt, scalar, avx);
-    PRINT(f2i, cvt, scalar, avx);
-    PRINT(f2d, cvt, scalar, avx);
-    PRINT(d2i, cvt, scalar, avx);
-    PRINT(d2f, cvt, scalar, avx512);
-    PRINT(i2f, cvt, scalar, avx512);
-    PRINT(i2d, cvt, scalar, avx512);
-    PRINT(f2i, cvt, scalar, avx512);
-    PRINT(f2d, cvt, scalar, avx512);
-    PRINT(d2i, cvt, scalar, avx512);
-    PRINT(d2f, cvt, scalar, avx512);
-    PRINT(i2f, cvt, simd, sse);
-    PRINT(i2d, cvt, simd, sse);
-    PRINT(f2i, cvt, simd, sse);
-    PRINT(f2d, cvt, simd, sse);
-    PRINT(d2i, cvt, simd, sse);
-    PRINT(d2f, cvt, simd, sse);
-    PRINT(i2f, cvt, simd, avx);
-    PRINT(i2d, cvt, simd, avx);
-    PRINT(f2i, cvt, simd, avx);
-    PRINT(f2d, cvt, simd, avx);
-    PRINT(d2i, cvt, simd, avx);
-    PRINT(d2f, cvt, simd, avx512);
-    PRINT(i2f, cvt, simd, avx512);
-    PRINT(i2d, cvt, simd, avx512);
-    PRINT(f2i, cvt, simd, avx512);
-    PRINT(f2d, cvt, simd, avx512);
-    PRINT(d2i, cvt, simd, avx512);
-    PRINT(d2f, cvt, simd, avx512);
-    PRINT(h2f, cvt, simd, avx);
-    PRINT(f2h, cvt, simd, avx);
-    PRINT(h2f, cvt, simd, avx512);
-    PRINT(f2h, cvt, simd, avx512);
-    std::cout << "-------------------------------------------------------------------------------------------" << std::endl;
+    std::cout << "--------------------------------------------------------------------------------------------" << std::endl;
+    std::cout << "Precision        Operation        Vectorization           Instruction count (sse/avx/avx512)" << std::endl;
+    std::cout << "--------------------------------------------------------------------------------------------" << std::endl;
+    PRINT(float, add, scalar);
+    PRINT(float, add, simd);
+    PRINT(float, mul, scalar);
+    PRINT(float, mul, simd);
+    PRINT(float, div, scalar);
+    PRINT(float, div, simd);
+    PRINT(double, add, scalar);
+    PRINT(double, add, simd);
+    PRINT(double, mul, scalar);
+    PRINT(double, mul, simd);
+    PRINT(double, div, scalar);
+    PRINT(double, div, simd);
+    NO_SSE_PRINT(float, fma, scalar);
+    NO_SSE_PRINT(float, fma, simd);
+    NO_SSE_PRINT(double, fma, scalar);
+    NO_SSE_PRINT(double, fma, simd);
+    PRINT(i2f, cvt, scalar);
+    PRINT(i2d, cvt, scalar);
+    PRINT(f2i, cvt, scalar);
+    PRINT(f2d, cvt, scalar);
+    PRINT(d2i, cvt, scalar);
+    PRINT(d2f, cvt, scalar);
+    PRINT(i2f, cvt, simd);
+    PRINT(i2d, cvt, simd);
+    PRINT(f2i, cvt, simd);
+    PRINT(f2d, cvt, simd);
+    PRINT(d2i, cvt, simd);
+    PRINT(d2f, cvt, simd);
+    NO_SSE_PRINT(h2f, cvt, simd);
+    NO_SSE_PRINT(f2h, cvt, simd);
+    std::cout << "--------------------------------------------------------------------------------------------" << std::endl;
   }
 }
