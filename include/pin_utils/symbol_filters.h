@@ -15,9 +15,9 @@ namespace pene
     {
     public:
       symbol_filter_base() = delete;
-      virtual BOOL check_trace() const override;
-      virtual BOOL check_bbl() const override;
-      virtual BOOL check_ins() const override;
+      virtual check_status check_trace() const override;
+      virtual check_status check_bbl() const override;
+      virtual check_status check_ins() const override;
 
     protected:
       symbol_filter_base(const std::string& sym_lis_filename);
@@ -38,14 +38,14 @@ namespace pene
     {
     public:
       symbol_exclude_filter(const std::string& sym_lis_filename);
-      virtual BOOL is_instrumented(ADDRINT) const override;
+      virtual check_status is_instrumented(ADDRINT) const override;
     };
 
     class symbol_include_filter final : public virtual symbol_filter_base
     {
     public:
       symbol_include_filter(const std::string& sym_lis_filename);
-      virtual BOOL is_instrumented(ADDRINT) const override;
+      virtual check_status is_instrumented(ADDRINT) const override;
     };
 
 

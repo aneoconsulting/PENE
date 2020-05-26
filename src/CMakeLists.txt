@@ -16,14 +16,17 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Set source files
-set(SOURCES "pene.cpp" "module.cpp" "version_module.cpp" 
+set(SOURCES "pene.cpp" "module.cpp" "version_module.cpp"  "utils/match.cpp"
 			"counters.cpp" "counters_module.cpp"  "update_counters.cpp" 
 			"symbol_list_generator_module.cpp" "replace_module.cpp" 
-			"pin_utils/instrumenter.cpp" "pin_utils/filter.cpp" "pin_utils/element_instrumenter.cpp" "pin_utils/symbol_filter.cpp")
+			"pin_utils/instrumenter.cpp" "pin_utils/filter.cpp" 
+			"pin_utils/element_instrumenter.cpp" "pin_utils/symbol_filter.cpp" 
+			"pin_utils/source_filter.cpp"
+			)
 set(PIN_TOOL pene)
 
 # Add target
-add_library (${PIN_TOOL} SHARED ${SOURCES} "utils/match.cpp")
+add_library (${PIN_TOOL} SHARED ${SOURCES})
 set_property(TARGET ${PIN_TOOL} PROPERTY CXX_STANDARD 17)
 
 target_link_libraries(${PIN_TOOL} ${PIN_LIBRARIES})

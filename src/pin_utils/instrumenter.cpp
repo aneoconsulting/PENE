@@ -25,17 +25,42 @@ namespace pene
 
     void instrumenter::instrument_callback(TRACE trace)
     {
-      if (!filter_->check_trace() || filter_->is_instrumented(trace))
+      auto trace_status = filter_->check_trace();
+      if (trace_status == filter::CHECK)
+      {
+        trace_status = filter_->is_instrumented(trace);
+      }
+
+      if (trace_status != filter::IGNORE)
       {
         el_instrumenter->init_instrument(trace);
         for (auto bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
         {
-          if (!filter_->check_bbl() || filter_->is_instrumented(bbl))
+          auto bbl_status = trace_status;
+          if (bbl_status == filter::CHECK || bbl_status == filter::CHECK_NEST)
+          {
+            bbl_status = filter_->check_bbl();
+            if (bbl_status == filter::CHECK)
+            {
+              bbl_status = filter_->is_instrumented(bbl);
+            }
+          }
+
+          if (bbl_status != filter::IGNORE)
           {
             el_instrumenter->init_instrument(bbl);
             for (auto ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
             {
-              if (!filter_->check_ins() || filter_->is_instrumented(ins))
+              auto ins_status = bbl_status;
+              if (ins_status == filter::CHECK || ins_status == filter::CHECK_NEST)
+              {
+                ins_status = filter_->check_ins();
+                if (ins_status == filter::CHECK)
+                {
+                  ins_status = filter_->is_instrumented(ins);
+                }
+              }
+              if (ins_status != filter::IGNORE)
               {
                 el_instrumenter->instrument(ins);
               }

@@ -12,25 +12,33 @@ namespace pene
     class filter
     {
     public:
+      enum check_status
+      {
+        IGNORE,
+        INSTRUMENT,
+        CHECK,
+        CHECK_NEST
+      };
+
       virtual ~filter();
-      virtual BOOL is_instrumented(TRACE) const;
-      virtual BOOL is_instrumented(BBL) const;
-      virtual BOOL is_instrumented(INS) const;
-      virtual BOOL check_trace() const=0;
-      virtual BOOL check_bbl() const=0;
-      virtual BOOL check_ins() const=0;
+      virtual check_status is_instrumented(TRACE) const;
+      virtual check_status is_instrumented(BBL) const;
+      virtual check_status is_instrumented(INS) const;
+      virtual check_status check_trace() const=0;
+      virtual check_status check_bbl() const=0;
+      virtual check_status check_ins() const=0;
     protected:
-      virtual BOOL is_instrumented(ADDRINT) const=0;
+      virtual check_status is_instrumented(ADDRINT) const=0;
     };
 
     class null_filter final : public filter
     {
     public:
-      virtual BOOL check_trace() const override;
-      virtual BOOL check_bbl() const override ;
-      virtual BOOL check_ins() const override ;
+      virtual check_status check_trace() const override;
+      virtual check_status check_bbl() const override ;
+      virtual check_status check_ins() const override ;
     protected:
-      virtual BOOL is_instrumented(ADDRINT) const override;
+      virtual check_status is_instrumented(ADDRINT) const override;
     };
 
   }

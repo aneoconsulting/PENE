@@ -38,38 +38,6 @@ namespace pene
       }
       return false;
     }
-
-    namespace tests
-    {
-      bool match_test()
-      {
-        bool res = true;
-        res &= match("*", "a");
-        res &= match("*", "avdsvf");
-
-        res &= match("*a", "a");
-        res &= match("*a", "ba");
-        res &= match("*adzefez", "bcedzaadzefez");
-        res &= !match("*a", "b");
-        res &= !match("*a", "ab");
-        res &= !match("*adzefez", "bcedzaadXXzefez");
-
-        res &= match("a*", "a");
-        res &= match("a*", "ab");
-        res &= match("adzefez*", "adzefezefezfz");
-        res &= !match("a*", "b");
-        res &= !match("a*", "ba");
-        res &= !match("adzefez*", "adzeXXfezefezfz");
-
-        res &= !match("a", "a");
-        res &= !match("azerty", "aze");
-        res &= !match("azerty", "rty");
-        res &= !match("azerty*", "aze");
-        res &= !match("*azerty", "rty");
-
-        return res;
-      }
-    }
   }
 }
 

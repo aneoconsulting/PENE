@@ -25,7 +25,7 @@ namespace pene {
   bool module::validate() { return true; }
   bool module::validate_all()
   {
-    for each (auto module_ptr in module::modules)
+    for (auto module_ptr : module::modules)
     {
       std::cerr << "Validating inputs for " << module_ptr->name() << std::endl;
       if (!module_ptr->validate())
@@ -38,7 +38,7 @@ namespace pene {
   void module::init_all()
   {
     std::cerr << "Modules initialization." << std::endl;
-    for each (auto module_ptr in module::modules)
+    for (auto module_ptr : module::modules)
     {
       module_ptr->init();
     }    

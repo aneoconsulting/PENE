@@ -226,7 +226,6 @@ endif()
 set(XED_ROOT ${PIN_ROOT}/extras/xed-${TARGET})
 set(TOOLS_ROOT ${PIN_ROOT}/source/tools)
 set(COMPONENT_INCLUDES ${PIN_ROOT}/extras/components/include)
-    
 
 set(TOOL_INCLUDES       ${TOOL_INCLUDES} 
                         ${COMPONENT_INCLUDES}

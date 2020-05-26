@@ -121,26 +121,26 @@ namespace pene
       }
     }
 
-    BOOL symbol_filter_base::check_trace() const { return true; }
-    BOOL symbol_filter_base::check_bbl() const { return false; }
-    BOOL symbol_filter_base::check_ins() const { return false; }
+    filter::check_status symbol_filter_base::check_trace() const { return filter::CHECK; }
+    filter::check_status symbol_filter_base::check_bbl() const { return filter::CHECK; }
+    filter::check_status symbol_filter_base::check_ins() const { return filter::CHECK; }
 
     symbol_include_filter::symbol_include_filter(const std::string& sym_lis_filename)
       : symbol_filter_base(sym_lis_filename)
     {}
 
-    BOOL symbol_include_filter::is_instrumented(ADDRINT addr) const
+    filter::check_status symbol_include_filter::is_instrumented(ADDRINT addr) const
     {
-      return is_in_list(addr);
+      return is_in_list(addr) ? filter::INSTRUMENT : filter::IGNORE;
     }
 
     symbol_exclude_filter::symbol_exclude_filter(const std::string& sym_lis_filename)
       : symbol_filter_base(sym_lis_filename)
     {}
 
-    BOOL symbol_exclude_filter::is_instrumented(ADDRINT addr) const
+    filter::check_status symbol_exclude_filter::is_instrumented(ADDRINT addr) const
     {
-      return !is_in_list(addr);
+      return is_in_list(addr) ? filter::IGNORE : filter::INSTRUMENT;
     }
   }
 }

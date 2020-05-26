@@ -159,7 +159,7 @@ if (${MSVC})
         set(TOOL_CXXFLAGS_NOOPT ${TOOL_CXXFLAGS_NOOPT} /Zc:threadSafeInit- /Zc:sizedDealloc-)
 	endif()
 	if (${MSVC_TOOLSET_VERSION} VERSION_GREATER_EQUAL "141")
-        set(TOOL_CXXFLAGS_NOOPT ${TOOL_CXXFLAGS_NOOPT} /experimental:external /external:W0 /external:anglebrackets /external:I ${PIN_ROOT})
+        set(TOOL_CXXFLAGS_NOOPT ${TOOL_CXXFLAGS_NOOPT} /experimental:external /external:W0 /external:anglebrackets /external:I${PIN_ROOT})
 	endif()
 endif()
 
