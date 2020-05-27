@@ -3,22 +3,52 @@
 #include <iostream>
 #include <iomanip>
 
-#define PRINT(prec, op, mode) (((*this)[counter_type::##op##_##prec##_##mode##_sse] || (*this)[counter_type::##op##_##prec##_##mode##_avx] || (*this)[counter_type::##op##_##prec##_##mode##_avx512]) ? \
-std::cerr                                                                                   \
-          << std::setw(17) << std::left << #prec                                            \
-          << std::setw(17) << std::left << #op                                              \
-          << std::setw(21) << std::left << #mode                                            \
-          << std::setw(17) << std::right << (*this)[counter_type::##op##_##prec##_##mode##_sse] + (*this)[counter_type::##op##_##prec##_##mode##_avx] + (*this)[counter_type::##op##_##prec##_##mode##_avx512]  \
-<< " (" << (*this)[counter_type::##op##_##prec##_##mode##_sse] << "/" << (*this)[counter_type::##op##_##prec##_##mode##_avx] << "/" << (*this)[counter_type::##op##_##prec##_##mode##_avx512] << ")"     \
-          << std::endl : std::cerr << "")
-#define NO_SSE_PRINT(prec, op, mode) (((*this)[counter_type::##op##_##prec##_##mode##_avx] || (*this)[counter_type::##op##_##prec##_##mode##_avx512]) ? \
-std::cerr                                                                                   \
-          << std::setw(17) << std::left << #prec                                            \
-          << std::setw(17) << std::left << #op                                              \
-          << std::setw(21) << std::left << #mode                                            \
-          << std::setw(17) << std::right << (*this)[counter_type::##op##_##prec##_##mode##_avx] + (*this)[counter_type::##op##_##prec##_##mode##_avx512]  \
-<< " (0/" << (*this)[counter_type::##op##_##prec##_##mode##_avx] << "/" << (*this)[counter_type::##op##_##prec##_##mode##_avx512] << ")"     \
-          << std::endl : std::cerr << "")
+#define PRINT(prec, op, mode)                                                         \
+do                                                                                    \
+{                                                                                     \
+  if ((*this)[counter_type:: op##_##prec##_##mode##_sse]  ||                          \
+      (*this)[counter_type:: op##_##prec##_##mode##_avx]  ||                          \
+      (*this)[counter_type:: op##_##prec##_##mode##_avx512]                           \
+  )                                                                                   \
+  {                                                                                   \
+    std::cerr << std::setw(7) << std::left << #prec                                   \
+              << std::setw(4) << std::left << #op                                     \
+              << std::setw(7) << std::left << #mode                                   \
+              << std::setw(9) << std::right <<                                        \
+                  (*this)[counter_type:: op##_##prec##_##mode##_sse] +                \
+                  (*this)[counter_type:: op##_##prec##_##mode##_avx] +                \
+                  (*this)[counter_type:: op##_##prec##_##mode##_avx512]               \
+              << std::setw(9) << std::right <<                                        \
+                  (*this)[counter_type:: op##_##prec##_##mode##_sse]                  \
+              << std::setw(9) << std::right <<                                        \
+                  (*this)[counter_type:: op##_##prec##_##mode##_avx]                  \
+              << std::setw(9) << std::right <<                                        \
+                  (*this)[counter_type:: op##_##prec##_##mode##_avx512]               \
+              << "\n";                                                                \
+  }                                                                                   \
+}while(0)
+
+#define NO_SSE_PRINT(prec, op, mode)                                                  \
+do                                                                                    \
+{                                                                                     \
+  if ((*this)[counter_type:: op##_##prec##_##mode##_avx]  ||                          \
+      (*this)[counter_type:: op##_##prec##_##mode##_avx512]                           \
+  )                                                                                   \
+  {                                                                                   \
+    std::cerr << std::setw(7) << std::left << #prec                                   \
+              << std::setw(4) << std::left << #op                                     \
+              << std::setw(7) << std::left << #mode                                   \
+              << std::setw(9) << std::right <<                                        \
+                  (*this)[counter_type:: op##_##prec##_##mode##_avx] +                \
+                  (*this)[counter_type:: op##_##prec##_##mode##_avx512]               \
+              << std::setw(9) << std::right << "0"                                    \
+              << std::setw(9) << std::right <<                                        \
+                  (*this)[counter_type:: op##_##prec##_##mode##_avx]                  \
+              << std::setw(9) << std::right <<                                        \
+                  (*this)[counter_type:: op##_##prec##_##mode##_avx512]               \
+              << "\n";                                                                \
+  }                                                                                   \
+}while(0)
 
 namespace pene {
   counters::counters() : 
@@ -37,9 +67,9 @@ namespace pene {
   void counters::print() const
   {
     std::cout << "Displaying counters' information : " << std::endl;
-    std::cout << "--------------------------------------------------------------------------------------------" << std::endl;
-    std::cout << "Precision        Operation        Vectorization           Instruction count (sse/avx/avx512)" << std::endl;
-    std::cout << "--------------------------------------------------------------------------------------------" << std::endl;
+    std::cout << "------------------------------------------------------" << std::endl;
+    std::cout << "Prec.  Op. Vect.      Total      sse      avx   avx512" << std::endl;
+    std::cout << "------------------------------------------------------" << std::endl;
     PRINT(float, add, scalar);
     PRINT(float, add, simd);
     PRINT(float, mul, scalar);
