@@ -18,6 +18,7 @@ class symbols_list_generation_tests(unittest.TestCase):
         """Checks that the list generated contains the symbols included from executable"""
         runargs=[self.pinpath, '-t', self.toolpath, '-gen-sym-list', 'list.txt', '--', self.execpath]
         out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell = True)
+        print("the commandline is {}".format(subprocess.list2cmdline(out.args)))
         print(out.stdout.decode('utf-8'))
 
         regexes = r"\A" + "".join([r"(?=.*?^\S*?" + elem[0] + r"\S*?\s+" + sym +r"$)" for elem in self.elements for sym in elem[1]])

@@ -26,7 +26,7 @@ class testCounterGenerator(unittest.TestCase):
                                                                               a = str(a), 
                                                                               b = str(b))
         out = subprocess.run(cmdLine.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell = True)
-        print(cmdLine)
+        print("the commandline is {}".format(subprocess.list2cmdline(out.args)))
         #self.assertEqual(0, out.returncode)
         output = out.stdout.decode('utf-8')
         print(output)

@@ -11,9 +11,13 @@ namespace pene
     BOOL symbol_filter_base::is_in_list(ADDRINT addr) const
     {
       IMG img = IMG_FindByAddress(addr);
-      std::string img_name(IMG_Name(img));
-      std::string rtn_name(RTN_FindNameByAddress(addr));
-      return is_in_list(img_name, rtn_name);
+      if (IMG_Valid(img))
+      {
+        std::string img_name(IMG_Name(img));
+        std::string rtn_name(RTN_FindNameByAddress(addr));
+        return is_in_list(img_name, rtn_name);
+      }
+      return false;
     }
 
     BOOL symbol_filter_base::is_in_list(const std::string & img_name, const std::string & rtn_name) const

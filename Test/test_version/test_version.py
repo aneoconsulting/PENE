@@ -18,6 +18,7 @@ class flag_tests(unittest.TestCase):
 
     def checkOutputWithRegex(self, runargs, pattern, noppatern):
         out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr = subprocess.STDOUT, shell = True)
+        print("the commandline is {}".format(subprocess.list2cmdline(out.args)))
         output = out.stdout.decode('utf-8')
         print(output)
         self.assertRegex(output, pattern)

@@ -47,6 +47,33 @@ namespace pene{
         }
       }
     }
+
+    static VOID store_executed_symbols(TRACE trace, void*)
+    {
+      auto addr = TRACE_Address(trace);
+      counters c;
+      bool has_fp_inst = false;
+
+      for (BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
+      {
+        for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
+        {
+          update_counters(ins, c);
+        }
+      }
+
+      for (int i = 0; i < counters::size && !has_fp_inst; ++i)
+      {
+        has_fp_inst |= c.array[i] > 0;
+      }
+      if (has_fp_inst)
+      {
+        auto img = IMG_FindByAddress(addr);
+        auto name = IMG_Valid(img) ? IMG_Name(img) : "Unknown_IMG";
+        img_name_max_size = std::max(name.length(), img_name_max_size);
+        sym_list[name].insert(RTN_FindNameByAddress(addr));
+      }
+    }
   }
 
   using namespace symbol_list_generator_module_internals;
@@ -54,7 +81,11 @@ namespace pene{
   symbol_list_generator_module::symbol_list_generator_module()
     : module(true)
     , knob_exclist_gen{ KNOB_MODE_WRITEONCE, "pintool", "gen-sym-list", "",
-      "Save the list of all symbols loaded during the exceution in given file." }
+      "Save the list of symbols with fp instructions in given file." }
+    , knob_exclist_mode{ KNOB_MODE_WRITEONCE, "pintool", "gen-sym-mode", "0",
+      "Sets the mode for symbols generations. "
+      "0: lists all symbols with fp instruction that have been loaded during execution. "
+      "1: lists only symbols with fp instructions that have been executed."}
   {
   }
 
@@ -68,7 +99,6 @@ namespace pene{
       std::cerr << "no symbol file will be generated" << filename << std::endl;
       return true;
     }
-
     std::cerr << "opening file " << filename;
     sym_list_stream.open(filename.c_str());
     if (!sym_list_stream.is_open())
@@ -80,8 +110,15 @@ namespace pene{
       PIN_WriteErrorMessage(error_mess.c_str(), 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_NONFATAL, 0);
       return false;
     }
+
+    auto mode = knob_exclist_mode.Value();
+    if (mode != 0 && mode != 1)
+    {
+      std::cerr << " KO: -gen-sym-mode should be either 0 or 1." << std::endl;
+      return false;
+    }
+
     std::cerr << " OK" << std::endl;
-    return true;
   }
 
   void symbol_list_generator_module::init()
@@ -89,7 +126,14 @@ namespace pene{
     std::cerr << "Initialization: symbol list generation." << std::endl;
     if (!knob_exclist_gen.Value().empty() && sym_list_stream.good())
     {
-      IMG_AddInstrumentFunction(store_loaded_symbols, nullptr);
+      if (knob_exclist_mode.Value() == 0)
+      {
+        IMG_AddInstrumentFunction(store_loaded_symbols, nullptr);
+      }
+      else
+      {
+        TRACE_AddInstrumentFunction(store_executed_symbols, nullptr);
+      }
       PIN_AddFiniFunction([](INT32, void*) 
         {
           for (auto img_name_it : sym_list)
