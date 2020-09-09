@@ -7,7 +7,7 @@ set_property(TARGET test_counters_executable PROPERTY CXX_STANDARD 17)
 
 set(TEST_SCRIPTS test_flags.py testCounterGenerator.py 
     test_trace_counters.py test_trace_counters_tls.py 
-    test_cvt_counters.py)
+    test_cvt_counters.py test_oth_counters.py test_cmp_counters.py)
 
 set(TEST_LIST test_flags.instruction_count_flag_tests.test_disable_instruction_count 
               test_flags.instruction_count_flag_tests.wrong_instruction_count_flag_tests
@@ -33,6 +33,21 @@ foreach(precision i2d i2f f2i f2d d2i d2f)
     endforeach()
 endforeach()
 
+foreach(precision float double)
+    foreach(operation oth)
+        foreach(mode scalar simd)
+            list(APPEND TEST_LIST test_oth_counters.${precision}_${operation}_${mode}_tests.test_count)
+        endforeach()
+    endforeach()
+endforeach()
+
+foreach(precision float double)
+    foreach(operation cmp)
+        foreach(mode scalar simd)
+            list(APPEND TEST_LIST test_cmp_counters.${precision}_${operation}_${mode}_tests.test_count)
+        endforeach()
+    endforeach()
+endforeach()
                
 function(configure_file FILENAME)
     add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}

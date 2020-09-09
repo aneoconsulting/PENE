@@ -114,7 +114,7 @@ class testCounterGenerator(unittest.TestCase):
             p = re.compile(regex)
             self.assertRegex(output, p)
 
-    def checkCVT(self, counterMode, tls, prec, op, mode, nLoop, a, b):
+    def checkwithoutresult(self, counterMode, tls, prec, op, mode, nLoop, a, b):
         output = self.launch(counterMode, tls, prec, op, mode, nLoop, a, b)
         if counterMode == "1" or counterMode == "2":
             if tls:
@@ -146,12 +146,22 @@ class testsBase(testCounterGenerator):
             self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode, 3, 81, 3)
 
     def test_count(self):
-        """Checks that instruction instruction count is correct"""
+        """Checks that instruction count is correct"""
         if self.operation == "cvt":
             with self.subTest("nLoop:2  a:0   b:1"):
-                self.checkCVT(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 1)
+                self.checkwithoutresult(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 1)
             with self.subTest("nLoop:9  a:0   b:1"):
-                self.checkCVT(self.counterMode, self.tls, self.precision, self.operation, self.mode, 9, 0, 1)
+                self.checkwithoutresult(self.counterMode, self.tls, self.precision, self.operation, self.mode, 9, 0, 1)
+        elif self.operation == "oth":
+            with self.subTest("nLoop:2  a:0   b:1"):
+                self.checkwithoutresult(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 1)
+            with self.subTest("nLoop:9  a:0   b:1"):
+                self.checkwithoutresult(self.counterMode, self.tls, self.precision, self.operation, self.mode, 9, 0, 1)
+        elif self.operation == "cmp":
+            with self.subTest("nLoop:2  a:0   b:1"):
+                self.checkwithoutresult(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 1)
+            with self.subTest("nLoop:9  a:0   b:1"):
+                self.checkwithoutresult(self.counterMode, self.tls, self.precision, self.operation, self.mode, 9, 0, 1)
         elif self.operation == "div":
             with self.subTest("nLoop:2  a:0   b:1"):
                 self.checkExec(self.counterMode, self.tls, self.precision, self.operation, self.mode,  2, 0, 1)

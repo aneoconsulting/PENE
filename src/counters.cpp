@@ -12,7 +12,7 @@ do                                                                              
   )                                                                                   \
   {                                                                                   \
     std::cerr << std::setw(7) << std::left << #prec                                   \
-              << std::setw(4) << std::left << #op                                     \
+              << std::setw(7) << std::left << #op                                     \
               << std::setw(7) << std::left << #mode                                   \
               << std::setw(9) << std::right <<                                        \
                   (*this)[counter_type:: op##_##prec##_##mode##_sse] +                \
@@ -36,7 +36,7 @@ do                                                                              
   )                                                                                   \
   {                                                                                   \
     std::cerr << std::setw(7) << std::left << #prec                                   \
-              << std::setw(4) << std::left << #op                                     \
+              << std::setw(7) << std::left << #op                                     \
               << std::setw(7) << std::left << #mode                                   \
               << std::setw(9) << std::right <<                                        \
                   (*this)[counter_type:: op##_##prec##_##mode##_avx] +                \
@@ -67,9 +67,9 @@ namespace pene {
   void counters::print() const
   {
     std::cout << "Displaying counters' information : " << std::endl;
-    std::cout << "------------------------------------------------------" << std::endl;
-    std::cout << "Prec.  Op. Vect.      Total      sse      avx   avx512" << std::endl;
-    std::cout << "------------------------------------------------------" << std::endl;
+    std::cout << "----------------------------------------------------------" << std::endl;
+    std::cout << "Prec.  Op.     Vect.      Total      sse      avx   avx512" << std::endl;
+    std::cout << "----------------------------------------------------------" << std::endl;
     PRINT(float, add, scalar);
     PRINT(float, add, simd);
     PRINT(float, mul, scalar);
@@ -100,6 +100,14 @@ namespace pene {
     PRINT(d2f, cvt, simd);
     NO_SSE_PRINT(h2f, cvt, simd);
     NO_SSE_PRINT(f2h, cvt, simd);
-    std::cout << "--------------------------------------------------------------------------------------------" << std::endl;
+    PRINT(float, oth, scalar);
+    PRINT(double, oth, scalar);
+    PRINT(float, oth, simd);
+    PRINT(double, oth, simd);
+    PRINT(float, cmp, scalar);
+    PRINT(double, cmp, scalar);
+    PRINT(float, cmp, simd);
+    PRINT(double, cmp, simd);
+    std::cout << "----------------------------------------------------------" << std::endl;
   }
 }

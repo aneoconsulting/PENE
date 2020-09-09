@@ -43,7 +43,7 @@ void main(int argc, char* argv[])
         }
       }
     }
-    if (precision.compare("i2d") == 0)
+    else if (precision.compare("i2d") == 0)
     {
       if (mode.compare("scalar") == 0) {
         for (auto i = 0; i < nb_loop; ++i)
@@ -58,7 +58,7 @@ void main(int argc, char* argv[])
         }
       }
     }
-    if (precision.compare("f2i") == 0)
+    else if (precision.compare("f2i") == 0)
     {
       if (mode.compare("scalar") == 0) {
           for (auto i = 0; i < nb_loop; ++i)
@@ -73,7 +73,7 @@ void main(int argc, char* argv[])
           }
       }
     }
-    if (precision.compare("f2d") == 0)
+    else if (precision.compare("f2d") == 0)
     {
       if (mode.compare("scalar") == 0) {
           for (auto i = 0; i < nb_loop; ++i)
@@ -88,7 +88,7 @@ void main(int argc, char* argv[])
           }
       }
     }
-    if (precision.compare("d2i") == 0)
+    else if (precision.compare("d2i") == 0)
     {
       if (mode.compare("scalar") == 0) {
           for (auto i = 0; i < nb_loop; ++i)
@@ -103,7 +103,7 @@ void main(int argc, char* argv[])
           }
       }
     }
-    if (precision.compare("d2f") == 0)
+    else if (precision.compare("d2f") == 0)
     {
       if (mode.compare("scalar") == 0) {
           for (auto i = 0; i < nb_loop; ++i)
@@ -118,8 +118,117 @@ void main(int argc, char* argv[])
           }
       }
     }
+    std::cout << "Testing information :" << std::endl;
+    std::cout << "Operation : " << argv[1] << std::endl;
+    std::cout << "Precision : " << argv[2] << std::endl;
+    std::cout << "Vectorization : " << argv[3] << std::endl;
+    std::cout << "Loop : " << argv[4] << std::endl;
+    std::cout << "Test number : " << argv[5] << "  " << argv[6] << std::endl;
   }
+  else if (operation.compare("oth") == 0) {
+    auto a = std::stof(argv[5]);
+    auto b = std::stof(argv[6]);
+    auto accu = _mm_set1_ps(a);
+    auto accud = _mm_set1_pd(a);
+    auto b_ = _mm_set1_ps(b);
+    auto b_d = _mm_set1_pd(b);
 
+    //to complete if necessary 
+    if (precision.compare("int") == 0) {
+        if (mode.compare("scalar") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+            }
+        }
+        else if (mode.compare("simd") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+                //_mm_abs_epi16();
+            }
+        }
+    }
+    else if (precision.compare("float") == 0) {
+        if (mode.compare("scalar") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+                accu = _mm_ceil_ss(accu, b_);
+            }
+        }
+        else if (mode.compare("simd") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+                accu = _mm_ceil_ps(accu);
+            }
+        }
+    }
+    else if (precision.compare("double") == 0) {
+        if (mode.compare("scalar") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+                accud = _mm_ceil_sd(accud,b_d);
+            }
+        }
+        else if (mode.compare("simd") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+                accud = _mm_ceil_pd(accud);
+            }
+        }
+    }
+
+    std::cout << "Testing information :" << std::endl;
+    std::cout << "Operation : " << argv[1] << std::endl;
+    std::cout << "Precision : " << argv[2] << std::endl;
+    std::cout << "Vectorization : " << argv[3] << std::endl;
+    std::cout << "Loop : " << argv[4] << std::endl;
+    std::cout << "Test number : " << argv[5] << "  " << argv[6] << std::endl;
+    std::cout << "Result : " << reinterpret_cast<float*>(&accu)[0] << std::endl;
+  }
+  else if (operation.compare("cmp") == 0) {
+    auto a = std::stof(argv[5]);
+    auto b = std::stof(argv[6]);
+    auto accu = _mm_set1_ps(a);
+    auto b_ = _mm_set1_ps(b);
+    auto accud = _mm_set1_pd(a);
+    auto b_d = _mm_set1_pd(b);
+
+    //to complete if necessary
+    if (precision.compare("int") == 0) {
+        if (mode.compare("scalar") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+            }
+        }
+        else if (mode.compare("simd") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+            }
+        }
+    }
+    else if (precision.compare("float") == 0) {
+        if (mode.compare("scalar") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+                accu = _mm_cmpeq_ss(accu, b_);
+            }
+        }
+        else if (mode.compare("simd") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+                accu = _mm_cmpeq_ps(accu, b_);
+            }
+        }
+    }
+    else if (precision.compare("double") == 0) {
+        if (mode.compare("scalar") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+                accud = _mm_cmpeq_sd(accud, b_d);
+            }
+        }
+        else if (mode.compare("simd") == 0) {
+            for (auto i = 0; i < nb_loop; ++i) {
+                accud = _mm_cmpeq_pd(accud, b_d);
+            }
+        }
+    }
+
+    std::cout << "Testing information :" << std::endl;
+    std::cout << "Operation : " << argv[1] << std::endl;
+    std::cout << "Precision : " << argv[2] << std::endl;
+    std::cout << "Vectorization : " << argv[3] << std::endl;
+    std::cout << "Loop : " << argv[4] << std::endl;
+    std::cout << "Test number : " << argv[5] << "  " << argv[6] << std::endl;
+}
   else if (precision.compare("float") == 0)
   {
     auto a = std::stof(argv[5]);
@@ -155,7 +264,6 @@ void main(int argc, char* argv[])
     }
     else if (operation.compare("mul") == 0)
     {
-
       if (mode.compare("scalar") == 0)
       {
         for (auto i = 0; i < nb_loop; ++i)
