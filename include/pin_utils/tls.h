@@ -1,6 +1,6 @@
 #pragma once
 
-#include <pin.h>
+#include <pin.H>
 #include <functional>
 
 namespace pene
