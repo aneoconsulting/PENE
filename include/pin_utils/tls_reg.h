@@ -11,7 +11,7 @@ namespace pene {
       REG reg;
     public:
 
-      tls_reg(typename life_cycle_manager& lcm)
+      tls_reg(typename tls_reg::life_cycle_manager& lcm)
         : tls<T>(lcm)
         , reg(PIN_ClaimToolRegister())
       {
@@ -33,7 +33,7 @@ namespace pene {
 
     protected:
       virtual T* ThreadStart(THREADID threadid, CONTEXT* ctx, INT32 flags) override
-      {S
+      {
         auto data = tls<T>::ThreadStart(threadid, ctx, flags);
         if (data)
         {
