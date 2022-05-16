@@ -2,7 +2,7 @@
 #include <immintrin.h>
 #include <string>
 
-void main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     std::cout << "This program is used for tests purposes only. "
         << std::endl;
@@ -20,5 +20,6 @@ void main(int argc, char* argv[])
 
     auto c = sum-b;
     std::cout << c << std::endl;
+    return 0;
 
 }
