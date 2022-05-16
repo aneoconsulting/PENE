@@ -6,7 +6,7 @@
 #      else
 #          define LIBRARY_API extern "C" __declspec(dllimport)
 #      endif
-#  elif
+#  else
 #      define LIBRARY_API extern "C"
 #  endif
 #endif
