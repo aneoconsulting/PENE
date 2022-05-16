@@ -39,7 +39,7 @@ namespace pene
         return false;
       }
       
-      for  (auto&& wilded_it : wildcarded_sym_list)
+      for each (auto wilded_it in wildcarded_sym_list)
       {
         if (utils::match(wilded_it.first, img_name))
         {
