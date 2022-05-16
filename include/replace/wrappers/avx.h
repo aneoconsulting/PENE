@@ -1,6 +1,6 @@
 #pragma once
 #include <immintrin.h>
-#include <pin.H>
+#include <pin.h>
 extern "C"
 {
 # include <xed-decoded-inst-api.h>
