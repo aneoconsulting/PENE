@@ -33,7 +33,7 @@ extern "C" double func_d(double a, double b)
   return a3 - a2;
 }
 
-void main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
   std::cout << "This program is used for tests purposes only. "
     << std::endl;
@@ -47,5 +47,6 @@ void main(int argc, char* argv[])
   auto r1 = func_f(a, b);
   std::cout << "double" << std::endl;
   auto r2 = func_d(a, b);
+  return 0;
 }
 
