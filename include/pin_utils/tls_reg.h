@@ -9,11 +9,10 @@ namespace pene {
     class tls_reg : public tls<T>
     {
       REG reg;
-      using tls = tls<T>;
     public:
 
-      tls_reg(life_cycle_manager& lcm)
-        : tls(lcm)
+      tls_reg(typename life_cycle_manager& lcm)
+        : tls<T>(lcm)
         , reg(PIN_ClaimToolRegister())
       {
         reg = PIN_ClaimToolRegister();
@@ -34,8 +33,8 @@ namespace pene {
 
     protected:
       virtual T* ThreadStart(THREADID threadid, CONTEXT* ctx, INT32 flags) override
-      {
-        auto data = tls::ThreadStart(threadid, ctx, flags);
+      {S
+        auto data = tls<T>::ThreadStart(threadid, ctx, flags);
         if (data)
         {
           PIN_SetContextReg(ctx, reg, (ADDRINT)data);
