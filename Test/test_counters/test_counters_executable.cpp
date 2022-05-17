@@ -4,7 +4,7 @@
 #include <string>
 
 
-void main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
   std::cout << "This program is used for tests purposes only. "
     << "If used to check the ability of the pintool to count operations, "
@@ -477,4 +477,5 @@ void main(int argc, char* argv[])
     std::cout << "Test number : " << argv[5] << "  " << argv[6] << std::endl;
     std::cout << "Result : " << reinterpret_cast<double*>(&accu)[0] << std::endl;
   }
+  return 0;
 }
