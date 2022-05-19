@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
       if (mode.compare("scalar") == 0) {
           for (auto i = 0; i < nb_loop; ++i)
           {
-              accui = _mm_cvtss_i32(accu);
+              accui = _mm_cvttss_i32(accu);
           }
       }
       else if (mode.compare("simd") == 0) {
