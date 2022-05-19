@@ -142,6 +142,7 @@ namespace pene
 
               apply<N, I + 1>(backend_ctx, ins, is_broadcast, is_memory, tmp_reg1, tmp_reg2);
             }
+            /*
             else // To remove C4100 warning with Visual Studio
             {
               tmp_reg1;
@@ -151,6 +152,7 @@ namespace pene
               ins;
               backend_ctx;
             }
+            */
           }
         };
 
@@ -163,240 +165,240 @@ namespace pene
           switch (iform)
           {
           case xed_iform_enum_t::XED_IFORM_VADDSS_XMMf32_MASKmskw_XMMf32_XMMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::add_float>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::add_float>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDSS_XMMf32_MASKmskw_XMMf32_MEMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::add_float>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::add_float>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VADDPS_XMMf32_MASKmskw_XMMf32_XMMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::add_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::add_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDPS_XMMf32_MASKmskw_XMMf32_MEMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::add_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::add_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VADDPS_YMMf32_MASKmskw_YMMf32_YMMf32_AVX512:
-            wrap<8, float, OPERATION_IMPL::add_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<8, float, OPERATION_IMPL::add_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDPS_YMMf32_MASKmskw_YMMf32_MEMf32_AVX512:
-            wrap<8, float, OPERATION_IMPL::add_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<8, float, OPERATION_IMPL::add_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VADDPS_ZMMf32_MASKmskw_ZMMf32_ZMMf32_AVX512:
-            wrap<16, float, OPERATION_IMPL::add_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<16, float, OPERATION_IMPL::add_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDPS_ZMMf32_MASKmskw_ZMMf32_MEMf32_AVX512:
-            wrap<16, float, OPERATION_IMPL::add_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<16, float, OPERATION_IMPL::add_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
 
           case xed_iform_enum_t::XED_IFORM_VADDSD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::add_double>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::add_double>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDSD_XMMf64_MASKmskw_XMMf64_MEMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::add_double>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::add_double>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VADDPD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::add_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::add_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDPD_XMMf64_MASKmskw_XMMf64_MEMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::add_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::add_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VADDPD_YMMf64_MASKmskw_YMMf64_YMMf64_AVX512:
-            wrap<4, double, OPERATION_IMPL::add_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, double, OPERATION_IMPL::add_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDPD_YMMf64_MASKmskw_YMMf64_MEMf64_AVX512:
-            wrap<4, double, OPERATION_IMPL::add_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, double, OPERATION_IMPL::add_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VADDPD_ZMMf64_MASKmskw_ZMMf64_ZMMf64_AVX512:
-            wrap<8, double, OPERATION_IMPL::add_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<8, double, OPERATION_IMPL::add_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDPD_ZMMf64_MASKmskw_ZMMf64_MEMf64_AVX512:
-            wrap<8, double, OPERATION_IMPL::add_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<8, double, OPERATION_IMPL::add_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
 
 
 
           case xed_iform_enum_t::XED_IFORM_VSUBSS_XMMf32_MASKmskw_XMMf32_XMMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::sub_float>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::sub_float>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBSS_XMMf32_MASKmskw_XMMf32_MEMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::sub_float>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::sub_float>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VSUBPS_XMMf32_MASKmskw_XMMf32_XMMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::sub_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::sub_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBPS_XMMf32_MASKmskw_XMMf32_MEMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::sub_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::sub_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VSUBPS_YMMf32_MASKmskw_YMMf32_YMMf32_AVX512:
-            wrap<8, float, OPERATION_IMPL::sub_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<8, float, OPERATION_IMPL::sub_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBPS_YMMf32_MASKmskw_YMMf32_MEMf32_AVX512:
-            wrap<8, float, OPERATION_IMPL::sub_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<8, float, OPERATION_IMPL::sub_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VSUBPS_ZMMf32_MASKmskw_ZMMf32_ZMMf32_AVX512:
-            wrap<16, float, OPERATION_IMPL::sub_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<16, float, OPERATION_IMPL::sub_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBPS_ZMMf32_MASKmskw_ZMMf32_MEMf32_AVX512:
-            wrap<16, float, OPERATION_IMPL::sub_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<16, float, OPERATION_IMPL::sub_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
 
           case xed_iform_enum_t::XED_IFORM_VSUBSD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::sub_double>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::sub_double>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBSD_XMMf64_MASKmskw_XMMf64_MEMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::sub_double>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::sub_double>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VSUBPD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::sub_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::sub_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBPD_XMMf64_MASKmskw_XMMf64_MEMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::sub_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::sub_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VSUBPD_YMMf64_MASKmskw_YMMf64_YMMf64_AVX512:
-            wrap<4, double, OPERATION_IMPL::sub_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, double, OPERATION_IMPL::sub_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBPD_YMMf64_MASKmskw_YMMf64_MEMf64_AVX512:
-            wrap<4, double, OPERATION_IMPL::sub_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, double, OPERATION_IMPL::sub_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VSUBPD_ZMMf64_MASKmskw_ZMMf64_ZMMf64_AVX512:
-            wrap<8, double, OPERATION_IMPL::sub_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<8, double, OPERATION_IMPL::sub_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBPD_ZMMf64_MASKmskw_ZMMf64_MEMf64_AVX512:
-            wrap<8, double, OPERATION_IMPL::sub_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<8, double, OPERATION_IMPL::sub_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
 
 
 
           case xed_iform_enum_t::XED_IFORM_VMULSS_XMMf32_MASKmskw_XMMf32_XMMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::mul_float>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::mul_float>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULSS_XMMf32_MASKmskw_XMMf32_MEMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::mul_float>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::mul_float>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VMULPS_XMMf32_MASKmskw_XMMf32_XMMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::mul_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::mul_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULPS_XMMf32_MASKmskw_XMMf32_MEMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::mul_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::mul_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VMULPS_YMMf32_MASKmskw_YMMf32_YMMf32_AVX512:
-            wrap<8, float, OPERATION_IMPL::mul_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<8, float, OPERATION_IMPL::mul_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULPS_YMMf32_MASKmskw_YMMf32_MEMf32_AVX512:
-            wrap<8, float, OPERATION_IMPL::mul_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<8, float, OPERATION_IMPL::mul_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VMULPS_ZMMf32_MASKmskw_ZMMf32_ZMMf32_AVX512:
-            wrap<16, float, OPERATION_IMPL::mul_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<16, float, OPERATION_IMPL::mul_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULPS_ZMMf32_MASKmskw_ZMMf32_MEMf32_AVX512:
-            wrap<16, float, OPERATION_IMPL::mul_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<16, float, OPERATION_IMPL::mul_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
 
           case xed_iform_enum_t::XED_IFORM_VMULSD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::mul_double>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::mul_double>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULSD_XMMf64_MASKmskw_XMMf64_MEMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::mul_double>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::mul_double>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VMULPD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::mul_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::mul_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULPD_XMMf64_MASKmskw_XMMf64_MEMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::mul_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::mul_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VMULPD_YMMf64_MASKmskw_YMMf64_YMMf64_AVX512:
-            wrap<4, double, OPERATION_IMPL::mul_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, double, OPERATION_IMPL::mul_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULPD_YMMf64_MASKmskw_YMMf64_MEMf64_AVX512:
-            wrap<4, double, OPERATION_IMPL::mul_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, double, OPERATION_IMPL::mul_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VMULPD_ZMMf64_MASKmskw_ZMMf64_ZMMf64_AVX512:
-            wrap<8, double, OPERATION_IMPL::mul_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<8, double, OPERATION_IMPL::mul_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULPD_ZMMf64_MASKmskw_ZMMf64_MEMf64_AVX512:
-            wrap<8, double, OPERATION_IMPL::mul_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<8, double, OPERATION_IMPL::mul_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
 
 
 
           case xed_iform_enum_t::XED_IFORM_VDIVSS_XMMf32_MASKmskw_XMMf32_XMMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::div_float>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::div_float>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVSS_XMMf32_MASKmskw_XMMf32_MEMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::div_float>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::div_float>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VDIVPS_XMMf32_MASKmskw_XMMf32_XMMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::div_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::div_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVPS_XMMf32_MASKmskw_XMMf32_MEMf32_AVX512:
-            wrap<4, float, OPERATION_IMPL::div_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, float, OPERATION_IMPL::div_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VDIVPS_YMMf32_MASKmskw_YMMf32_YMMf32_AVX512:
-            wrap<8, float, OPERATION_IMPL::div_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<8, float, OPERATION_IMPL::div_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVPS_YMMf32_MASKmskw_YMMf32_MEMf32_AVX512:
-            wrap<8, float, OPERATION_IMPL::div_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<8, float, OPERATION_IMPL::div_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VDIVPS_ZMMf32_MASKmskw_ZMMf32_ZMMf32_AVX512:
-            wrap<16, float, OPERATION_IMPL::div_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<16, float, OPERATION_IMPL::div_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVPS_ZMMf32_MASKmskw_ZMMf32_MEMf32_AVX512:
-            wrap<16, float, OPERATION_IMPL::div_float>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<16, float, OPERATION_IMPL::div_float>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
 
           case xed_iform_enum_t::XED_IFORM_VDIVSD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::div_double>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::div_double>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVSD_XMMf64_MASKmskw_XMMf64_MEMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::div_double>::apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::div_double>::template apply<1>(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VDIVPD_XMMf64_MASKmskw_XMMf64_XMMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::div_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::div_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVPD_XMMf64_MASKmskw_XMMf64_MEMf64_AVX512:
-            wrap<2, double, OPERATION_IMPL::div_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<2, double, OPERATION_IMPL::div_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VDIVPD_YMMf64_MASKmskw_YMMf64_YMMf64_AVX512:
-            wrap<4, double, OPERATION_IMPL::div_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<4, double, OPERATION_IMPL::div_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVPD_YMMf64_MASKmskw_YMMf64_MEMf64_AVX512:
-            wrap<4, double, OPERATION_IMPL::div_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<4, double, OPERATION_IMPL::div_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VDIVPD_ZMMf64_MASKmskw_ZMMf64_ZMMf64_AVX512:
-            wrap<8, double, OPERATION_IMPL::div_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
+            wrap<8, double, OPERATION_IMPL::div_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVPD_ZMMf64_MASKmskw_ZMMf64_MEMf64_AVX512:
-            wrap<8, double, OPERATION_IMPL::div_double>::apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
+            wrap<8, double, OPERATION_IMPL::div_double>::template apply(backend_ctx, ins, xed_decoded_inst_uses_embedded_broadcast(xed), true, tmp_reg1, tmp_reg2);
             break;
 
           default:

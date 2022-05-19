@@ -32,6 +32,7 @@ namespace pene
               // this call replaces a static for loop from 0 to N-1
               compute<N, I + 1>(a, b, c, ctx);
             }
+            /*
             else // To remove C4100 warning with Visual Studio 2019
             {
               a;
@@ -39,6 +40,7 @@ namespace pene
               c;
               ctx;
             }
+            */
           }
 
           template <int SIZE>
@@ -123,47 +125,47 @@ namespace pene
           switch (iform)
           {
           case xed_iform_enum_t::XED_IFORM_VADDSS_XMMdq_XMMdq_XMMd:
-            wrap<float, OPERATION_IMPL::add_float>::apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::add_float>::template apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDSS_XMMdq_XMMdq_MEMd:
-            wrap<float, OPERATION_IMPL::add_float>::apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::add_float>::template apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VADDPS_XMMdq_XMMdq_XMMdq:
-            wrap<float, OPERATION_IMPL::add_float>::apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::add_float>::template apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDPS_XMMdq_XMMdq_MEMdq:
-            wrap<float, OPERATION_IMPL::add_float>::apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::add_float>::template apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VADDPS_YMMqq_YMMqq_YMMqq:
-            wrap<float, OPERATION_IMPL::add_float>::apply<8>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::add_float>::template apply<8>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDPS_YMMqq_YMMqq_MEMqq:
-            wrap<float, OPERATION_IMPL::add_float>::apply<8>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::add_float>::template apply<8>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
 
 
           case xed_iform_enum_t::XED_IFORM_VADDSD_XMMdq_XMMdq_XMMq:
-            wrap<double, OPERATION_IMPL::add_double>::apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::add_double>::template apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDSD_XMMdq_XMMdq_MEMq:
-            wrap<double, OPERATION_IMPL::add_double>::apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::add_double>::template apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VADDPD_XMMdq_XMMdq_XMMdq:
-            wrap<double, OPERATION_IMPL::add_double>::apply<2>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::add_double>::template apply<2>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDPD_XMMdq_XMMdq_MEMdq:
-            wrap<double, OPERATION_IMPL::add_double>::apply<2>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::add_double>::template apply<2>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VADDPD_YMMqq_YMMqq_YMMqq:
-            wrap<double, OPERATION_IMPL::add_double>::apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::add_double>::template apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VADDPD_YMMqq_YMMqq_MEMqq:
-            wrap<double, OPERATION_IMPL::add_double>::apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::add_double>::template apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
 
@@ -171,141 +173,141 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_VSUBSS_XMMdq_XMMdq_XMMd:
-            wrap<float, OPERATION_IMPL::sub_float>::apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::sub_float>::template apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBSS_XMMdq_XMMdq_MEMd:
-            wrap<float, OPERATION_IMPL::sub_float>::apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::sub_float>::template apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VSUBPS_XMMdq_XMMdq_XMMdq:
-            wrap<float, OPERATION_IMPL::sub_float>::apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::sub_float>::template apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBPS_XMMdq_XMMdq_MEMdq:
-            wrap<float, OPERATION_IMPL::sub_float>::apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::sub_float>::template apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VSUBPS_YMMqq_YMMqq_YMMqq:
-            wrap<float, OPERATION_IMPL::sub_float>::apply<8>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::sub_float>::template apply<8>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBPS_YMMqq_YMMqq_MEMqq:
-            wrap<float, OPERATION_IMPL::sub_float>::apply<8>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::sub_float>::template apply<8>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
 
 
           case xed_iform_enum_t::XED_IFORM_VSUBSD_XMMdq_XMMdq_XMMq:
-            wrap<double, OPERATION_IMPL::sub_double>::apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::sub_double>::template apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBSD_XMMdq_XMMdq_MEMq:
-            wrap<double, OPERATION_IMPL::sub_double>::apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::sub_double>::template apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VSUBPD_XMMdq_XMMdq_XMMdq:
-            wrap<double, OPERATION_IMPL::sub_double>::apply<2>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::sub_double>::template apply<2>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBPD_XMMdq_XMMdq_MEMdq:
-            wrap<double, OPERATION_IMPL::sub_double>::apply<2>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::sub_double>::template apply<2>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VSUBPD_YMMqq_YMMqq_YMMqq:
-            wrap<double, OPERATION_IMPL::sub_double>::apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::sub_double>::template apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VSUBPD_YMMqq_YMMqq_MEMqq:
-            wrap<double, OPERATION_IMPL::sub_double>::apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::sub_double>::template apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
 
 
 
           case xed_iform_enum_t::XED_IFORM_VMULSS_XMMdq_XMMdq_XMMd:
-            wrap<float, OPERATION_IMPL::mul_float>::apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::mul_float>::template apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULSS_XMMdq_XMMdq_MEMd:
-            wrap<float, OPERATION_IMPL::mul_float>::apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::mul_float>::template apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VMULPS_XMMdq_XMMdq_XMMdq:
-            wrap<float, OPERATION_IMPL::mul_float>::apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::mul_float>::template apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULPS_XMMdq_XMMdq_MEMdq:
-            wrap<float, OPERATION_IMPL::mul_float>::apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::mul_float>::template apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VMULPS_YMMqq_YMMqq_YMMqq:
-            wrap<float, OPERATION_IMPL::mul_float>::apply<8>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::mul_float>::template apply<8>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULPS_YMMqq_YMMqq_MEMqq:
-            wrap<float, OPERATION_IMPL::mul_float>::apply<8>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::mul_float>::template apply<8>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
 
 
           case xed_iform_enum_t::XED_IFORM_VMULSD_XMMdq_XMMdq_XMMq:
-            wrap<double, OPERATION_IMPL::mul_double>::apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::mul_double>::template apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULSD_XMMdq_XMMdq_MEMq:
-            wrap<double, OPERATION_IMPL::mul_double>::apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::mul_double>::template apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VMULPD_XMMdq_XMMdq_XMMdq:
-            wrap<double, OPERATION_IMPL::mul_double>::apply<2>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::mul_double>::template apply<2>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULPD_XMMdq_XMMdq_MEMdq:
-            wrap<double, OPERATION_IMPL::mul_double>::apply<2>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::mul_double>::template apply<2>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VMULPD_YMMqq_YMMqq_YMMqq:
-            wrap<double, OPERATION_IMPL::mul_double>::apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::mul_double>::template apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VMULPD_YMMqq_YMMqq_MEMqq:
-            wrap<double, OPERATION_IMPL::mul_double>::apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::mul_double>::template apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
 
 
 
           case xed_iform_enum_t::XED_IFORM_VDIVSS_XMMdq_XMMdq_XMMd:
-            wrap<float, OPERATION_IMPL::div_float>::apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::div_float>::template apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVSS_XMMdq_XMMdq_MEMd:
-            wrap<float, OPERATION_IMPL::div_float>::apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::div_float>::template apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VDIVPS_XMMdq_XMMdq_XMMdq:
-            wrap<float, OPERATION_IMPL::div_float>::apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::div_float>::template apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVPS_XMMdq_XMMdq_MEMdq:
-            wrap<float, OPERATION_IMPL::div_float>::apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::div_float>::template apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VDIVPS_YMMqq_YMMqq_YMMqq:
-            wrap<float, OPERATION_IMPL::div_float>::apply<8>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::div_float>::template apply<8>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVPS_YMMqq_YMMqq_MEMqq:
-            wrap<float, OPERATION_IMPL::div_float>::apply<8>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<float, OPERATION_IMPL::div_float>::template apply<8>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
 
 
           case xed_iform_enum_t::XED_IFORM_VDIVSD_XMMdq_XMMdq_XMMq:
-            wrap<double, OPERATION_IMPL::div_double>::apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::div_double>::template apply<1>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVSD_XMMdq_XMMdq_MEMq:
-            wrap<double, OPERATION_IMPL::div_double>::apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::div_double>::template apply<1>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VDIVPD_XMMdq_XMMdq_XMMdq:
-            wrap<double, OPERATION_IMPL::div_double>::apply<2>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::div_double>::template apply<2>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVPD_XMMdq_XMMdq_MEMdq:
-            wrap<double, OPERATION_IMPL::div_double>::apply<2>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::div_double>::template apply<2>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           case xed_iform_enum_t::XED_IFORM_VDIVPD_YMMqq_YMMqq_YMMqq:
-            wrap<double, OPERATION_IMPL::div_double>::apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::div_double>::template apply<4>(backend_ctx, ins,false, tmp_reg1, tmp_reg2);
             break;
           case xed_iform_enum_t::XED_IFORM_VDIVPD_YMMqq_YMMqq_MEMqq:
-            wrap<double, OPERATION_IMPL::div_double>::apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
+            wrap<double, OPERATION_IMPL::div_double>::template apply<4>(backend_ctx, ins,true, tmp_reg1, tmp_reg2);
             break;
 
           default:

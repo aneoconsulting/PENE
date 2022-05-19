@@ -28,6 +28,7 @@ namespace pene
               // this call replaces a static for loop from 0 to N-1
               apply<N, I + 1>(a, b, c, ctx);
             }
+            /*
             else // To remove C4100 warning with VS2019
             {
               a;
@@ -35,6 +36,7 @@ namespace pene
               c;
               ctx;
             }
+            */
           }
         };
 
@@ -46,7 +48,7 @@ namespace pene
           switch (iform)
           {
           case xed_iform_enum_t::XED_IFORM_ADDSS_XMMss_XMMss:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::add_float>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::add_float>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -56,7 +58,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_ADDSS_XMMss_MEMss:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::add_float>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::add_float>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -68,7 +70,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_SUBSS_XMMss_XMMss:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::sub_float>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::sub_float>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -78,7 +80,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_SUBSS_XMMss_MEMss:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::sub_float>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::sub_float>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -90,7 +92,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_MULSS_XMMss_XMMss:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::mul_float>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::mul_float>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -100,7 +102,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_MULSS_XMMss_MEMss:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::mul_float>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::mul_float>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -112,7 +114,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_DIVSS_XMMss_XMMss:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::div_float>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::div_float>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -122,7 +124,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_DIVSS_XMMss_MEMss:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::div_float>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::div_float>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -136,7 +138,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_ADDSD_XMMsd_XMMsd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::add_double>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::add_double>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -146,7 +148,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_ADDSD_XMMsd_MEMsd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::add_double>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::add_double>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -158,7 +160,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_SUBSD_XMMsd_XMMsd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::sub_double>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::sub_double>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -168,7 +170,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_SUBSD_XMMsd_MEMsd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::sub_double>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::sub_double>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -180,7 +182,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_MULSD_XMMsd_XMMsd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::mul_double>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::mul_double>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -190,7 +192,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_MULSD_XMMsd_MEMsd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::mul_double>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::mul_double>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -202,7 +204,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_DIVSD_XMMsd_XMMsd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::div_double>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::div_double>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -212,7 +214,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_DIVSD_XMMsd_MEMsd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::div_double>::apply<1>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::div_double>::template apply<1>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -230,7 +232,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_ADDPS_XMMps_XMMps:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::add_float>::apply<4>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::add_float>::template apply<4>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -240,7 +242,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_ADDPS_XMMps_MEMps:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::add_float>::apply<4>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::add_float>::template apply<4>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -252,7 +254,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_SUBPS_XMMps_XMMps:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::sub_float>::apply<4>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::sub_float>::template apply<4>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -262,7 +264,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_SUBPS_XMMps_MEMps:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::sub_float>::apply<4>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::sub_float>::template apply<4>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -274,7 +276,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_MULPS_XMMps_XMMps:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::mul_float>::apply<4>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::mul_float>::template apply<4>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -284,7 +286,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_MULPS_XMMps_MEMps:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::mul_float>::apply<4>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::mul_float>::template apply<4>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -296,7 +298,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_DIVPS_XMMps_XMMps:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::div_float>::apply<4>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::div_float>::template apply<4>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -306,7 +308,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_DIVPS_XMMps_MEMps:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::div_float>::apply<4>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<float, OPERATION_IMPL::div_float>::template apply<4>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -320,7 +322,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_ADDPD_XMMpd_XMMpd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::add_double>::apply<2>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::add_double>::template apply<2>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -330,7 +332,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_ADDPD_XMMpd_MEMpd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::add_double>::apply<2>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::add_double>::template apply<2>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -342,7 +344,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_SUBPD_XMMpd_XMMpd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::sub_double>::apply<2>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::sub_double>::template apply<2>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -352,7 +354,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_SUBPD_XMMpd_MEMpd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::sub_double>::apply<2>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::sub_double>::template apply<2>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -364,7 +366,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_MULPD_XMMpd_XMMpd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::mul_double>::apply<2>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::mul_double>::template apply<2>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -374,7 +376,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_MULPD_XMMpd_MEMpd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::mul_double>::apply<2>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::mul_double>::template apply<2>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
@@ -386,7 +388,7 @@ namespace pene
 
 
           case xed_iform_enum_t::XED_IFORM_DIVPD_XMMpd_XMMpd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::div_double>::apply<2>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::div_double>::template apply<2>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 1),
@@ -396,7 +398,7 @@ namespace pene
             INS_Delete(ins);
             break;
           case xed_iform_enum_t::XED_IFORM_DIVPD_XMMpd_MEMpd:
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::div_double>::apply<2>,
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)wrap<double, OPERATION_IMPL::div_double>::template apply<2>,
               IARG_FAST_ANALYSIS_CALL,
               IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, 0),
               IARG_MEMORYREAD_EA,
