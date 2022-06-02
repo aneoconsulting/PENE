@@ -2,12 +2,12 @@
 #include <immintrin.h>
 #include <string>
 
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
     std::cout << "This program is used for tests purposes only. "
         << std::endl;
     if (argc == 1) {
-        argv = new char* [3]{ "main", "4", "6" };
+        argv = new const char* [3]{ "main", "4", "6" };
     }
     float a = std::stof(argv[1]);
     float b = std::stof(argv[2]);

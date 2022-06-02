@@ -33,12 +33,12 @@ extern "C" double func_d(double a, double b)
   return a3 - a2;
 }
 
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
   std::cout << "This program is used for tests purposes only. "
     << std::endl;
   if (argc == 1) {
-    argv = new char* [3]{ "main", "5", "10" };
+    argv = new const char* [3]{ "main", "5", "10" };
   }
   float a = std::stof(argv[1]);
   float b = std::stof(argv[2]);

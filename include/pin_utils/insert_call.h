@@ -24,7 +24,7 @@ namespace pene {
       }
       else
       {
-        static_assert(false);
+        static_assert(sizeof(LOC)==0);
       }
     }
   }
