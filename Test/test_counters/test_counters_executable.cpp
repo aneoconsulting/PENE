@@ -4,7 +4,7 @@
 #include <string>
 
 
-int main(int argc, char* argv[])
+int main(int argc,const char* argv[])
 {
   std::cout << "This program is used for tests purposes only. "
     << "If used to check the ability of the pintool to count operations, "
@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 
   if (argc == 1)
   {
-    argv = new char* [7]{ "main", "add", "float", "scalar", "100", "0", "0" };
+    argv = new const char* [7]{ "main", "add", "float", "scalar", "100", "0", "0" };
   }
   std::string operation{ argv[1] };
   std::string precision{ argv[2] };
@@ -69,7 +69,8 @@ int main(int argc, char* argv[])
       else if (mode.compare("simd") == 0) {
           for (auto i = 0; i < nb_loop; ++i)
           {
-              _mm_castps_si128(accu) = _mm_cvtps_epi32(accu);
+              accu= _mm_castsi128_ps(_mm_cvtps_epi32(accu));
+              //_mm_castsi128_pd(accu) = _mm_cvtps_epi32(accu);
           }
       }
     }
@@ -98,8 +99,8 @@ int main(int argc, char* argv[])
       }
       else if (mode.compare("simd") == 0) {
           for (auto i = 0; i < nb_loop; ++i)
-          {
-              _mm_castps_si128(accu) = _mm_cvtpd_epi32(accud);
+          {    accu= _mm_castsi128_ps(_mm_cvtpd_epi32(accud));
+              //_mm_castps_si128(accu) = _mm_cvtpd_epi32(accud);
           }
       }
     }
