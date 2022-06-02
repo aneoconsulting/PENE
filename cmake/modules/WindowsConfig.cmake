@@ -50,7 +50,7 @@ set(SATOOL_LIBS ${NO_STDLIBS} ${SATOOL_LIBS} ntdll-${BITS}.lib kernel32.lib)
 # /EHs- /EHa-	Disable exception handling in the tool, otherwise it could interfere in
 #				the apllication's exception handling.
 # /wd4530              Turn off the warning about not having /EHsc turned on
-set(TOOL_CXXFLAGS_NOOPT /MT /EHs- /EHa- /wd4640 /wd4530 /wd4505 /wd5045 /wd4266 
+set(TOOL_CXXFLAGS_NOOPT /MD /EHs- /EHa- /wd4640 /wd4530 /wd4505 /wd5045 /wd4266 
                         /wd4626 /wd4625 /wd4820 /wd4191 /wd4577 /wd5026 /wd5027 
                         /wd4435 /wd4061 /wd4514 /wd4555 /DTARGET_WINDOWS /nologo /Gy)
 set(DLL_CXXFLAGS "")
