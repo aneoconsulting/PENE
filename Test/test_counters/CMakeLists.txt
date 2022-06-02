@@ -4,6 +4,8 @@ project(counters_module)
 
 add_executable(test_counters_executable "test_counters_executable.cpp")
 set_property(TARGET test_counters_executable PROPERTY CXX_STANDARD 17)
+#add_compile_options(-mavx512f)
+set(CMAKE_CXX_FLAGS "-mavx512f -mfma")
 
 set(TEST_SCRIPTS test_flags.py testCounterGenerator.py 
     test_trace_counters.py test_trace_counters_tls.py 
