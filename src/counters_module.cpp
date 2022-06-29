@@ -44,8 +44,8 @@ namespace pene {
     public:
       counters_element_instrumenters()
         : element_instrumenter()
-        , bbl(MAKE_BBL(0))
-        , ins(MAKE_INS(0))
+        , bbl()
+        , ins()
         , c(), tlcm(c), tls(nullptr), use_tls(false)
         , tmp_counters()
       {
