@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
-set(PIN_URL_WINDOWS https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.22-98547-g7a303a835-msvc-windows.zip)
-set(PIN_URL_LINUX	https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.22-98547-g7a303a835-gcc-linux.tar.gz)
+set(PIN_URL_WINDOWS https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.23-98579-gb15ab7903-msvc-windows.zip)
+set(PIN_URL_LINUX	https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.23-98579-gb15ab7903-gcc-linux.tar.gz)
 
 # Extract windows toolkit name from archive (.zip)
 get_filename_component(PIN_TOOLKIT_WINDOWS	${PIN_URL_WINDOWS}		NAME)
