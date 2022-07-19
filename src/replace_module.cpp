@@ -39,6 +39,7 @@ namespace pene {
     {
       REG tmp_reg1;
       REG tmp_reg2;
+      REG tmp_reg_output;
       void* backend_ctx;
 
     public:
@@ -46,9 +47,10 @@ namespace pene {
         : element_instrumenter()
         , tmp_reg1(PIN_ClaimToolRegister())
         , tmp_reg2(PIN_ClaimToolRegister())
+        , tmp_reg_output(PIN_ClaimToolRegister())
         , backend_ctx(OPERATION_IMPL::init())
       {
-        if (!REG_valid(tmp_reg1) || !REG_valid(tmp_reg2))
+        if (!REG_valid(tmp_reg1) || !REG_valid(tmp_reg2) || !REG_valid(tmp_reg_output))
         {
           std::cerr << "Cannot allocate a scratch register.\n";
           std::cerr << std::flush;
@@ -59,10 +61,10 @@ namespace pene {
         switch (INS_Category(ins))
         {
         case xed_category_enum_t::XED_CATEGORY_SSE:
-          replace::wrappers::sse::instrument<OPERATION_IMPL>(backend_ctx, ins);
+          replace::wrappers::sse::instrument<OPERATION_IMPL>(backend_ctx, ins,tmp_reg1,tmp_reg2,tmp_reg_output);
           break;
         case xed_category_enum_t::XED_CATEGORY_AVX:
-          replace::wrappers::avx::instrument<OPERATION_IMPL>(backend_ctx, ins, tmp_reg1, tmp_reg2);
+          replace::wrappers::avx::instrument<OPERATION_IMPL>(backend_ctx, ins, tmp_reg1, tmp_reg2,tmp_reg_output);
           break;
         case xed_category_enum_t::XED_CATEGORY_AVX512:
           replace::wrappers::avx512::instrument<OPERATION_IMPL>(backend_ctx, ins, tmp_reg1, tmp_reg2);
@@ -78,7 +80,7 @@ namespace pene {
 
   replace_module::replace_module() 
     : module(true)
-    , knob_replace_mode(KNOB_MODE_WRITEONCE, "pintool", "fp-replace", "0", "Enables fp operation replacement.\n\t0: disabled\n\t1: ieee\n\t3: double2float\n\t4: random rounding")
+    , knob_replace_mode(KNOB_MODE_WRITEONCE, "pintool", "fp-replace", "0", "Enables fp operation replacement.\n\t0: disabled\n\t1: ieee\n\t2: double2float\n\t3: random rounding")
     , knob_exl_symbols(KNOB_MODE_WRITEONCE, "pintool", "exclude", "", "When this option is present, symbols listed in file will be left uninstrumented")
     , knob_incl_source_lines(KNOB_MODE_WRITEONCE, "pintool", "source", "", "When this option is present, only instructions coming from source code lines listed in file are instrumented. [NOT WORKING YET]")
     , data(nullptr)
