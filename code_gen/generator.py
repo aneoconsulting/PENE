@@ -1,8 +1,8 @@
-from lib2to3.pgen2.grammar import opmap_raw
 import sys
 from tokenize import Token
 from jinja2 import Environment, FileSystemLoader
 from enum import Enum
+import os
 
 
 class operand:
@@ -71,16 +71,7 @@ class operand_options(Enum):
 
 
 
-env = Environment(loader=FileSystemLoader('templates'),autoescape=False, trim_blocks=True,lstrip_blocks=True)
-template = env.get_template('sse_avx_template.txt')
 
-#pin_file_path=sys.argv[1]
-#token_file_path=sys.argv[2]
-pin_file_path='/home/melflitty/PENE/Pin/Linux/extras/xed-intel64/include/xed/xed-iform-enum.h'
-#token_file_path='./data/tokens_of_interest.txt'
-pin_file=open(pin_file_path,'r')
-lines=pin_file.read()
-pin_file.close()
 
 
 def get_tokens_list(file_path):
@@ -177,58 +168,61 @@ def get_eff_operands(ins):
         
     
 
-       
+if __name__ == "__main__":
+    pin_file_path=sys.argv[1]
+    template_file=sys.argv[2]
+    output_path=sys.argv[3]
+    env = Environment(loader=FileSystemLoader('templates'),autoescape=False, trim_blocks=True,lstrip_blocks=True)
+    template = env.get_template(template_file)
     
+    pin_file=open(pin_file_path,'r')
+    lines=pin_file.read()
+    pin_file.close()  
     
-
-list_tokens=get_tokens_list(pin_file_path)
-instructions_list_sse=[]
-instructions_list_avx=[]
-instructions_list_avx512=[]
-for line in lines.split('\n'):
-    if line.lstrip().startswith("XED_IFORM_")== True :
-        token=line.lstrip().split('=')[0]
-        if token in list_tokens:
-            splits= token.split('_')[2:]
-            values = [item.value for item in Op]
-            opcode,optype=get_opcode_optype(token)
-            if(optype in values) and (opcode!=None):
-                ins=instruction(token)
-                ins.ins_isa=get_isa(token)
-                ins.opcode, ins.op_type=opcode,optype
-                print(ins.opcode)
-                ins.ins_precision=get_precision(ins.opcode)
-                ins.simd_option=get_simd(ins.opcode)
-                operands_string_list=get_operand_string_list(token)
-                for item in operands_string_list:
-                    operand_item=operand()
-                    get_operand_details(item,operand_item)
-                    ins.operands.append(operand_item)
-                ins.nb_operands=len(ins.operands)
-                if ins.simd_option == 'scalar':
-                    ins.nb_elements=1
-                else:
-                    ins.nb_elements=ins.operands[0].width//ins.ins_precision.nb_bits
-                get_eff_operands(ins)
-                if(ins.ins_isa == 'sse'):
-                    instructions_list_sse.append(ins)
-                elif(ins.ins_isa == 'avx'):
-                    instructions_list_avx.append(ins)
-                elif(ins.ins_isa == 'avx512'):
-                    instructions_list_avx512.append(ins)
+    list_tokens=get_tokens_list(pin_file_path)
+    instructions_list_sse=[]
+    instructions_list_avx=[]
+    instructions_list_avx512=[]
+    for line in lines.split('\n'):
+        if line.lstrip().startswith("XED_IFORM_")== True :
+            token=line.lstrip().split('=')[0]
+            if token in list_tokens:
+                splits= token.split('_')[2:]
+                values = [item.value for item in Op]
+                opcode,optype=get_opcode_optype(token)
+                if(optype in values) and (opcode!=None):
+                    ins=instruction(token)
+                    ins.ins_isa=get_isa(token)
+                    ins.opcode, ins.op_type=opcode,optype
+                    print(ins.opcode)
+                    ins.ins_precision=get_precision(ins.opcode)
+                    ins.simd_option=get_simd(ins.opcode)
+                    operands_string_list=get_operand_string_list(token)
+                    for item in operands_string_list:
+                        operand_item=operand()
+                        get_operand_details(item,operand_item)
+                        ins.operands.append(operand_item)
+                    ins.nb_operands=len(ins.operands)
+                    if ins.simd_option == 'scalar':
+                        ins.nb_elements=1
+                    else:
+                        ins.nb_elements=ins.operands[0].width//ins.ins_precision.nb_bits
+                    get_eff_operands(ins)
+                    if(ins.ins_isa == 'sse'):
+                        instructions_list_sse.append(ins)
+                    elif(ins.ins_isa == 'avx'):
+                        instructions_list_avx.append(ins)
+                    elif(ins.ins_isa == 'avx512'):
+                        instructions_list_avx512.append(ins)
                 
-            
-                   
+    
+    output_file_sse=os.path.join(output_path,"sse.h")
+    output_file_avx=os.path.join(output_path,"avx.h")
+    with open(output_file_sse, 'w') as f:
+        f.write(template.render(instructions=instructions_list_sse,architecture_name='sse'))
+        with open(output_file_avx, 'w') as f:
+            f.write(template.render(instructions=instructions_list_avx,architecture_name='avx'))
 
-output_file_sse='../include/replace/wrappers/sse.h'
-output_file_avx='../include/replace/wrappers/avx.h'
-#output_file_avx512='./generated/avx512.h'
-with open(output_file_sse, 'w') as f:
-    f.write(template.render(instructions=instructions_list_sse,architecture_name='sse'))
-with open(output_file_avx, 'w') as f:
-    f.write(template.render(instructions=instructions_list_avx,architecture_name='avx'))
-#with open(output_file_avx512, 'w') as f:
-    #f.write(template.render(instructions=instructions_list_avx512))
 
    
 
