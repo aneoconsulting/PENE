@@ -73,7 +73,7 @@ class operand_options(Enum):
 
 
 
-
+# given Pin enum file extracts tokens ending with SS, PS, SD or PD to a list 
 def get_tokens_list(file_path):
     list_tokens=[]
     with open(file_path,'r') as f:
@@ -86,6 +86,7 @@ def get_tokens_list(file_path):
                     list_tokens.append(token_float)
     return list_tokens
 
+#given a token returns its instruction set 
 def get_isa(token):
     splits= token.split('_')[2:]
     if(splits[0].startswith("V")):
@@ -97,6 +98,7 @@ def get_isa(token):
         isa="sse"
     return isa
 
+#given a token returns the opcode and the type of the operation
 def get_opcode_optype(token):
     splits=token.split('_')[2:]
     opcode=splits[0]
@@ -113,6 +115,7 @@ def get_precision(opcode):
         ins_precision=precision('double')
     return ins_precision
 
+#given the opcode gives if he instruction is simd or scalar
 def get_simd(opcode):
     if(opcode[-2] == 'S'):
         simd_option = 'scalar'
@@ -120,6 +123,7 @@ def get_simd(opcode):
         simd_option = 'packed'
     return simd_option
 
+#returns the list of operands in a token (list of strings)
 def get_operand_string_list(token):
     splits= token.split('_')[2:]
     operands_list=[]
@@ -129,6 +133,7 @@ def get_operand_string_list(token):
         operands_list=splits[1:]
     return operands_list
 
+#get operand width and kind 
 def get_operand_details(item,operand_item):
     if(item == 'MASKmskw'):
        operand_item.kind= 'mask'
@@ -147,7 +152,7 @@ def get_operand_details(item,operand_item):
         operand_item.kind='imm'
         operand_item.width=8
 
-
+"""
 def get_eff_operands(ins):
     if(ins.ins_isa == 'sse') and (ins.nb_operands >=2):
         ins.kind1=ins.operands[0].kind
@@ -165,7 +170,9 @@ def get_eff_operands(ins):
         second_op=eff_operand(2,(ins.operands[2]).kind)
         ins.eff_operands.append(first_op)
         ins.eff_operands.append(second_op)
-        
+"""
+
+#parses the tokens, calls all the previous functions in order to form python objects       
 def token_parser(pin_file_path,list_sse,list_avx,list_avx512):
     pin_file=open(pin_file_path,'r')
     lines=pin_file.read()
@@ -194,7 +201,7 @@ def token_parser(pin_file_path,list_sse,list_avx,list_avx512):
                         ins.nb_elements=1
                     else:
                         ins.nb_elements=ins.operands[0].width//ins.ins_precision.nb_bits
-                    get_eff_operands(ins)
+                    #get_eff_operands(ins)
                     if(ins.ins_isa == 'sse'):
                         list_sse.append(ins)
                     elif(ins.ins_isa == 'avx'):
@@ -202,12 +209,14 @@ def token_parser(pin_file_path,list_sse,list_avx,list_avx512):
                     elif(ins.ins_isa == 'avx512'):
                         list_avx512.append(ins)
 
+
+#To run the code generator, needed arguments: path of the pin enum file, name of the template file, name of the output path
 if __name__ == "__main__":
-    print(os. getcwd())
-    os.chdir('/home/melflitty/PENE/code_gen')
-    print(os. getcwd())
-    pin_file_path=sys.argv[1]
-    template_file=sys.argv[2]
+    print(os. getcwd())  #for debug purpose only
+    os.chdir('../code_gen')
+    print(os. getcwd()) #for debug purpose only
+    pin_file_path=sys.argv[1] 
+    template_file=sys.argv[2] 
     output_path=sys.argv[3]
     output_file_sse=os.path.join(output_path,"sse.h")
     output_file_avx=os.path.join(output_path,"avx.h")
