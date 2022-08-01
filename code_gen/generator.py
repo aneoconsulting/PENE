@@ -1,6 +1,6 @@
 import sys
 from tokenize import Token
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader,PackageLoader
 from enum import Enum
 import os
 
@@ -203,6 +203,9 @@ def token_parser(pin_file_path,list_sse,list_avx,list_avx512):
                         list_avx512.append(ins)
 
 if __name__ == "__main__":
+    print(os. getcwd())
+    os.chdir('/home/melflitty/PENE/code_gen')
+    print(os. getcwd())
     pin_file_path=sys.argv[1]
     template_file=sys.argv[2]
     output_path=sys.argv[3]
