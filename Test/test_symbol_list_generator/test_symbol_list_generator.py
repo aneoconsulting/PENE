@@ -8,6 +8,7 @@ class symbols_list_generation_tests(unittest.TestCase):
     toolpath = "@FLAG_TESTS_PINTOOL@"
 
 
+
     elements = [["executable", ["main"]],
                 ["shared2_funs", ["func2_1", "func2_2", "func2_3"]],
                 ["shared_funs", ["func1", "func2", "func3"]]]
@@ -17,7 +18,7 @@ class symbols_list_generation_tests(unittest.TestCase):
     def test_exec_and_shared(self):
         """Checks that the list generated contains the symbols included from executable"""
         runargs=[self.pinpath, '-t', self.toolpath, '-gen-sym-list', 'list.txt', '--', self.execpath]
-        out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell = True)
+        out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         print("the commandline is {}".format(subprocess.list2cmdline(out.args)))
         print(out.stdout.decode('utf-8'))
 

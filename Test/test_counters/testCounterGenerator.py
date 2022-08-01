@@ -7,14 +7,17 @@ class testCounterGenerator(unittest.TestCase):
     tool = "${PINTOOL}"
     pin = "${PIN}"
 
+
     counterModes = ["0", "1", "2"]
+
+
     precisions = ["float", "double"]
     operations = ["add", "sub", "mul", "div", "fma"]
     modes = ["scalar", "simd"]
 
     def launch(self, counterMode, tls, prec, op, mode, nLoop, a, b):
-        cmdLine = ("{pin} -t {tool} -counter-mode {counterMode} -counter-tls {tls} -- " +
-                   " {executable} {op} {prec} {mode} {nLoop} {a} {b}").format(pin = self.pin,
+        
+        cmdLine = ("{pin} -t {tool} -counter-mode {counterMode} -counter-tls {tls} -- {executable} {op} {prec} {mode} {nLoop} {a} {b}").format(pin = self.pin,
                                                                               tool = self.tool,
                                                                               counterMode = counterMode,
                                                                               tls = "1" if tls else "0",
@@ -25,7 +28,8 @@ class testCounterGenerator(unittest.TestCase):
                                                                               nLoop = str(nLoop), 
                                                                               a = str(a), 
                                                                               b = str(b))
-        out = subprocess.run(cmdLine.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell = True)
+    
+        out = subprocess.run(cmdLine.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         print("the commandline is {}".format(subprocess.list2cmdline(out.args)))
         #self.assertEqual(0, out.returncode)
         output = out.stdout.decode('utf-8')

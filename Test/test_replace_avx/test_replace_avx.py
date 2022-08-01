@@ -9,6 +9,7 @@ class replace_tests(unittest.TestCase):
     execpath = "@REPLACE_TESTS_ECEXUTABLE@"
     pinpath = "${PIN_EXECUTABLE}"
     toolpath = "@REPLACE_TESTS_PINTOOL@"
+
     a = 3.5
     b = 7.2
     activeRegex = str(a)+r"\*"+str(b)+"="+str(a*b)
@@ -18,7 +19,7 @@ class replace_tests(unittest.TestCase):
         
 
     def checkOutputWithRegex(self, runargs, pattern, noppatern):
-        out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr = subprocess.STDOUT, shell = True)
+        out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr = subprocess.STDOUT)
         print("the commandline is {}".format(subprocess.list2cmdline(out.args)))
         output = out.stdout.decode('utf-8')
         print(output)

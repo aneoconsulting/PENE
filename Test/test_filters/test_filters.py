@@ -10,6 +10,7 @@ class filters_tests(unittest.TestCase):
     pinpath = "${PIN_EXECUTABLE}"
     toolpath = "@PINTOOL@"
 
+
     def get_value(self, output, name):
         p = re.compile(r"^{}\([^:]*?= (?P<value>-?\d+\.?\d*?)".format(name), re.MULTILINE)
         self.assertRegex(output, p)
@@ -17,7 +18,7 @@ class filters_tests(unittest.TestCase):
         return float(m.group("value"))
 
     def checkOutputWithRegex(self, runargs):
-        out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr = subprocess.STDOUT, shell = True)
+        out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr = subprocess.STDOUT)
         print("the commandline is {}".format(subprocess.list2cmdline(out.args)))
         output = out.stdout.decode('utf-8')
         print(output)
