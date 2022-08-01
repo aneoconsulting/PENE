@@ -92,6 +92,7 @@ endif()
 # Include sub-projects.
 
 include_directories("include")
+add_subdirectory("code_gen")
 add_subdirectory ("src")
 add_subdirectory ("Test/test_version")
 add_subdirectory ("Test/test_counters")
@@ -101,4 +102,5 @@ add_subdirectory ("Test/test_replace_avx")
 add_subdirectory ("Test/test_filters")
 add_subdirectory ("Test/cpp_unit")
 #add_subdirectory ("Test/prog_tests/csharp_test")
+add_subdirectory ("Test/test_backend")
 
