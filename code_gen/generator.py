@@ -214,7 +214,6 @@ def token_parser(pin_file_path,list_sse,list_avx,list_avx512):
 if __name__ == "__main__":
     print(os. getcwd())  #for debug purpose only
     #os.chdir('code_gen')
-    print(os. getcwd()) #for debug purpose only
     pin_file_path=sys.argv[1] 
     template_file=sys.argv[2] 
     output_path=sys.argv[3]
