@@ -213,7 +213,7 @@ def token_parser(pin_file_path,list_sse,list_avx,list_avx512):
 #To run the code generator, needed arguments: path of the pin enum file, name of the template file, name of the output path
 if __name__ == "__main__":
     print(os. getcwd())  #for debug purpose only
-    os.chdir('../code_gen')
+    #os.chdir('code_gen')
     print(os. getcwd()) #for debug purpose only
     pin_file_path=sys.argv[1] 
     template_file=sys.argv[2] 
