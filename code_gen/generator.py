@@ -152,7 +152,6 @@ def get_operand_details(item,operand_item):
         operand_item.kind='imm'
         operand_item.width=8
 
-"""
 def get_eff_operands(ins):
     if(ins.ins_isa == 'sse') and (ins.nb_operands >=2):
         ins.kind1=ins.operands[0].kind
@@ -170,7 +169,7 @@ def get_eff_operands(ins):
         second_op=eff_operand(2,(ins.operands[2]).kind)
         ins.eff_operands.append(first_op)
         ins.eff_operands.append(second_op)
-"""
+
 
 #parses the tokens, calls all the previous functions in order to form python objects       
 def token_parser(pin_file_path,list_sse,list_avx,list_avx512):
@@ -201,7 +200,7 @@ def token_parser(pin_file_path,list_sse,list_avx,list_avx512):
                         ins.nb_elements=1
                     else:
                         ins.nb_elements=ins.operands[0].width//ins.ins_precision.nb_bits
-                    #get_eff_operands(ins)
+                    get_eff_operands(ins)
                     if(ins.ins_isa == 'sse'):
                         list_sse.append(ins)
                     elif(ins.ins_isa == 'avx'):

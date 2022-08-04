@@ -31,18 +31,21 @@ namespace pene
         template<typename T, void (*backend_fct)(T, T, T*,void*)>
         void PIN_FAST_ANALYSIS_CALL call_backend_fct(T* const a, T* const b, T* c,void* ctx)
         {
+          OutFile << "Reached function call_backend_fct" << std::endl;
           backend_fct(*a,*b,c,ctx);
         }
 
         template<typename T>
         void PIN_FAST_ANALYSIS_CALL copy_from_input(T* src,T* dst,int i)
         {
+          OutFile << "Reached function copy from input" << std::endl;
           (*dst)=(src)[i];
         }
 
         template<typename T>
         void PIN_FAST_ANALYSIS_CALL copy_to_output(T* src,T* dst,int i)
         {
+          OutFile << "Reached function copy from output" << std::endl;
           dst[i]=(*src);
         }
 
@@ -56,13 +59,14 @@ namespace pene
           {   
             {% for instruction in instructions %}
               case xed_iform_enum_t::{{instruction.token}}:
+              OutFile << "Found one {{instruction.token}} " << std::endl;
               {% if instruction.simd_option == 'scalar' %}
                 INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}},OPERATION_IMPL::{{instruction.op_type}}_{{instruction.ins_precision.associated_type}}>,
                 IARG_FAST_ANALYSIS_CALL,
                 {% for eff_operand in instruction.eff_operands %}
                 {%+ if eff_operand.kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins, {{eff_operand.index}}){%+ elif  eff_operand.kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                 {% endfor %}
-                {#{%+ if instruction.operands[0].kind == 'reg' %}IARG_REG_REFERENCE, INS_OperandReg(ins, 0){% elif  instruction.operands[0].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},#}
+                {%+ if instruction.operands[0].kind == 'reg' %}IARG_REG_REFERENCE, INS_OperandReg(ins, 0){% elif  instruction.operands[0].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                 IARG_PTR, backend_ctx,
                 IARG_END);
              {% elif instruction.simd_option == 'packed' %}
@@ -96,6 +100,7 @@ namespace pene
                  }
               {% endif %}
                   INS_Delete(ins);
+                  OutFile << "Reached end of {{instruction.token}}" << std::endl;
                   break;
             {% endfor %}
             default:
