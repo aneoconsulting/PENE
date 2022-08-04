@@ -26,7 +26,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_all.py
   COMMENT "Configuring test_all.py"
   VERBATIM
 )
-
+message(STATUS "Current build: ${CMAKE_CURRENT_BINARY_DIR}")
 set(TEST_SCRIPTS test_all.py)
 
 

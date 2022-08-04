@@ -5,11 +5,11 @@ import re
 
         
 class TestBackend():
-    execpath1 = "//home/melflitty/PENE/Test/test_backend/ex1"
-    execpath2= "/home/melflitty/PENE/Test/test_backend/ex2"
-    execpath3 = "/home/melflitty/PENE/Test/test_backend/ex3"
-    toolpath = "/home/melflitty/PENE/src/libpene.so"
-    pinpath = "/home/melflitty/PENE/Pin/Linux/pin"
+    execpath1 = "@EXECUTABLE1@"
+    execpath2 = "@EXECUTABLE2@"
+    execpath3 = "@EXECUTABLE3@"
+    pinpath = "${PIN_EXECUTABLE}"
+    toolpath = "@FLAG_TESTS_PINTOOL@"
 
 
     out_ex1 = r"0x1.000002p+0"
