@@ -2,11 +2,14 @@
 #include <iostream>
 #include <cassert>
 
+
 #include "replace_module.h"
+#include "extern_file.h"
 
 #include "replace/backend/invert_add_mul_impl.h"
 #include "replace/backend/ieee.h"
 #include "replace/backend/double2float.h"
+#include "replace/backend/test_backend.h"
 #include "replace/wrappers/sse.h"
 #include "replace/wrappers/avx.h"
 #include "replace/wrappers/avx512.h"
@@ -19,14 +22,19 @@
 
 namespace pene {
   using namespace pin_utils;
+  
+  
   namespace replace_module_internals
   {
+
+    
     enum replace_modes : int
     {
       NONE = 0,
       IEEE,
       DOUBLE2FLOAT,
       RANDOM_ROUNDING,
+      TEST,
       END_PUBLIC,
       DEBUG = 100,
       DEBUG_FLOAT_ADD_MULL_SWAP,
@@ -194,6 +202,7 @@ namespace pene {
       break;
     case replace_module_internals::replace_modes::DEBUG_FLOAT_ADD_MULL_SWAP:
       std::cerr << "fp-replace single precision debug mode - swapping single precision additions and multiplications" << std::endl;
+      OutFile << "fp-replace single precision debug mode - swapping single precision additions and multiplications" << std::endl;
       data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::invert_add_mul_float_impl>(), filter);
       data->TRACE_AddInstrumentFunction();
       break;
@@ -202,6 +211,11 @@ namespace pene {
       data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::invert_add_mul_impl>(), filter);
       data->TRACE_AddInstrumentFunction();
       break;
+    case replace_module_internals::replace_modes::TEST:
+       std::cerr << "fp-replace fp test mode -  using test backend" << std::endl;
+       data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::test_backend>(), filter);
+       data->TRACE_AddInstrumentFunction();
+       break;
     default:
       std::cerr << "no replacement mode" << std::endl;
       break;
