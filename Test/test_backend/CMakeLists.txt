@@ -2,12 +2,12 @@ cmake_minimum_required (VERSION 3.14)
 
 project(test_backend)
 
-add_executable(ex1 "ex1.cpp")
-add_executable(ex2 "ex2.cpp")
+add_executable(ex1 "Apps/ex1.cpp")
+add_executable(ex2 "Apps/ex2.cpp")
 set_property(TARGET ex1 PROPERTY CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -mavx")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
-add_executable(ex3 "ex3.cpp")
+add_executable(ex3 "Apps/ex3.cpp")
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_all.py
   COMMAND ${CMAKE_COMMAND} 
