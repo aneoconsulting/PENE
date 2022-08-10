@@ -1,0 +1,31 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  Linux:
+    name: build-linux
+    runs-on: ubuntu-latest
+    steps:
+     - name: Running cmake (Linux)
+       run: |
+         cd ${{ github.workspace }}
+         mkdir build
+         cd build
+         cmake ..
+     - name: Build Solution (Linux)
+       run: |
+         cd build
+         make
+     - name: Testing (Linux)
+       run: |
+        cd build 
+        make test
+
+
+ 
