@@ -4,8 +4,9 @@ project(test_backend)
 
 add_executable(ex1 "Apps/ex1.cpp")
 add_executable(ex2 "Apps/ex2.cpp")
-set_property(TARGET ex1 PROPERTY CXX_STANDARD 17)
 add_executable(ex3 "Apps/ex3.cpp")
+
+set_property(TARGET ex1 ex2 ex3 PROPERTY CXX_STANDARD 17)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("/arch:AVX" COMPILER_SUPPORTS_ARCH_AVX)
