@@ -5,25 +5,20 @@ project(counters_replace_avx)
 add_executable(test_replace_avx_executable "replace.cpp")
 set_property(TARGET test_replace_avx_executable PROPERTY CXX_STANDARD 17)
 
-
 include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("/arch:AVX" COMPILER_OPT_ARCH_AVX_SUPPORTED)
-if(COMPILER_OPT_ARCH_AVX_SUPPORTED)
-    message("AVX flags activated")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} /arch:AVX")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX")
+CHECK_CXX_COMPILER_FLAG("/arch:AVX" COMPILER_SUPPORTS_ARCH_AVX)
+if(COMPILER_SUPPORTS_ARCH_AVX)
+  message("/arch:AVX is supported by the compiler")
+  target_compile_options(test_replace_avx_executable PUBLIC "/arch:AVX")
 else()
-    CHECK_CXX_COMPILER_FLAG("-mavx" COMPILER_OPT_ARCH_AVX_SUPPORTED)
-    if(COMPILER_OPT_ARCH_AVX_SUPPORTED)
-        message("AVX flags activated")
-        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -mavx")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx")
-    else()
-        message("AVX not supported")
-    endif()
+  CHECK_CXX_COMPILER_FLAG("-mavx" COMPILER_SUPPORTS_MAVX)
+  if(COMPILER_SUPPORTS_MAVX)
+    message("-mavx is supported by the compiler")
+    target_compile_options(test_replace_avx_executable PUBLIC "-mavx")
+   endif()
 endif()
 
-	
+
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_replace_avx.py
   COMMAND ${CMAKE_COMMAND} 
