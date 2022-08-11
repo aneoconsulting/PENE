@@ -16,7 +16,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_version.py
           -P ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
   DEPENDS
     ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/test_version.py
+    #${CMAKE_CURRENT_SOURCE_DIR}/test_version.py
   COMMENT "Configuring test_version.py"
   VERBATIM
 )
@@ -31,8 +31,8 @@ function(copy_file FILENAME)
         COMMAND ${CMAKE_COMMAND} -E copy
                 ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}
                 ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}
-        DEPENDS
-            ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}
+        #DEPENDS
+            #${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}
         COMMENT "Copying ${FILENAME}"
         VERBATIM
     )
