@@ -57,7 +57,7 @@ jobs:
      - name: Running cmake (Windows)
        run: |
          ls ${{github.workspace}}
-         cmake -C Debug .
+         cmake -DCMAKE_BUILD_TYPE=Debug .
      - name: Build Solution (Windows)
        run: |
          cmake --build .
