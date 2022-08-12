@@ -13,6 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - uses: actions/checkout@v1
+     - uses: actions/setup-python@v4
+       with:
+         python-version: '3.10' 
+     - name: Installing Jinja2
+       run: python3 -m pip install Jinja2
+     - name: Installing pytest
+       run: python3 -m pip install pytest
      - name: Running cmake (Linux)
        run: |
          ls ${{github.workspace}}
@@ -26,6 +33,30 @@ jobs:
      - name: Testing (Linux)
        run: |
         cd build 
+        ctest --output-on-failure
+        
+  
+  Windows:
+    name: build-windows
+    runs-on: windows-latest
+    steps:
+     - uses: actions/checkout@v1
+     - uses: actions/setup-python@v4
+       with:
+         python-version: '3.10' 
+     - name: Installing Jinja2
+       run: python.exe -m pip install Jinja2
+     - name: Installing pytest
+       run: python3 -m pip install pytest
+     - name: Running cmake (Windows)
+       run: |
+         ls ${{github.workspace}}
+         cmake .
+     - name: Build Solution (Windows)
+       run: |
+         cmake --build .
+     - name: Testing (Windows)
+       run: |
         ctest --output-on-failure
 
 
