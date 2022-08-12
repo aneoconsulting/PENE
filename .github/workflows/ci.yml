@@ -25,7 +25,7 @@ jobs:
          ls ${{github.workspace}}
          mkdir build
          cd build
-         cmake ..
+         cmake -C Debug ..
      - name: Build Solution (Linux)
        run: |
          cd build
@@ -33,7 +33,7 @@ jobs:
      - name: Testing (Linux)
        run: |
         cd build 
-        ctest --output-on-failure
+        ctest -C Debug --output-on-failure
         
   
   Windows:
@@ -51,13 +51,13 @@ jobs:
      - name: Running cmake (Windows)
        run: |
          ls ${{github.workspace}}
-         cmake .
+         cmake -C Debug .
      - name: Build Solution (Windows)
        run: |
          cmake --build .
      - name: Testing (Windows)
        run: |
-        ctest --output-on-failure
+        ctest -C Debug --output-on-failure
 
 
  
