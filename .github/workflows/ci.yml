@@ -55,6 +55,12 @@ jobs:
      - name: Build Solution (Windows)
        run: |
          cmake --build .
+     - name: Archive production artifacts
+       uses: actions/upload-artifact@v3
+       with:
+           name: log-file
+           path: |
+            "D:/a/PENE2/PENE2/CMakeFiles/CMakeOutput.log"
      - name: Testing (Windows)
        run: |
         ctest -C Debug --output-on-failure
