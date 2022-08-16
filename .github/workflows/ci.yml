@@ -55,7 +55,7 @@ jobs:
      - name: Running cmake (Windows)
        run: |
          ls ${{github.workspace}}
-         cmake -DCMAKE_BUILD_TYPE=Debug .
+         cmake -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Debug .
      - name: Build Solution (Windows)
        run: |
          cmake --build .
