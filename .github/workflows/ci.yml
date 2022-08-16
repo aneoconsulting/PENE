@@ -16,8 +16,8 @@ jobs:
      - uses: actions/setup-python@v4
        with:
          python-version: '3.10' 
-     - name: Get CMake
-       uses: symbitic/install-cmake@master
+     - name: Get latest CMake
+       uses: lukka/get-cmake@latest
      - name: Installing Jinja2
        run: python3 -m pip install Jinja2
      - name: Installing pytest
@@ -46,8 +46,8 @@ jobs:
      - uses: actions/setup-python@v4
        with:
          python-version: '3.10' 
-     - name: Get CMake
-       uses: symbitic/install-cmake@master
+     - name: Get latest CMake
+       uses: lukka/get-cmake@latest
      - name: Installing Jinja2
        run: python.exe -m pip install Jinja2
      - name: Installing pytest
