@@ -48,12 +48,6 @@ jobs:
        run: python.exe -m pip install Jinja2
      - name: Installing pytest
        run: python3 -m pip install pytest
-     - name: Archive production artifacts
-       uses: actions/upload-artifact@v3
-       with:
-           name: log-file
-           path: |
-            "D:/a/PENE2/PENE2/CMakeFiles/CMakeOutput.log"
      - name: Running cmake (Windows)
        run: |
          ls ${{github.workspace}}
