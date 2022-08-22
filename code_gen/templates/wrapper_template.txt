@@ -1,0 +1,129 @@
+
+#pragma once
+#include <pin.H>
+extern "C"
+{
+# include <xed-decoded-inst-api.h>
+}
+
+
+namespace pene 
+{
+  namespace replace
+  {
+    namespace wrappers
+    {
+      namespace {{architecture_name}}
+      {
+        
+        template<typename T, void (*backend_fct)(T, T, T*,void*)>
+        void call_backend_fct(T* const a, T* const b, T* c,void* ctx,int i)
+        {
+            backend_fct(a[i],b[i],&c[i],ctx);
+        }
+
+        template<typename T>
+        void PIN_FAST_ANALYSIS_CALL zero_reg_at_position(T* dst,int pos)
+        {
+        dst[pos]=0;
+        }
+
+        static bool PIN_FAST_ANALYSIS_CALL msk_element_set(IMULTI_ELEMENT_OPERAND* OpInfo, int pos)
+        {
+          return OpInfo->ElementMaskValue(pos)==1;
+        }
+        static bool PIN_FAST_ANALYSIS_CALL msk_element_notset(IMULTI_ELEMENT_OPERAND* OpInfo, int pos)
+        {
+          return OpInfo->ElementMaskValue(pos)==0;
+        }
+
+
+        template <typename OPERATION_IMPL>
+        void instrument(void* backend_ctx, INS ins)
+        {
+          auto xed = INS_XedDec(ins); // TODO check that pointer does not need to be freed
+          auto iform = xed_decoded_inst_get_iform_enum(xed);
+          bool ismasking=xed_decoded_inst_masking(xed);
+          bool ismerging=xed_decoded_inst_merging(xed);
+          bool iszeroing=xed_decoded_inst_zeroing(xed);
+          REG mask_reg = INS_MaskRegister(ins); 
+
+          switch (iform)
+
+          {   
+            {% for instruction in instructions %}
+              {% if instruction.ins_isa == 'sse' %}
+                {% set offset=0 %}
+              {%- elif instruction.ins_isa == 'avx' %}
+                {% set offset=1 %}
+              {%- elif  instruction.ins_isa == 'avx512' %}
+                {% set offset=2 %}   
+              {% endif %}
+              case xed_iform_enum_t::{{instruction.token}}:
+                for(int i=0;i< {{instruction.nb_elements}};i++)
+                  {
+                   if(!ismasking || !REG_valid(mask_reg))
+                   {
+                    INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}},OPERATION_IMPL::{{instruction.op_type}}_{{instruction.ins_precision.associated_type}}>,
+                    {%+ if instruction.operands[offset].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset}}){%+ elif  instruction.operands[offset].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                    {%+ if instruction.operands[offset+1].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset+1}}){%+ elif  instruction.operands[offset+1].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                    IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                    IARG_PTR, backend_ctx,
+                    IARG_UINT32, i,
+                    IARG_END
+                     );
+                   }
+                   else 
+                    {
+                     if(iszeroing)
+                     {
+                     INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_notset,
+                     IARG_FAST_ANALYSIS_CALL,
+                     IARG_MULTI_ELEMENT_OPERAND,2,
+                     IARG_UINT32,i,
+                     IARG_END);
+                     INS_InsertThenCall(ins, IPOINT_BEFORE, (AFUNPTR)zero_reg_at_position<{{instruction.ins_precision.associated_type}}>,
+                     IARG_FAST_ANALYSIS_CALL,
+                     IARG_REG_REFERENCE,INS_OperandReg(ins,0),
+                     IARG_UINT32,i,
+                     IARG_END);
+                     INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_set,
+                     IARG_FAST_ANALYSIS_CALL,
+                     IARG_MULTI_ELEMENT_OPERAND,2,
+                     IARG_UINT32,i,
+                     IARG_END);
+                     INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}},OPERATION_IMPL::{{instruction.op_type}}_{{instruction.ins_precision.associated_type}}>,
+                     {%+ if instruction.operands[offset].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset}}){%+ elif  instruction.operands[offset].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                     {%+ if instruction.operands[offset+1].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset+1}}){%+ elif  instruction.operands[offset+1].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                     IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                     IARG_PTR, backend_ctx,
+                     IARG_UINT32,i,
+                     IARG_END
+                     );
+                     }
+                     else
+                     {
+                     INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_set,
+                     IARG_FAST_ANALYSIS_CALL,
+                     IARG_MULTI_ELEMENT_OPERAND,2,
+                     IARG_UINT32,i,
+                     IARG_END);
+                     }
+                    }
+                  }
+                INS_Delete(ins);
+                break;
+            {% endfor %}
+            default:
+              return;
+
+                  
+          }
+        }
+
+
+      }
+    }
+  }
+}
+
