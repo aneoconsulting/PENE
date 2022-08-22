@@ -69,13 +69,13 @@ namespace pene {
         switch (INS_Category(ins))
         {
         case xed_category_enum_t::XED_CATEGORY_SSE:
-          replace::wrappers::sse::instrument<OPERATION_IMPL>(backend_ctx, ins,tmp_reg1,tmp_reg2,tmp_reg_output);
+          replace::wrappers::sse::instrument<OPERATION_IMPL>(backend_ctx, ins);
           break;
         case xed_category_enum_t::XED_CATEGORY_AVX:
-          replace::wrappers::avx::instrument<OPERATION_IMPL>(backend_ctx, ins, tmp_reg1, tmp_reg2,tmp_reg_output);
+          replace::wrappers::avx::instrument<OPERATION_IMPL>(backend_ctx, ins);
           break;
         case xed_category_enum_t::XED_CATEGORY_AVX512:
-          replace::wrappers::avx512::instrument<OPERATION_IMPL>(backend_ctx, ins, tmp_reg1, tmp_reg2);
+          replace::wrappers::avx512::instrument<OPERATION_IMPL>(backend_ctx, ins);
           break;
         default:
           break;
