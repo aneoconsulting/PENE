@@ -39,10 +39,7 @@ class instruction:
         self.nb_operands=0
         self.nb_elements=0
         self.eff_operands=[]
-        self.index1=0
-        self.index2=1
-        self.kind1='reg'
-        self.kind2='reg'
+    
         
 
 class Op(Enum):

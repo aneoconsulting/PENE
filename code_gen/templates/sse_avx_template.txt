@@ -1,16 +1,4 @@
 
-{%- macro first_op_number(isa) -%}
-  {%- if isa == 'sse' -%}0
-  {%- elif isa == 'avx' -%}1
-  {%- endif -%}
-{% endmacro %}
-
-{%- macro second_op_number(isa) -%}
-  {%- if isa == 'sse' -%}1
-  {%- elif isa == 'avx' -%}2
-  {%- endif -%}
-{%- endmacro -%}
-
 #pragma once
 #include <pin.H>
 extern "C"
@@ -58,6 +46,13 @@ namespace pene
 
           {   
             {% for instruction in instructions %}
+              {% if instruction.ins_isa == 'sse' %}
+                {% set offset=0 %}
+              {%- elif instruction.ins_isa == 'avx' %}
+                {% set offset=1 %}
+              {%- elif  instruction.ins_isa == 'avx512' %}
+                {% set offset=2 %}   
+              {% endif %}
               case xed_iform_enum_t::{{instruction.token}}:
               OutFile << "Found one {{instruction.token}} " << std::endl;
               {% if instruction.simd_option == 'scalar' %}
@@ -74,13 +69,13 @@ namespace pene
                   {
                   INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)copy_from_input<{{instruction.ins_precision.associated_type}}>,
                   IARG_FAST_ANALYSIS_CALL,
-                  {%+ if instruction.kind1== 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{instruction.index1}}){%+ elif  instruction.kind1== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                  {%+ if instruction.operands[offset].kind== 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset}}){%+ elif  instruction.operands[offset].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                   IARG_REG_REFERENCE, tmp_reg1,
                   IARG_UINT32 ,i,
                   IARG_END);
                   INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)copy_from_input<{{instruction.ins_precision.associated_type}}>,
                   IARG_FAST_ANALYSIS_CALL,
-                  {%+ if instruction.kind2== 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{instruction.index2}}){%+ elif  instruction.kind2== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                  {%+ if instruction.operands[offset+1].kind== 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset+1}}){%+ elif  instruction.operands[offset+1].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                   IARG_REG_REFERENCE, tmp_reg2,
                   IARG_UINT32,i,
                   IARG_END);
