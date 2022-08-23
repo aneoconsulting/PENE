@@ -5,9 +5,10 @@ namespace pene
 {
   bool update_counters(INS ins, counters& counters)
   {
-    auto oc = INS_Opcode(ins);
-    //debug std::cout << oc << std::endl;
-    switch (oc)
+    
+    auto xed = INS_XedDec(ins);
+    auto iclass = xed_decoded_inst_get_iclass(xed);
+    switch (iclass)
     {
     case XED_ICLASS_ADDSD:
     case XED_ICLASS_SUBSD:
@@ -145,8 +146,10 @@ namespace pene
             return true;
         }
         else {
-            counters[div_double_scalar_avx] += 1;
+            counters[mul_double_scalar_avx] += 1;
             return true;
+        
+            
         }
     case XED_ICLASS_MULPD:
         counters[mul_double_simd_sse] += 1;
@@ -557,12 +560,14 @@ namespace pene
     case XED_ICLASS_RCPSS:
     case XED_ICLASS_RSQRTSS:
     case XED_ICLASS_SQRTSS:
+    case XED_ICLASS_VRNDSCALESS:
         counters[oth_float_scalar_sse] += 1;
         return true;
     case XED_ICLASS_ROUNDSD:
     case XED_ICLASS_MAXSD:
     case XED_ICLASS_MINSD:
     case XED_ICLASS_SQRTSD:
+    case XED_ICLASS_VRNDSCALESD:
         counters[oth_double_scalar_sse] += 1;
         return true;
 
