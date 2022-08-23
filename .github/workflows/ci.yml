@@ -19,9 +19,9 @@ jobs:
      - name: Get latest CMake
        uses: lukka/get-cmake@latest
      - name: Installing Jinja2
-       run: python3 -m pip install Jinja2
+       run: python -m pip install Jinja2
      - name: Installing pytest
-       run: python3 -m pip install pytest
+       run: python -m pip install pytest
      - name: Running cmake (Linux)
        run: |
          ls ${{github.workspace}}
@@ -49,9 +49,9 @@ jobs:
      - name: Get latest CMake
        uses: lukka/get-cmake@latest
      - name: Installing Jinja2
-       run: python.exe -m pip install Jinja2
+       run: python -m pip install Jinja2
      - name: Installing pytest
-       run: python3 -m pip install pytest
+       run: python -m pip install pytest
      - name: Running cmake (Windows)
        run: |
          ls ${{github.workspace}}
