@@ -14,7 +14,7 @@ endif()
 
 set(TEMPLATE_FILE "wrapper_template.txt")
 set(TEMPLATE_FOLDER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/templates/")
-set(OUTPUT_PATH  "${CMAKE_SOURCE_DIR}/include/replace/wrappers")
+set(OUTPUT_PATH  "${CMAKE_SOURCE_DIR}/include/replace/")
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/templates/wrapper_template.txt" "${CMAKE_CURRENT_BINARY_DIR}/templates/wrapper_template.txt" COPYONLY)
 #file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/templates/wrapper_template.txt"

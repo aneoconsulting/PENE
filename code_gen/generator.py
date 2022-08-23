@@ -211,7 +211,14 @@ if __name__ == "__main__":
     print(os. getcwd())  #for debug purpose only
     pin_file_path=sys.argv[1] 
     template_file=sys.argv[2] 
-    output_path=sys.argv[3]
+    output=sys.argv[3]
+    
+    wrappers="wrappers"
+    output_path = os.path.join(output,wrappers)
+    path_exists=os.path.exists(output_path)
+    if not path_exists:
+        os.makedirs(output_path)
+        
     output_file_sse=os.path.join(output_path,"sse.h")
     output_file_avx=os.path.join(output_path,"avx.h")
     output_file_avx512=os.path.join(output_path,"avx512.h")
