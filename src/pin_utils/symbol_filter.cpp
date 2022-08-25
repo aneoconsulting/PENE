@@ -4,6 +4,7 @@
 #include <pin.H>
 #include <iostream>
 
+
 namespace pene
 {
   namespace pin_utils
@@ -108,7 +109,9 @@ namespace pene
             }
           }
           auto filename = line.substr(0, pos); 
-          //std::replace(filename.begin(), filename.end(), '/', '\\');
+          #if defined(_WIN32)
+              std::replace(filename.begin(), filename.end(), '/', '\\');
+          #endif
           std::string first = filename;
           std::string second = utils::trim(line.substr(pos + 1));
 
