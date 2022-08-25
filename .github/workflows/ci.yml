@@ -2,9 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: 
+     - main
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main"  ]
 
 jobs:
 
@@ -13,12 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - uses: actions/checkout@v1
+     - uses: actions/setup-python@v4
+       with:
+         python-version: '3.10' 
+     - name: Get latest CMake
+       uses: lukka/get-cmake@latest
+     - name: Installing Jinja2
+       run: python -m pip install Jinja2
+     - name: Installing pytest
+       run: python -m pip install pytest
      - name: Running cmake (Linux)
        run: |
          ls ${{github.workspace}}
          mkdir build
          cd build
-         cmake ..
+         cmake -DCMAKE_BUILD_TYPE=Debug ..
      - name: Build Solution (Linux)
        run: |
          cd build
@@ -26,7 +36,33 @@ jobs:
      - name: Testing (Linux)
        run: |
         cd build 
-        ctest --output-on-failure
+        ctest -C Debug --output-on-failure
+        
+  
+  Windows:
+    name: build-windows
+    runs-on: windows-latest
+    steps:
+     - uses: actions/checkout@v1
+     - uses: actions/setup-python@v4
+       with:
+         python-version: '3.10' 
+     - name: Get latest CMake
+       uses: lukka/get-cmake@latest
+     - name: Installing Jinja2
+       run: python -m pip install Jinja2
+     - name: Installing pytest
+       run: python -m pip install pytest
+     - name: Running cmake (Windows)
+       run: |
+         ls ${{github.workspace}}
+         cmake -DCMAKE_BUILD_TYPE=Debug .
+     - name: Build Solution (Windows)
+       run: |
+         cmake --build .
+     - name: Testing (Windows)
+       run: |
+        ctest -C Debug --output-on-failure
 
 
  
