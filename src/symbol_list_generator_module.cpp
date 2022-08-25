@@ -117,8 +117,9 @@ namespace pene{
       std::cerr << " KO: -gen-sym-mode should be either 0 or 1." << std::endl;
       return false;
     }
-
     std::cerr << " OK" << std::endl;
+    return true;
+    
   }
 
   void symbol_list_generator_module::init()
