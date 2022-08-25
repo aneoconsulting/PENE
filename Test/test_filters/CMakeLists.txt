@@ -29,7 +29,7 @@ set(TEST_LIST
 )
 
 if (TARGET_OS STREQUAL "Windows")
-    set(SYS_LIB_PATH "C:\Windows\SYSTEM32\*")
+    set(SYS_LIB_PATH "C:\\Windows\\SYSTEM32\\*")
 elseif(TARGET_OS STREQUAL "Linux")
     set(SYS_LIB_PATH "/lib/x86_64-linux-gnu/libc.so*")
 endif()
