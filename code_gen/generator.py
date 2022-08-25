@@ -235,11 +235,11 @@ if __name__ == "__main__":
 
     env = Environment(loader=FileSystemLoader('templates'),autoescape=False, trim_blocks=True,lstrip_blocks=True)
     template = env.get_template(template_file)
-    with open(output_file_sse, 'w') as f:
+    with open(output_file_sse, 'w+') as f:
         f.write(template.render(instructions=instructions_list_sse,architecture_name='sse'))
-    with open(output_file_avx, 'w') as f:
+    with open(output_file_avx, 'w+') as f:
         f.write(template.render(instructions=instructions_list_avx,architecture_name='avx'))
-    with open(output_file_avx512, 'w') as f:
+    with open(output_file_avx512, 'w+') as f:
         f.write(template.render(instructions=instructions_list_avx,architecture_name='avx512'))
 
 
