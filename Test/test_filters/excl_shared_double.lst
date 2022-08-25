@@ -1,2 +1,2 @@
 ${SHARED_LIB} shared_func_d
-C:\Windows\SYSTEM32\* *
+${SYSTEM_LIBRARIES_PATH} *

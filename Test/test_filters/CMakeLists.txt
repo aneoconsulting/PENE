@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.14)
 
 project(test_filters)
 
+set(TARGET_OS "${CMAKE_HOST_SYSTEM_NAME}")
 
 add_library(filter_shared_funs SHARED "shared_fun.cpp")
 set_property(TARGET filter_shared_funs PROPERTY CXX_STANDARD 17)
@@ -27,6 +28,11 @@ set(TEST_LIST
               test_filters.filters_tests.test_excl_tree_func_f
 )
 
+if (TARGET_OS STREQUAL "Windows")
+    set(SYS_LIB_PATH "C:\Windows\SYSTEM32\*")
+elseif(TARGET_OS STREQUAL "Linux")
+    set(SYS_LIB_PATH "/lib/x86_64-linux-gnu/libc.so*")
+endif()
 
 foreach(test_script ${TEST_SCRIPTS})
     add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${test_script}
@@ -38,6 +44,7 @@ foreach(test_script ${TEST_SCRIPTS})
               -D PINTOOL=$<TARGET_FILE:pene>
               -D PIN_EXECUTABLE=$<TARGET_FILE:pin>
               -D PIN=$<TARGET_FILE:pin>
+              -D SYSTEM_LIBRARIES_PATH=${SYS_LIB_PATH}
               -P ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
       DEPENDS
         ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake

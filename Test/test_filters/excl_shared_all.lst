@@ -1,2 +1,2 @@
 ${SHARED_LIB} *
-C:\Windows\SYSTEM32\* *
+${SYSTEM_LIBRARIES_PATH} *

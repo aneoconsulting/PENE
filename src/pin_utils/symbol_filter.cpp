@@ -108,7 +108,7 @@ namespace pene
             }
           }
           auto filename = line.substr(0, pos); 
-          std::replace(filename.begin(), filename.end(), '/', '\\');
+          //std::replace(filename.begin(), filename.end(), '/', '\\');
           std::string first = filename;
           std::string second = utils::trim(line.substr(pos + 1));
 
