@@ -4,8 +4,19 @@ project(counters_module)
 
 add_executable(test_counters_executable "test_counters_executable.cpp")
 set_property(TARGET test_counters_executable PROPERTY CXX_STANDARD 17)
-#add_compile_options(-mavx512f)
-set(CMAKE_CXX_FLAGS "-mavx512f -mfma")
+set(CMAKE_CXX_FLAGS "-mfma")
+
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("/arch:AVX512" COMPILER_SUPPORTS_ARCH_AVX512)
+if(COMPILER_SUPPORTS_ARCH_AVX512)
+  target_compile_options(test_counters_executable PUBLIC "/arch:AVX512")
+else()
+  CHECK_CXX_COMPILER_FLAG("-mavx512f" COMPILER_SUPPORTS_MAVX512F)
+  if(COMPILER_SUPPORTS_MAVX512F)
+    target_compile_options(test_counters_executable PUBLIC "-mavx512f")
+   endif()
+endif()
+
 
 set(TEST_SCRIPTS test_flags.py testCounterGenerator.py 
     test_trace_counters.py test_trace_counters_tls.py 
