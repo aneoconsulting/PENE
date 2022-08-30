@@ -108,6 +108,15 @@ namespace pene
                      IARG_MULTI_ELEMENT_OPERAND,2,
                      IARG_UINT32,i,
                      IARG_END);
+                     INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}},OPERATION_IMPL::{{instruction.op_type}}_{{instruction.ins_precision.associated_type}}>,
+                     {%+ if instruction.operands[offset].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset}}){%+ elif  instruction.operands[offset].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                     {%+ if instruction.operands[offset+1].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset+1}}){%+ elif  instruction.operands[offset+1].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                     IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                     IARG_PTR, backend_ctx,
+                     IARG_UINT32,i,
+                     IARG_END
+                     );
+
                      }
                     }
                   }
