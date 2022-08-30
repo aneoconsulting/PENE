@@ -4,7 +4,7 @@ project(counters_module)
 
 add_executable(test_counters_executable "test_counters_executable.cpp")
 set_property(TARGET test_counters_executable PROPERTY CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-mfma")
+
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("/arch:AVX512" COMPILER_SUPPORTS_ARCH_AVX512)
@@ -17,6 +17,10 @@ else()
    endif()
 endif()
 
+CHECK_CXX_COMPILER_FLAG("-mfma" COMPILER_SUPPORTS_ARCH_MFMA)
+if(COMPILER_SUPPORTS_ARCH_MFMA)
+  target_compile_options(test_counters_executable PUBLIC "-mfma")
+endif()
 
 set(TEST_SCRIPTS test_flags.py testCounterGenerator.py 
     test_trace_counters.py test_trace_counters_tls.py 
