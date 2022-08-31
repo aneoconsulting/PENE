@@ -237,7 +237,7 @@ if __name__ == "__main__":
     with open(output_file_avx, 'w+') as f:
         f.write(template.render(instructions=instructions_list_avx,architecture_name='avx'))
     with open(output_file_avx512, 'w+') as f:
-        f.write(template.render(instructions=instructions_list_avx,architecture_name='avx512'))
+        f.write(template.render(instructions=instructions_list_avx512,architecture_name='avx512'))
 
 
    
