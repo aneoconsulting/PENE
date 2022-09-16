@@ -13,6 +13,8 @@ else()
     message(FATAL_ERROR "Could not find PIN.")
 endif()
 
+set(CMAKE_CXX_FLAGS "-DVERROU_NUM_AVG=2 -DVERROU_DET_HASH=vr_mersenne_twister_hash")
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Set source files
@@ -21,7 +23,8 @@ set(SOURCES "pene.cpp" "module.cpp" "version_module.cpp"  "utils/match.cpp"
 			"symbol_list_generator_module.cpp" "replace_module.cpp" 
 			"pin_utils/instrumenter.cpp" "pin_utils/filter.cpp" 
 			"pin_utils/element_instrumenter.cpp" "pin_utils/symbol_filter.cpp" 
-			"pin_utils/source_filter.cpp"
+			"pin_utils/source_filter.cpp" 
+			"replace/backend/backend_verrou/interflop_verrou.cxx" "replace/backend/backend_verrou/tinymt64.c"
 			)
 set(PIN_TOOL pene)
 
