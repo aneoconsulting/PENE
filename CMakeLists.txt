@@ -92,6 +92,7 @@ endif()
 # Include sub-projects.
 
 include_directories("include")
+include_directories("include/replace/backend/backend_verrou")
 add_subdirectory("code_gen")
 add_subdirectory ("src")
 add_subdirectory ("Test/test_version")

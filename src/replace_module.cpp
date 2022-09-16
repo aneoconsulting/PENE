@@ -10,12 +10,13 @@
 #include "replace/backend/ieee.h"
 #include "replace/backend/double2float.h"
 #include "replace/backend/test_backend.h"
+#include "replace/backend/backend_verrou/interflop_verrou.h"
 #include "replace/wrappers/sse.h"
 #include "replace/wrappers/avx.h"
 #include "replace/wrappers/avx512.h"
 
 #include "pin_utils/insert_call.h"
-#include "pin_utils/instrumenter.h"
+#include "pin_utils/instrumenter.h" 
 #include "pin_utils/symbol_filters.h"
 
 
@@ -41,6 +42,12 @@ namespace pene {
       DEBUG_ADD_MULL_SWAP,
       DEBUG_END
     };
+    enum rounding_mode{
+      NEAREST,
+      UPWARD,
+      DOWNWARD,
+      TOWARD_ZERO
+    };
 
     template<class OPERATION_IMPL>
     class replace_inst_instrumenters final : public element_instrumenter
@@ -56,8 +63,14 @@ namespace pene {
         , tmp_reg1(PIN_ClaimToolRegister())
         , tmp_reg2(PIN_ClaimToolRegister())
         , tmp_reg_output(PIN_ClaimToolRegister())
-        , backend_ctx(OPERATION_IMPL::init())
+        //, backend_ctx(OPERATION_IMPL::init())
       {
+           //struct pene::replace::backend::verrou ifverrou=pene::replace::backend::init(&backend_ctx);
+           pene::replace::backend::configure(pene::replace::backend::VR_RANDOM,backend_ctx);
+           uint64_t seed=0;
+           seed=6030000057;
+           pene::replace::backend::verrou_set_seed (seed);
+           
         if (!REG_valid(tmp_reg1) || !REG_valid(tmp_reg2) || !REG_valid(tmp_reg_output))
         {
           std::cerr << "Cannot allocate a scratch register.\n";
@@ -182,40 +195,60 @@ namespace pene {
     auto mode = (replace_module_internals::replace_modes)knob_replace_mode.Value();
     switch (mode) {
     case replace_module_internals::replace_modes::NONE:
+      {
       std::cerr << "fp-replace None mode : no instrumenation" << std::endl;
       break;
+      }
     case replace_module_internals::replace_modes::IEEE:
+      {
       std::cerr << "fp-replace ieee mode : instrumentation should not change anything" << std::endl;
       data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::ieee>(), filter);
       data->TRACE_AddInstrumentFunction();
       break;
+      }
     case replace_module_internals::replace_modes::DOUBLE2FLOAT:
+      {
       std::cerr << "fp-replace double2float mode : double precision instructions are replaced by single precision ones" << std::endl;
       data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::double2float>(), filter);
       data->TRACE_AddInstrumentFunction();
       break;
+      }
     case replace_module_internals::replace_modes::RANDOM_ROUNDING:
+      {
       std::cerr << "fp-replace random rounding mode : rounding mode is randomly changed for each instruction" << std::endl;
       std::cerr << "random rounding mode not working yet. Exiting now" << std::endl;
-      PIN_WriteErrorMessage("random rounding mode not working yet. Exiting now", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_FATAL, 0);
-      PIN_ExitApplication(1);
+      //void* context;
+      //struct pene::replace::backend::verrou ifverrou=pene::replace::backend::init(&context);
+      //pene::replace::backend::configure(pene::replace::backend::VR_NEAREST,context);
+      auto verrou_replace_instrmenter = new replace_module_internals::replace_inst_instrumenters<typename replace::backend::verrou>();
+      data = new instrumenter(verrou_replace_instrmenter, filter);
+      data->TRACE_AddInstrumentFunction();
+      //PIN_WriteErrorMessage("random rounding mode not working yet. Exiting now", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_FATAL, 0);
+      //PIN_ExitApplication(1);
       break;
+      }
     case replace_module_internals::replace_modes::DEBUG_FLOAT_ADD_MULL_SWAP:
+      {
       std::cerr << "fp-replace single precision debug mode - swapping single precision additions and multiplications" << std::endl;
       OutFile << "fp-replace single precision debug mode - swapping single precision additions and multiplications" << std::endl;
       data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::invert_add_mul_float_impl>(), filter);
       data->TRACE_AddInstrumentFunction();
       break;
+      }
     case replace_module_internals::replace_modes::DEBUG_ADD_MULL_SWAP:
+      {
       std::cerr << "fp-replace fp debug mode - swapping fp additions and multiplications" << std::endl;
       data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::invert_add_mul_impl>(), filter);
       data->TRACE_AddInstrumentFunction();
       break;
+      }
     case replace_module_internals::replace_modes::TEST:
+       {
        std::cerr << "fp-replace fp test mode -  using test backend" << std::endl;
        data = new instrumenter(new replace_module_internals::replace_inst_instrumenters<replace::backend::test_backend>(), filter);
        data->TRACE_AddInstrumentFunction();
        break;
+       }
     default:
       std::cerr << "no replacement mode" << std::endl;
       break;
