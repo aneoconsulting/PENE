@@ -24,7 +24,7 @@ set(SOURCES "pene.cpp" "module.cpp" "version_module.cpp"  "utils/match.cpp"
 			"pin_utils/instrumenter.cpp" "pin_utils/filter.cpp" 
 			"pin_utils/element_instrumenter.cpp" "pin_utils/symbol_filter.cpp" 
 			"pin_utils/source_filter.cpp" 
-			"replace/backend/backend_verrou/interflop_verrou.cxx" "replace/backend/backend_verrou/tinymt64.c"
+			"replace/backend/backend_verrou/interflop_verrou.cpp" "replace/backend/backend_verrou/tinymt64.cpp"
 			)
 set(PIN_TOOL pene)
 

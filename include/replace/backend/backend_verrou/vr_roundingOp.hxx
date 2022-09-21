@@ -534,6 +534,7 @@ public:
 #ifdef DEBUG_PRINT_OP
     print_debug(p,res);
 #endif
+/*
     if (isNanInf(*res)) {
       if(isNan(*res)){
 	vr_nanHandler();
@@ -542,6 +543,7 @@ public:
 	vr_infHandler();
       }
     }
+    */
   }
 
 #ifdef DEBUG_PRINT_OP
