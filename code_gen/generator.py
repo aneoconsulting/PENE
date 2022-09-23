@@ -43,7 +43,7 @@ class instruction:
         self.isfma_avx512=True
     
         
-list_operations =['add', 'sub', 'mul', 'div', 'fmadd', 'fnmadd', 'fmsub', 'fnmsub' ]
+list_operations =['add', 'sub', 'mul', 'div', 'fmadd', 'fnmadd', 'fmsub', 'fnmsub', 'fmaddsub', 'fmsubadd' ]
 class Op(Enum):
     add = 'add'
     sub = 'sub'
@@ -53,6 +53,8 @@ class Op(Enum):
     fnmadd = 'fnmadd'
     fmsub = 'fmsub'
     fnmsub = 'fnmsub'
+    fmaddsub = 'fmaddsub'
+    fmsubadd = 'fmsubadd'
     #cmp='cmp'
 class op_prec(Enum):
     float = 1
@@ -198,7 +200,7 @@ def get_eff_operands(ins):
 
 def isfma(mnemonic):
     if( not isfma_amd(mnemonic) ):
-        if(mnemonic.startswith("VFMADD") and not mnemonic.startswith("VFMADDSUB")) or (mnemonic.startswith("VFNMADD")) or (mnemonic.startswith("VFMSUB") and not mnemonic.startswith("VFMSUBADD")) or (mnemonic.startswith("VFNMSUB")):
+        if(mnemonic.startswith("VFMADD")) or (mnemonic.startswith("VFMADDSUB")) or (mnemonic.startswith("VFNMADD")) or (mnemonic.startswith("VFMSUB")) or (mnemonic.startswith("VFMSUBADD")) or (mnemonic.startswith("VFNMSUB")):
             return True
         else:
             return False
@@ -210,7 +212,7 @@ def isfma_amd(mnemonic):
         if(len(mnemonic) < 9):
             return True
         else:
-            if(mnemonic.startswith("VFMADDSUB") or mnemonic.startswith("VFMADDSUB")):
+            if(mnemonic.startswith("VFMADDSUB") or mnemonic.startswith("VFMSUBADD")):
                 if(len(mnemonic) < 12):
                     return True
                 else:
@@ -299,7 +301,11 @@ if __name__ == "__main__":
     instructions_list_fma=[]
     token_parser(pin_file_path,instructions_list_sse,instructions_list_avx,instructions_list_avx512, instructions_list_fma)
     total_size = len(instructions_list_sse) + len(instructions_list_avx) + len(instructions_list_avx512) + len(instructions_list_fma)
-
+    print(len(instructions_list_sse))
+    print(len(instructions_list_avx))
+    print(len(instructions_list_avx512))
+    print(len(instructions_list_fma))
+    print(total_size)
 
 
     env = Environment(loader=FileSystemLoader('templates'),autoescape=False, trim_blocks=True,lstrip_blocks=True)

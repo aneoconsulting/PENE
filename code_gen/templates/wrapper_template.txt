@@ -7,6 +7,19 @@
     {%- endif -%}    
 {%- endmacro -%}
 
+{%- macro which_fct_for_odd(optype) -%}
+    {%- if optype == "fmaddsub" -%}call_backend_fct_fmsub
+    {%- elif optype == "fmsubadd" -%} call_backend_fct_fmadd
+    {%- endif -%}    
+{%- endmacro -%}
+
+{%- macro which_fct_for_even(optype) -%}
+    {%- if optype == "fmaddsub" -%}call_backend_fct_fmadd
+    {%- elif optype == "fmsubadd" -%} call_backend_fct_fmsub
+    {%- endif -%}    
+{%- endmacro -%}
+
+
 #pragma once
 #include <pin.H>
 extern "C"
@@ -205,6 +218,7 @@ namespace pene
                     {% elif instruction.ins_isa == "fma" %}
                     {% if  instruction.isfma_avx512 == False  %}
                     for(int i=0;i< {{instruction.nb_elements}};i++)
+                      {%if instruction.optype != "fmaddsub" and instruction.optype != "fmsubadd" %}
                       {
                       INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_to_call(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
                       {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
@@ -216,11 +230,41 @@ namespace pene
                       IARG_END
                       );
                       }
+                      {% else %}
+                      {
+                      if(i % 2 == 0)
+                      {
+                      INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_for_even(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      }
+                      else
+                      {
+                      INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_for_odd(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      }
+                      }
+                      {% endif %}
+                      
                     {% elif instruction.isfma_avx512 == True %}
                     for(int i=0;i< {{instruction.nb_elements}};i++)
                     if(!ismasking || !REG_valid(mask_reg))
                      {
                      for(int i=0;i< {{instruction.nb_elements}};i++)
+                     {%if instruction.optype != "fmaddsub" and instruction.optype != "fmsubadd" %}
                       {
                       INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_to_call(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
                       {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
@@ -232,6 +276,35 @@ namespace pene
                       IARG_END
                       );
                       }
+                      {% else %}
+                      {
+                      if(i % 2 == 0)
+                      {
+                      INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_for_even(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      }
+                      else
+                      {
+                      INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_for_odd(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      }
+                      }
+                      {% endif %} 
+
                    }
                    else 
                     {
@@ -254,6 +327,7 @@ namespace pene
                       IARG_MULTI_ELEMENT_OPERAND, 2,
                       IARG_UINT32,i,
                       IARG_END);
+                      {%if instruction.optype != "fmaddsub" and instruction.optype != "fmsubadd" %}
                       INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_to_call(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
                       {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
@@ -263,6 +337,29 @@ namespace pene
                       IARG_UINT32, i,
                       IARG_END
                       );
+                      {% else %}
+                      if(i % 2 == 0)
+                      INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_for_even(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      else
+                      INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_for_odd(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      {% endif %}
+
                       }
                      }
                      else
@@ -273,6 +370,7 @@ namespace pene
                       IARG_MULTI_ELEMENT_OPERAND, 2,
                       IARG_UINT32, i,
                       IARG_END);
+                      {%if instruction.optype != "fmaddsub" and instruction.optype != "fmsubadd" %}
                       INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_to_call(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
                       {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
@@ -282,6 +380,28 @@ namespace pene
                       IARG_UINT32, i,
                       IARG_END
                       );
+                      {% else %}
+                      if(i % 2 == 0)
+                      INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_for_even(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      else
+                      INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_for_odd(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      {% endif %}
 
                      }
                     }
