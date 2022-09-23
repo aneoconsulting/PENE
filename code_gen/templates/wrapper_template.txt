@@ -1,4 +1,12 @@
 
+{%- macro which_fct_to_call(optype) -%}
+    {%- if optype == "fmadd" -%}call_backend_fct_fmadd
+    {%- elif optype == "fnmadd" -%} call_backend_fct_fnmadd
+    {%- elif optype == "fmsub" -%}call_backend_fct_fmsub
+    {%- elif optype == "fnmsub" -%} call_backend_fct_fnmsub
+    {%- endif -%}    
+{%- endmacro -%}
+
 #pragma once
 #include <pin.H>
 extern "C"
@@ -16,15 +24,17 @@ namespace pene
       namespace {{architecture_name}}
       {
         
+        {% if architecture_name != "fma" %}
         template<typename T, void (*backend_fct)(T, T, T*,void*)>
-        void call_backend_fct(T* const a, T* const b, T* c,void* ctx,int i)
+        void call_backend_fct(T* const a, T* const b, T* c, void* ctx, int i)
         {
-            backend_fct(a[i],b[i],&c[i],ctx);
+            backend_fct(a[i], b[i], &c[i], ctx);
         }
+        {% endif %}
 
-        {% if architecture_name == "avx512"%}
+        {% if architecture_name == "avx512" or architecture_name == "fma" %}
         template<typename T>
-        void PIN_FAST_ANALYSIS_CALL zero_reg_at_position(T* dst,int pos)
+        void PIN_FAST_ANALYSIS_CALL zero_reg_at_position(T* dst, int pos)
         {
         dst[pos]=0;
         }
@@ -37,15 +47,40 @@ namespace pene
           return OpInfo->ElementMaskValue(pos)==0;
         }
         {% endif %}
+        
+        {% if architecture_name == "fma" %}
+        template<typename T, void (*backend_fct_fmadd)(T, T, T, T*,void*)>
+        void call_backend_fct_fmadd(T* const a, T* const b, T* const c, T* d, void* ctx, int i)
+        {
+            backend_fct_fmadd(a[i], b[i], c[i], &d[i], ctx);
+        }
+
+        template<typename T, void (*backend_fct_fnmadd)(T, T, T, T*,void*)>
+        void call_backend_fct_fnmadd(T* const a, T* const b, T* const c, T* d, void* ctx, int i)
+        {
+            backend_fct_fnmadd(-a[i], b[i], c[i], &d[i], ctx);
+        }
+        
+         template<typename T, void (*backend_fct_fmsub)(T, T, T, T*,void*)>
+        void call_backend_fct_fmsub(T* const a, T* const b, T* const c, T* d, void* ctx, int i)
+        {
+            backend_fct_fmsub(a[i], b[i], -c[i], &d[i], ctx);
+        }
+
+        template<typename T, void (*backend_fct_fnmsub)(T, T, T, T*,void*)>
+        void call_backend_fct_fnmsub(T* const a, T* const b, T* const c, T* d, void* ctx, int i)
+        {
+            backend_fct_fnmsub(-a[i], b[i], -c[i], &d[i], ctx);
+        }
+        {% endif %}
 
         template <typename OPERATION_IMPL>
         void instrument(void* backend_ctx, INS ins)
         {
           auto xed = INS_XedDec(ins); // TODO check that pointer does not need to be freed
           auto iform = xed_decoded_inst_get_iform_enum(xed);
-          {% if architecture_name == "avx512" %}
+          {% if architecture_name == "avx512" or architecture_name == "fma" %}
           bool ismasking=xed_decoded_inst_masking(xed);
-          bool ismerging=xed_decoded_inst_merging(xed);
           bool iszeroing=xed_decoded_inst_zeroing(xed);
           REG mask_reg = INS_MaskRegister(ins); 
           {% endif %}
@@ -62,13 +97,38 @@ namespace pene
               {%- elif  instruction.ins_isa == "avx512" %}
                 {% set offset=2 %}   
               {% endif %}
+
+              {% if instruction.ins_isa == "fma" %}
+                {% if instruction.isfma_avx512 == False %}
+                  {% set fma_first =  instruction.fma_order[0] - 1  %}
+                  {% set fma_second =  instruction.fma_order[1] - 1  %}
+                  {% set fma_third =  instruction.fma_order[2] - 1 %}
+                {% elif instruction.isfma_avx512 == True %}
+                  {% if instruction.fma_order[0] == 1 %}
+                      {% set fma_first = 0  %}
+                  {% else %}
+                      {% set fma_first = instruction.fma_order[0] %}
+                  {% endif %}
+
+                  {% if instruction.fma_order[1] == 1 %}
+                      {% set fma_second = 0  %}
+                  {% else %}
+                      {% set fma_second = instruction.fma_order[1] %}
+                  {% endif %}
+
+                  {% if instruction.fma_order[2] == 1 %}
+                      {% set fma_third = 0 %}
+                  {% else %}
+                      {% set fma_third = instruction.fma_order[2] %}
+                  {% endif %}
+                {% endif %}
+              {% endif %}
               
               case xed_iform_enum_t::{{instruction.token}}:
-                OutFile << "Reached fp instruction" << std::endl;
                   {% if instruction.ins_isa == "sse" or instruction.ins_isa == "avx" %}
                     for(int i=0;i< {{instruction.nb_elements}};i++)
                       {
-                      INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}},OPERATION_IMPL::{{instruction.op_type}}_{{instruction.ins_precision.associated_type}}>,
+                      INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::{{instruction.optype}}_{{instruction.ins_precision.associated_type}}>,
                       {%+ if instruction.operands[offset].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset}}){%+ elif  instruction.operands[offset].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       {%+ if instruction.operands[offset+1].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset+1}}){%+ elif  instruction.operands[offset+1].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       IARG_REG_REFERENCE, INS_OperandReg(ins,0),
@@ -82,7 +142,7 @@ namespace pene
                    {
                      for(int i=0;i< {{instruction.nb_elements}};i++)
                       {
-                      INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}},OPERATION_IMPL::{{instruction.op_type}}_{{instruction.ins_precision.associated_type}}>,
+                      INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::{{instruction.optype}}_{{instruction.ins_precision.associated_type}}>,
                       {%+ if instruction.operands[offset].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset}}){%+ elif  instruction.operands[offset].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       {%+ if instruction.operands[offset+1].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset+1}}){%+ elif  instruction.operands[offset+1].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       IARG_REG_REFERENCE, INS_OperandReg(ins,0),
@@ -100,25 +160,25 @@ namespace pene
                      {
                       INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_notset,
                       IARG_FAST_ANALYSIS_CALL,
-                      IARG_MULTI_ELEMENT_OPERAND,2,
+                      IARG_MULTI_ELEMENT_OPERAND, 2,
                       IARG_UINT32,i,
                       IARG_END);
                       INS_InsertThenCall(ins, IPOINT_BEFORE, (AFUNPTR)zero_reg_at_position<{{instruction.ins_precision.associated_type}}>,
                       IARG_FAST_ANALYSIS_CALL,
-                      IARG_REG_REFERENCE,INS_OperandReg(ins,0),
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
                       IARG_UINT32,i,
                       IARG_END);
                       INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_set,
                       IARG_FAST_ANALYSIS_CALL,
-                      IARG_MULTI_ELEMENT_OPERAND,2,
+                      IARG_MULTI_ELEMENT_OPERAND, 2,
                       IARG_UINT32,i,
                       IARG_END);
-                      INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}},OPERATION_IMPL::{{instruction.op_type}}_{{instruction.ins_precision.associated_type}}>,
+                      INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::{{instruction.optype}}_{{instruction.ins_precision.associated_type}}>,
                       {%+ if instruction.operands[offset].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset}}){%+ elif  instruction.operands[offset].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       {%+ if instruction.operands[offset+1].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset+1}}){%+ elif  instruction.operands[offset+1].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       IARG_REG_REFERENCE, INS_OperandReg(ins,0),
                       IARG_PTR, backend_ctx,
-                      IARG_UINT32,i,
+                      IARG_UINT32, i,
                       IARG_END
                       );
                       }
@@ -128,20 +188,104 @@ namespace pene
                       {
                       INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_set,
                       IARG_FAST_ANALYSIS_CALL,
-                      IARG_MULTI_ELEMENT_OPERAND,2,
-                      IARG_UINT32,i,
+                      IARG_MULTI_ELEMENT_OPERAND, 2,
+                      IARG_UINT32, i,
                       IARG_END);
-                      INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}},OPERATION_IMPL::{{instruction.op_type}}_{{instruction.ins_precision.associated_type}}>,
+                      INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR)call_backend_fct<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::{{instruction.optype}}_{{instruction.ins_precision.associated_type}}>,
                       {%+ if instruction.operands[offset].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset}}){%+ elif  instruction.operands[offset].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       {%+ if instruction.operands[offset+1].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset+1}}){%+ elif  instruction.operands[offset+1].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       IARG_REG_REFERENCE, INS_OperandReg(ins,0),
                       IARG_PTR, backend_ctx,
-                      IARG_UINT32,i,
+                      IARG_UINT32, i,
                       IARG_END
                       );
 
                      }
                     }
+                    {% elif instruction.ins_isa == "fma" %}
+                    {% if  instruction.isfma_avx512 == False  %}
+                    for(int i=0;i< {{instruction.nb_elements}};i++)
+                      {
+                      INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_to_call(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind == 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      }
+                    {% elif instruction.isfma_avx512 == True %}
+                    for(int i=0;i< {{instruction.nb_elements}};i++)
+                    if(!ismasking || !REG_valid(mask_reg))
+                     {
+                     for(int i=0;i< {{instruction.nb_elements}};i++)
+                      {
+                      INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_to_call(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      }
+                   }
+                   else 
+                    {
+                     if(iszeroing)
+                     {
+                     for(int i=0;i< {{instruction.nb_elements}};i++)
+                     {
+                      INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_notset,
+                      IARG_FAST_ANALYSIS_CALL,
+                      IARG_MULTI_ELEMENT_OPERAND, 2,
+                      IARG_UINT32,i,
+                      IARG_END);
+                      INS_InsertThenCall(ins, IPOINT_BEFORE, (AFUNPTR)zero_reg_at_position<{{instruction.ins_precision.associated_type}}>,
+                      IARG_FAST_ANALYSIS_CALL,
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_UINT32,i,
+                      IARG_END);
+                      INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_set,
+                      IARG_FAST_ANALYSIS_CALL,
+                      IARG_MULTI_ELEMENT_OPERAND, 2,
+                      IARG_UINT32,i,
+                      IARG_END);
+                      INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_to_call(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+                      }
+                     }
+                     else
+                      for(int i=0;i< {{instruction.nb_elements}};i++)
+                      {
+                      INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_set,
+                      IARG_FAST_ANALYSIS_CALL,
+                      IARG_MULTI_ELEMENT_OPERAND, 2,
+                      IARG_UINT32, i,
+                      IARG_END);
+                      INS_InsertThenCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_to_call(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
+                      {%+ if instruction.operands[fma_first].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_first}}){%+ elif  instruction.operands[fma_first].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_second].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_second}}){%+ elif  instruction.operands[fma_second].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      {%+ if instruction.operands[fma_third].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{fma_third}}){%+ elif  instruction.operands[fma_third].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
+                      IARG_REG_REFERENCE, INS_OperandReg(ins,0),
+                      IARG_PTR, backend_ctx,
+                      IARG_UINT32, i,
+                      IARG_END
+                      );
+
+                     }
+                    }
+                  {% endif %}
                   {% endif %}
                 INS_Delete(ins);
                 break;

@@ -38,12 +38,12 @@ if (NOT ${Python_FOUND})
 endif ()
 
 
-add_custom_command(OUTPUT "${OUTPUT_PATH}/sse.h" "${OUTPUT_PATH}/avx.h" 
+add_custom_command(OUTPUT "${OUTPUT_PATH}/sse.h" "${OUTPUT_PATH}/avx.h" "${OUTPUT_PATH}/avx512.h" "${OUTPUT_PATH}/fma.h"
                    COMMAND ${Python_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/generator.py" ${args_list}
                    DEPENDS  "${CMAKE_CURRENT_SOURCE_DIR}/generator.py" ${ENUM_FILE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/templates/wrapper_template.txt" 
                    COMMENT "Generating files"
                    VERBATIM)
-add_library(instr STATIC "${OUTPUT_PATH}/sse.h" "${OUTPUT_PATH}/avx.h" "${CMAKE_CURRENT_SOURCE_DIR}/just_for_cmake.cpp" )
+add_library(instr STATIC "${OUTPUT_PATH}/sse.h" "${OUTPUT_PATH}/avx.h" "${OUTPUT_PATH}/avx512.h" "${OUTPUT_PATH}/fma.h" "${CMAKE_CURRENT_SOURCE_DIR}/just_for_cmake.cpp" )
 
 
 

@@ -14,6 +14,7 @@
 #include "replace/wrappers/sse.h"
 #include "replace/wrappers/avx.h"
 #include "replace/wrappers/avx512.h"
+#include "replace/wrappers/fma.h"
 
 #include "pin_utils/insert_call.h"
 #include "pin_utils/instrumenter.h" 
@@ -89,6 +90,9 @@ namespace pene {
           break;
         case xed_category_enum_t::XED_CATEGORY_AVX512:
           replace::wrappers::avx512::instrument<OPERATION_IMPL>(backend_ctx, ins);
+          break;
+        case xed_category_enum_t::XED_CATEGORY_VFMA:
+          replace::wrappers::fma::instrument<OPERATION_IMPL>(backend_ctx, ins);
           break;
         default:
           break;

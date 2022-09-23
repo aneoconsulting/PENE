@@ -1,6 +1,7 @@
 #pragma once
 #include<cstdint>
 #include<ios>
+#include <cmath>
 
 namespace pene
 {
@@ -53,6 +54,15 @@ namespace pene
           ans |= 0x4;
           *cptr=bit_cast<float,uint32_t>(ans);
            }
+         
+         static void madd_float(float a, float b, float c, float* cptr, void*) noexcept
+          {
+           float temp =fma(a,b,c);
+           auto  ans=bit_cast<uint32_t,float>(temp);
+           ans &= 0xfffffff0;
+           ans |= 0x9;
+           *cptr=bit_cast<float,uint32_t>(ans);
+           }
 
          static void add_double(double a, double b, double* cptr, void*) noexcept
         { 
@@ -85,6 +95,15 @@ namespace pene
           ans &= 0xfffffffffffffff0;
           ans |= 0x8;
           *cptr=bit_cast<double,uint64_t>(ans);
+         }
+         static void madd_double(double a, double b, double c, double* cptr, void*) noexcept 
+         { 
+          double temp = fma(a,b,c);
+          auto  ans=bit_cast<uint64_t,double>(temp);
+          ans &= 0xfffffffffffffff0;
+          ans |= 0xa;
+          *cptr=bit_cast<double,uint64_t>(ans);
+          *cptr=fma(a,b,c); 
          }
         static void* init() noexcept { return nullptr; }
       };
