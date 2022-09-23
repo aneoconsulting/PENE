@@ -26,6 +26,7 @@ extern "C"
 {
 # include <xed-decoded-inst-api.h>
 }
+#include<iostream>
 
 
 namespace pene 
@@ -138,6 +139,7 @@ namespace pene
               {% endif %}
               
               case xed_iform_enum_t::{{instruction.token}}:
+                {
                   {% if instruction.ins_isa == "sse" or instruction.ins_isa == "avx" %}
                     for(int i=0;i< {{instruction.nb_elements}};i++)
                       {
@@ -409,9 +411,10 @@ namespace pene
                   {% endif %}
                 INS_Delete(ins);
                 break;
+                }
             {% endfor %}
-            default:
-              return;
+            default: break;
+            
 
                   
           }

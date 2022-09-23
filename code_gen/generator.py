@@ -301,11 +301,11 @@ if __name__ == "__main__":
     instructions_list_fma=[]
     token_parser(pin_file_path,instructions_list_sse,instructions_list_avx,instructions_list_avx512, instructions_list_fma)
     total_size = len(instructions_list_sse) + len(instructions_list_avx) + len(instructions_list_avx512) + len(instructions_list_fma)
-    print(len(instructions_list_sse))
-    print(len(instructions_list_avx))
-    print(len(instructions_list_avx512))
-    print(len(instructions_list_fma))
-    print(total_size)
+    #print(len(instructions_list_sse))
+    #print(len(instructions_list_avx))
+    #print(len(instructions_list_avx512))
+    #print(len(instructions_list_fma))
+    #print(total_size)
 
 
     env = Environment(loader=FileSystemLoader('templates'),autoescape=False, trim_blocks=True,lstrip_blocks=True)
