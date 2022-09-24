@@ -13,7 +13,11 @@ else()
     message(FATAL_ERROR "Could not find PIN.")
 endif()
 
-set(CMAKE_CXX_FLAGS "-DVERROU_NUM_AVG=2 -DVERROU_DET_HASH=vr_mersenne_twister_hash")
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-mfma" COMPILER_SUPPORTS_ARCH_MFMA)
+if(COMPILER_SUPPORTS_ARCH_MFMA)
+  set(CMAKE_CXX_FLAGS "-mfma")
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 

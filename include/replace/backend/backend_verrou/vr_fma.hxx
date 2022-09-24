@@ -33,8 +33,10 @@
 
 #pragma once
 
-#ifdef    USE_VERROU_FMA
+#define   USE_VERROU_FMA
+//#ifdef USE_VERROU_FMA
 #include  <immintrin.h>
+#include <iostream>
 //#include  <fmaintrin.h>
 
 template<class REALTYPE>
@@ -66,4 +68,4 @@ inline float vr_fma<float>(const float& a, const float& b, const float& c){
   d=_mm_cvtss_f32(di);
   return d;
 }
-#endif //USE_VERROU_FMA
+//#endif //USE_VERROU_FMA

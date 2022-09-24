@@ -34,6 +34,7 @@
 #pragma once
 
 #include "vr_isNan.hxx"
+#define USE_VERROU_FMA
 
 enum opHash : uint32_t{
   addHash=0,

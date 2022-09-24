@@ -1,6 +1,8 @@
 //#include <pin.H>
 #include <iostream>
 #include <cassert>
+#include <time.h>
+
 
 
 #include "replace_module.h"
@@ -35,7 +37,7 @@ namespace pene {
       NONE = 0,
       IEEE,
       DOUBLE2FLOAT,
-      RANDOM_ROUNDING,
+      VERROU,
       TEST,
       END_PUBLIC,
       DEBUG = 100,
@@ -43,11 +45,22 @@ namespace pene {
       DEBUG_ADD_MULL_SWAP,
       DEBUG_END
     };
-    enum rounding_mode{
+    enum rounding_modes : int{
+      NOTSPECIFIED = 0,
       NEAREST,
       UPWARD,
       DOWNWARD,
-      TOWARD_ZERO
+      ZERO,
+      RANDOM, 
+      RANDOM_DET,
+      RANDOM_COMDET,
+      AVERAGE,
+      AVERAGE_DET,
+      AVERAGE_COMDET,
+      FARTHEST,
+      FLOAT,
+      NATIVE,
+      FTZ
     };
 
     template<class OPERATION_IMPL>
@@ -56,9 +69,9 @@ namespace pene {
       REG tmp_reg1;
       REG tmp_reg2;
       REG tmp_reg_output;
-      void* backend_ctx;
-
+  
     public:
+      void* backend_ctx;
       replace_inst_instrumenters()
         : element_instrumenter()
         , tmp_reg1(PIN_ClaimToolRegister())
@@ -67,11 +80,6 @@ namespace pene {
         //, backend_ctx(OPERATION_IMPL::init())
       {
            //struct pene::replace::backend::verrou ifverrou=pene::replace::backend::init(&backend_ctx);
-           pene::replace::backend::configure(pene::replace::backend::VR_RANDOM,backend_ctx);
-           uint64_t seed=0;
-           seed=6030000057;
-           pene::replace::backend::verrou_set_seed (seed);
-           
         if (!REG_valid(tmp_reg1) || !REG_valid(tmp_reg2) || !REG_valid(tmp_reg_output))
         {
           std::cerr << "Cannot allocate a scratch register.\n";
@@ -108,6 +116,7 @@ namespace pene {
     , knob_replace_mode(KNOB_MODE_WRITEONCE, "pintool", "fp-replace", "0", "Enables fp operation replacement.\n\t0: disabled\n\t1: ieee\n\t2: double2float\n\t3: random rounding")
     , knob_exl_symbols(KNOB_MODE_WRITEONCE, "pintool", "exclude", "", "When this option is present, symbols listed in file will be left uninstrumented")
     , knob_incl_source_lines(KNOB_MODE_WRITEONCE, "pintool", "source", "", "When this option is present, only instructions coming from source code lines listed in file are instrumented. [NOT WORKING YET]")
+    , knob_rounding_mode(KNOB_MODE_WRITEONCE, "pintool","rounding-mode", "0", "specify rouding mode for verrou backend")
     , data(nullptr)
   {}
 
@@ -197,6 +206,7 @@ namespace pene {
 
 
     auto mode = (replace_module_internals::replace_modes)knob_replace_mode.Value();
+    auto rounding_mode = (replace_module_internals::rounding_modes)knob_rounding_mode.Value();
     switch (mode) {
     case replace_module_internals::replace_modes::NONE:
       {
@@ -217,16 +227,61 @@ namespace pene {
       data->TRACE_AddInstrumentFunction();
       break;
       }
-    case replace_module_internals::replace_modes::RANDOM_ROUNDING:
+    case replace_module_internals::replace_modes::VERROU:
       {
-      std::cerr << "fp-replace random rounding mode : rounding mode is randomly changed for each instruction" << std::endl;
-      std::cerr << "random rounding mode not working yet. Exiting now" << std::endl;
-      //void* context;
-      //struct pene::replace::backend::verrou ifverrou=pene::replace::backend::init(&context);
-      //pene::replace::backend::configure(pene::replace::backend::VR_NEAREST,context);
       auto verrou_replace_instrmenter = new replace_module_internals::replace_inst_instrumenters<typename replace::backend::verrou>();
+      unsigned long seed=0;
+      srand(time(0));
+      seed=rand();
+      pene::replace::backend::verrou_set_seed (seed);
+      if (rounding_mode == replace_module_internals::rounding_modes::NOTSPECIFIED)
+        {
+          std::cerr << "fp-replace mode : verrou, but rounding mode was not specified, the default is nearest" << std::endl;
+          pene::replace::backend::configure(pene::replace::backend::VR_NEAREST, verrou_replace_instrmenter->backend_ctx);
+        }
+      else 
+        if(rounding_mode == replace_module_internals::rounding_modes::NEAREST)
+         {
+          std::cerr << "fp-replace mode : verrou with nearest rounding mode " << std::endl;
+          pene::replace::backend::configure(pene::replace::backend::VR_NEAREST, verrou_replace_instrmenter->backend_ctx);
+        }
+      else
+        if(rounding_mode == replace_module_internals::rounding_modes::UPWARD)
+        {
+          std::cerr << "fp-replace mode : verrou with upward rounding mode " << std::endl;
+          pene::replace::backend::configure(pene::replace::backend::VR_UPWARD, verrou_replace_instrmenter->backend_ctx);
+        }
+      else
+        if(rounding_mode == replace_module_internals::rounding_modes::DOWNWARD)
+        {
+          std::cerr << "fp-replace mode : verrou with downward rounding mode " << std::endl;
+          pene::replace::backend::configure(pene::replace::backend::VR_DOWNWARD, verrou_replace_instrmenter->backend_ctx);
+        }
+      else
+        if(rounding_mode == replace_module_internals::rounding_modes::DOWNWARD)
+        {
+          std::cerr << "fp-replace mode : verrou with downward rounding mode " << std::endl;
+          pene::replace::backend::configure(pene::replace::backend::VR_DOWNWARD, verrou_replace_instrmenter->backend_ctx);
+        }
+      else
+        if(rounding_mode == replace_module_internals::rounding_modes::ZERO)
+        {
+          std::cerr << "fp-replace mode : verrou with downward rounding mode " << std::endl;
+          pene::replace::backend::configure(pene::replace::backend::VR_ZERO, verrou_replace_instrmenter->backend_ctx);
+        }
+      else
+        if(rounding_mode == replace_module_internals::rounding_modes::RANDOM)
+        {
+          std::cerr << "fp-replace mode : verrou with random rounding mode " << std::endl;
+          std::cerr << "Seed " << seed << std::endl;
+          pene::replace::backend::configure(pene::replace::backend::VR_RANDOM, verrou_replace_instrmenter->backend_ctx);
+        }
+        
+      
+      //pene::replace::backend::configure(pene::replace::backend::VR_NEAREST,context);
       data = new instrumenter(verrou_replace_instrmenter, filter);
       data->TRACE_AddInstrumentFunction();
+
       //PIN_WriteErrorMessage("random rounding mode not working yet. Exiting now", 1000, PIN_ERR_SEVERITY_TYPE::PIN_ERR_FATAL, 0);
       //PIN_ExitApplication(1);
       break;

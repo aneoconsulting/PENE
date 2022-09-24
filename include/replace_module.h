@@ -11,6 +11,7 @@ namespace pene {
     KNOB<int> knob_replace_mode;
     KNOB<std::string> knob_exl_symbols;
     KNOB<std::string> knob_incl_source_lines;
+    KNOB <int> knob_rounding_mode;
 
     pin_utils::instrumenter* data;
   public:
