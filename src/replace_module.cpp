@@ -210,7 +210,7 @@ namespace pene {
     switch (mode) {
     case replace_module_internals::replace_modes::NONE:
       {
-      std::cerr << "fp-replace None mode : no instrumenation" << std::endl;
+      std::cerr << "fp-replace None mode : no instrumentation" << std::endl;
       break;
       }
     case replace_module_internals::replace_modes::IEEE:
