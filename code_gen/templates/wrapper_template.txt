@@ -154,8 +154,8 @@ namespace pene
                       {%+ if instruction.operands[offset].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset}}){%+ elif  instruction.operands[offset].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       {%+ if instruction.operands[offset+1].kind == 'reg' %}IARG_REG_CONST_REFERENCE, INS_OperandReg(ins,{{offset+1}}){%+ elif  instruction.operands[offset+1].kind== 'mem' %}IARG_MEMORYREAD_EA{% endif %},
                       IARG_REG_REFERENCE, INS_OperandReg(ins,0),
-                      IARG_UINT32,{{instruction.nb_elements}},
                       IARG_PTR, backend_ctx,
+                      IARG_UINT32,{{instruction.nb_elements}},
                       IARG_END
                       );
                       }
