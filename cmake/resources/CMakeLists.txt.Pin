@@ -10,7 +10,7 @@ include (CommonVars)
 
 set(PIN_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR})
 
-# Add Pin toolkit as an external dependency
+# Add Pin toolkit as an external dependency == older version to download Pin
 ExternalProject_Add(Pin
 	URL					${PIN_URL}
 	PREFIX				${PIN_INSTALL_PREFIX}
@@ -19,3 +19,16 @@ ExternalProject_Add(Pin
 	INSTALL_DIR         ""
 	INSTALL_COMMAND		"${CMAKE_COMMAND}" -E rename "${PIN_INSTALL_PREFIX}/src/Pin/${PIN_TOOLKIT}" "${PIN_INSTALL_PREFIX}/${CMAKE_SYSTEM_NAME}"
 )
+
+#Intel server blocks downloading when not done through a browser; I specify user agent for that reason. We need to customize download step 
+# and extract step also. I tried this in Linux. Downloading is successfully done  but there are problems with tests: linking problem "cannot locate symbol(the same symbol for all tests)" apparently there is something to include that is missing(probably stlport).. need more investigation 
+#set (ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0")
+#ExternalProject_Add(Pin
+	#URL					"${PIN_URL}"
+	#PREFIX				${PIN_INSTALL_PREFIX}
+	#CONFIGURE_COMMAND	""
+	#BUILD_COMMAND		""
+	#DOWNLOAD_COMMAND   curl  "https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.24-98612-g6bd5931f2-gcc-linux.tar.gz" --compressed -A "${ua}" -o "pin-3.24-98612-g6bd5931f2-gcc-linux.tar.gz" && tar zxf pin-3.24-98612-g6bd5931f2-gcc-linux.tar.gz --directory "/home/ubuntu/PENE2/Pin"
+	#INSTALL_DIR         ""
+	#INSTALL_COMMAND    "${CMAKE_COMMAND}" -E rename "/home/ubuntu/PENE2/Pin/pin-3.24-98612-g6bd5931f2-gcc-linux" "/home/ubuntu/PENE2/Pin/Linux" 
+#)
