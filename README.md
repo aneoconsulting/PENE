@@ -1,1 +1,1 @@
-Internship - project PENE via Intel PIN for Interflop
+Internship - project PENE(Pin Enabled Numerical Exploration) via Intel PIN for Interflop
