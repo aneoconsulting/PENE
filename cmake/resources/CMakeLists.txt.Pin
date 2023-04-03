@@ -20,7 +20,7 @@ ExternalProject_Add(Pin
 	INSTALL_COMMAND		"${CMAKE_COMMAND}" -E rename "${PIN_INSTALL_PREFIX}/src/Pin/${PIN_TOOLKIT}" "${PIN_INSTALL_PREFIX}/${CMAKE_SYSTEM_NAME}"
 )
 
-#Intel server blocks downloading when not done through a browser; I specify user agent for that reason. We need to customize download step 
+# Problem occured in October 2022: Intel server blocks downloading when not done through a browser; I specify user agent for that reason. We need to customize download step 
 # and extract step also. I tried this in Linux. Downloading is successfully done  but there are problems with tests: linking problem "cannot locate symbol(the same symbol for all tests)" apparently there is something to include that is missing(probably stlport).. need more investigation 
 #set (ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0")
 #ExternalProject_Add(Pin
