@@ -46,13 +46,15 @@ jobs:
      - uses: actions/checkout@v1
      - uses: actions/setup-python@v4
        with:
-         python-version: '3.11' 
+         python-version: '3.10' 
      - name: Get latest CMake
        uses: lukka/get-cmake@latest
      - name: Installing Jinja2
        run: python -m pip install Jinja2
      - name: Display path
        run: echo $env:Path
+     - name: List python modules
+       run: pip list 
      - name: Installing pytest
        run: python -m pip install pytest
      - name: Running cmake (Windows)
