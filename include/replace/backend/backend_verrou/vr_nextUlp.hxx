@@ -51,7 +51,6 @@ inline REALTYPE nextAwayFromZero(REALTYPE a){
 
 template<>
 inline double nextAwayFromZero<double>(double a){
-  std::cout << "I reached next away from zero" << std::endl;
   double res=a;
   uint64_t* resU=reinterpret_cast<uint64_t*>(&res);
   (*resU)+=1;
