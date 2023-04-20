@@ -78,8 +78,8 @@ add_custom_target(${PROJECT_NAME} ALL DEPENDS
     ${CMAKE_CURRENT_BINARY_DIR}/stderr2stdout.py
 )
 
-find_package(Python REQUIRED Interpreter)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 foreach(script ${TEST_SCRIPTS})
 	add_test(NAME ${script}
-			COMMAND ${Python_EXECUTABLE} stderr2stdout.py ${Python_EXECUTABLE} -m pytest ${script})
+			COMMAND ${Python3_EXECUTABLE} stderr2stdout.py ${Python3_EXECUTABLE} -m pytest ${script})
 endforeach()

@@ -126,11 +126,11 @@ add_custom_target(${PROJECT_NAME} ALL DEPENDS
     ${CMAKE_CURRENT_BINARY_DIR}/stderr2stdout.py
 )
 
-find_package(Python REQUIRED Interpreter)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 list(SORT TEST_LIST)
 foreach(unittest ${TEST_LIST})
 	add_test(NAME ${unittest}
-			COMMAND ${Python_EXECUTABLE} stderr2stdout.py ${Python_EXECUTABLE} -m unittest ${unittest})
+			COMMAND ${Python3_EXECUTABLE} stderr2stdout.py ${Python3_EXECUTABLE} -m unittest ${unittest})
     set_property(TEST ${unittest} PROPERTY REQUIRED_FILES 
         ${TEST_SCRIPTS}
         ${REFERENCE_FILES}
