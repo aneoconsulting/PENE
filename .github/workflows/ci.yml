@@ -50,11 +50,11 @@ jobs:
      - name: Get latest CMake
        uses: lukka/get-cmake@latest
      - name: Installing Jinja2
-       run: python -m pip install Jinja2
+       run: python.exe -m pip install Jinja2
      - name: List python modules
        run: pip list 
      - name: Installing pytest
-       run: python -m pip install pytest
+       run: python.exe -m pip install pytest
      - name: Running cmake (Windows)
        run: |
          cmake -DCMAKE_BUILD_TYPE=Debug .
