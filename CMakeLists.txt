@@ -104,4 +104,5 @@ add_subdirectory ("Test/test_filters")
 add_subdirectory ("Test/cpp_unit")
 #add_subdirectory ("Test/prog_tests/csharp_test")
 add_subdirectory ("Test/test_backend")
+add_subdirectory ("Test/test_backend_verrou")
 
