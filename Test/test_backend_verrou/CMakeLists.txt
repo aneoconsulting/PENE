@@ -31,7 +31,6 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_verrou.py
           -P ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
   DEPENDS
     ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
-    #${CMAKE_CURRENT_SOURCE_DIR}/test_verrou.py
   COMMENT "Configuring test_verrou.py"
   VERBATIM
 )
@@ -46,8 +45,7 @@ function(copy_file FILENAME)
         COMMAND ${CMAKE_COMMAND} -E copy
                 ${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}
                 ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}
-        #DEPENDS
-            #${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}
+		
         COMMENT "Copying ${FILENAME}"
         VERBATIM
     )
@@ -61,8 +59,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/stderr2stdout.py
     COMMAND ${CMAKE_COMMAND} -E copy
             ${CMAKE_TOOLS_PATH}/stderr2stdout.py
             ${CMAKE_CURRENT_BINARY_DIR}/stderr2stdout.py
-    #DEPENDS
-        #${CMAKE_TOOLS_PATH}/stderr2stdout.py
+
     COMMENT "Copying stderr2stdout.py"
     VERBATIM
 )
