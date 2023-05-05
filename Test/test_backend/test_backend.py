@@ -26,7 +26,6 @@ class TestBackend():
         out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr = subprocess.STDOUT)
         print("the commandline is {}".format(subprocess.list2cmdline(out.args)))
         output = out.stdout.decode('utf-8')
-        print(output)
         if re.search(pattern,output):
             return 0
         else:
@@ -35,15 +34,15 @@ class TestBackend():
     
     
     def test_ex1(self):
-       """Test -version for displaying the actual version"""
+       """Test -fp-replace 4 perturbation of test backend on first executable """
        self.checkOutput([self.pinpath, '-t', self.toolpath, '-fp-replace' , '4' , '--', self.execpath1],self.out_ex1_pattern)
 
     def test_ex2(self):
-        """Test -version for displaying the actual version"""
+        """Test -fp-replace 4 perturbation of test backend on second executable """
         self.checkOutput([self.pinpath, '-t', self.toolpath, '-fp-replace' , '4' , '--', self.execpath2],self.out_ex2_pattern)
 
     def test_ex3(self):
-        """Test -version for displaying the actual version"""
+        """Test -fp-replace 4 perturbation of test backend on third executable """
         self.checkOutput([self.pinpath, '-t', self.toolpath, '-fp-replace' , '4' , '--', self.execpath3],self.out_ex3_pattern)
 
    

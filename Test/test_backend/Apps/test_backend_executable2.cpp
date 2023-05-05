@@ -2,10 +2,16 @@
 #include <iostream>
 #include <iomanip>
 
+/////////////////////////////////////////////////////////////////////////////////
+/* This code contains one subps instruction, expected output is:
+    0x1p+2
+    0x1.8p+1
+    0x1p+1
+    0x1p+0  " */ 
 
 int main(int argc, char** argv)
 {   
-    //This code contains one subps instruction, expected output is  "
+
     float* array1=new float[4];
     array1[0]=5.0;
     array1[1]=4.0;
