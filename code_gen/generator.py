@@ -10,12 +10,12 @@ class operand:
         self.kind = 'None'
         self.width = 0
 
+
 class eff_operand():
     def __init__(self,ind,kind):
         self.index=ind
         self.kind=kind
     
-
 
 class precision:
     def __init__(self,prec_type):
@@ -26,6 +26,7 @@ class precision:
             self.nb_bits=64
         else:
             self.nb_bits=0
+
 
 class instruction:
     def __init__(self,token):
@@ -55,7 +56,7 @@ class Op(Enum):
     fnmsub = 'fnmsub'
     fmaddsub = 'fmaddsub'
     fmsubadd = 'fmsubadd'
-    #cmp='cmp'
+    # cmp='cmp'
 class op_prec(Enum):
     float = 1
     double = 2
@@ -71,13 +72,6 @@ class operand_options(Enum):
     IMM = 6 #for compare operations
 
 
-
-
-
-
-
-
-
 # given Pin enum file extracts tokens ending with SS, PS, SD or PD to a list 
 def get_tokens_list(file_path):
     list_tokens=[]
@@ -91,7 +85,8 @@ def get_tokens_list(file_path):
                     list_tokens.append(token_float)
     return list_tokens
 
-#given a token returns its instruction set 
+
+# given a token returns its instruction set 
 def get_isa(token):
     splits= token.split('_')[2:]
     if(not isfma_amd(splits[0])):
@@ -107,7 +102,8 @@ def get_isa(token):
                 isa="sse"
     return isa
 
-#given a token returns the opcode and the type of the operation
+
+# given a token returns the opcode and the type of the operation
 def get_opcode_optype(token):
     splits=token.split('_')[2:]
     op_code=splits[0]
@@ -123,12 +119,14 @@ def get_opcode_optype(token):
             op_type=""
     return op_code,op_type
 
+
 def get_precision(opcode):
     if(opcode[-1] == 'S'):
         ins_precision=precision('float')
     elif (opcode[-1] == 'D'):
         ins_precision=precision('double')
     return ins_precision
+
 
 def check_if_fma_and_avx512(token):
     splits_check= token.split('_')[2:]
@@ -140,10 +138,8 @@ def check_if_fma_and_avx512(token):
     else:
             return False
 
-        
-
-
-#given the opcode gives if he instruction is simd or scalar
+    
+# given the opcode gives if he instruction is simd or scalar
 def get_simd(opcode):
     if(opcode[-2] == 'S'):
         simd_option = 'scalar'
@@ -151,7 +147,8 @@ def get_simd(opcode):
         simd_option = 'packed'
     return simd_option
 
-#returns the list of operands in a token (list of strings)
+
+# returns the list of operands in a token (list of strings)
 def get_operand_string_list(token):
     splits= token.split('_')[2:]
     operands_list=[]
@@ -161,7 +158,8 @@ def get_operand_string_list(token):
         operands_list=splits[1:]
     return operands_list
 
-#get operand width and kind 
+
+# get operand width and kind 
 def get_operand_details(item,operand_item):
     if(item == 'MASKmskw'):
        operand_item.kind= 'mask'
@@ -179,6 +177,7 @@ def get_operand_details(item,operand_item):
     elif(item.startswith('IMM')):
         operand_item.kind='imm'
         operand_item.width=8
+
 
 def get_eff_operands(ins):
     if(ins.ins_isa == 'sse') and (ins.nb_operands >=2):
@@ -206,7 +205,8 @@ def isfma(mnemonic):
             return False
     else:
         return False
-    
+
+
 def isfma_amd(mnemonic):
     if(mnemonic.startswith("VFMADD") or mnemonic.startswith("VFNMADD") or mnemonic.startswith("VFMSUB") or mnemonic.startswith("VFNMSUB")):
         if(len(mnemonic) < 9):
@@ -222,6 +222,7 @@ def isfma_amd(mnemonic):
     else:
         return False
 
+
 def fill_fma_order_list(mnemonic):
     order_list=[]
     if(isfma(mnemonic)):
@@ -230,7 +231,8 @@ def fill_fma_order_list(mnemonic):
           order_list.append(int(mnemonic[-3]))
     return order_list
 
-#parses the tokens, calls all the previous functions in order to form python objects       
+
+# parses the tokens, calls all the previous functions in order to form python objects       
 def token_parser(pin_file_path,list_sse,list_avx,list_avx512, list_fma):
     pin_file=open(pin_file_path,'r')
     lines=pin_file.read()
@@ -271,12 +273,9 @@ def token_parser(pin_file_path,list_sse,list_avx,list_avx512, list_fma):
                             list_avx512.append(ins)
                         elif(ins.ins_isa == 'fma'):
                             list_fma.append(ins)
-                        
-                #else:
-                    #pass
 
 
-#To run the code generator, needed arguments: path of the pin enum file, name of the template file, name of the output path
+# To run the code generator, needed arguments: path of the pin enum file, name of the template file, name of the output path
 if __name__ == "__main__":
     #print(os. getcwd())  #for debug purpose only
     pin_file_path=sys.argv[1] 
@@ -301,11 +300,6 @@ if __name__ == "__main__":
     instructions_list_fma=[]
     token_parser(pin_file_path,instructions_list_sse,instructions_list_avx,instructions_list_avx512, instructions_list_fma)
     total_size = len(instructions_list_sse) + len(instructions_list_avx) + len(instructions_list_avx512) + len(instructions_list_fma)
-    #print(len(instructions_list_sse))
-    #print(len(instructions_list_avx))
-    #print(len(instructions_list_avx512))
-    #print(len(instructions_list_fma))
-    #print(total_size)
 
 
     env = Environment(loader=FileSystemLoader('templates'),autoescape=False, trim_blocks=True,lstrip_blocks=True)
@@ -319,12 +313,3 @@ if __name__ == "__main__":
         f.write(template.render(instructions=instructions_list_avx512,architecture_name='avx512'))
     with open(output_file_fma, 'w+') as f:
         f.write(template.render(instructions=instructions_list_fma,architecture_name='fma'))
-
-
-   
-
-        
-        
-
-
-
