@@ -4,7 +4,7 @@ import os
 import re
 
         
-class TestBackend():
+class TestBackendVerrou():
     execpath = "@EXECUTABLE@"
     pinpath = "${PIN_EXECUTABLE}"
     toolpath = "@FLAG_TESTS_PINTOOL@"
@@ -19,7 +19,6 @@ class TestBackend():
         out = subprocess.run(runargs, stdout=subprocess.PIPE, stderr = subprocess.STDOUT)
         print("the commandline is {}".format(subprocess.list2cmdline(out.args)))
         output = out.stdout.decode('utf-8')
-        print(output)
         if re.search(pattern,output):
             return 0
         else:
@@ -28,5 +27,5 @@ class TestBackend():
     
     
     def test_ex_downward(self):
-       """Test -rouding mode downward on a chosen value"""
-       self.checkOutput([self.pinpath, '-t', self.toolpath, '-fp-replace' , '3' , '-rounding-mode', '3', '--', self.execpath],self.out_ex_downward_pattern)
+       """Test -rounding mode downward on a chosen value"""
+       self.checkOutput([self.pinpath, '-t', self.toolpath, '-fp-replace', '3', '-rounding-mode', '3', '--', self.execpath], self.out_ex_downward_pattern)

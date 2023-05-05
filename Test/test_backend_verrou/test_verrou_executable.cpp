@@ -30,8 +30,7 @@ double call_addsd (double a, double b)
 
 int main (void)
 {
-  double a = 0.1,
-    b = 0.2;
+  double a = 0.1, b = 0.2;
   double c = call_addsd(a, b);
 
   __mem64 m = {.lf = c};

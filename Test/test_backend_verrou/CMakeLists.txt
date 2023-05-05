@@ -2,30 +2,16 @@ cmake_minimum_required (VERSION 3.14)
 
 project(test_backend_verrou)
 
-add_executable(ex "test_add_sd.cpp")
+add_executable(test_verrou_executable "test_verrou_executable.cpp")
 
-set_property(TARGET ex PROPERTY CXX_STANDARD 17)
-
-include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("/arch:AVX" COMPILER_SUPPORTS_ARCH_AVX)
-if(COMPILER_SUPPORTS_ARCH_AVX)
-  message("/arch:AVX is supported by the compiler")
-  target_compile_options(ex PUBLIC "/arch:AVX")
-else()
-  CHECK_CXX_COMPILER_FLAG("-mavx" COMPILER_SUPPORTS_MAVX)
-  if(COMPILER_SUPPORTS_MAVX)
-    message("-mavx is supported by the compiler")
-    target_compile_options(ex PUBLIC "-mavx")
-   endif()
-endif()
-
+set_property(TARGET test_verrou_executable PROPERTY CXX_STANDARD 17)
 
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_verrou.py
   COMMAND ${CMAKE_COMMAND} 
           -D INFILE=${CMAKE_CURRENT_SOURCE_DIR}/test_verrou.py
           -D OUTFILE=${CMAKE_CURRENT_BINARY_DIR}/test_verrou.py
           -D FLAG_TESTS_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
-          -D EXECUTABLE=$<TARGET_FILE:ex>
+          -D EXECUTABLE=$<TARGET_FILE:test_verrou_executable>
           -D FLAG_TESTS_PINTOOL=$<TARGET_FILE:pene>
           -D PIN_EXECUTABLE=$<TARGET_FILE:pin>
           -P ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
@@ -34,7 +20,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_verrou.py
   COMMENT "Configuring test_verrou.py"
   VERBATIM
 )
-message(STATUS "Current build: ${CMAKE_CURRENT_BINARY_DIR}")
+
 set(TEST_SCRIPTS test_verrou.py)
 
 
