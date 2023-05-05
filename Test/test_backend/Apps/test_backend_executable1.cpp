@@ -1,8 +1,9 @@
 #include <immintrin.h>
 #include <iostream>
 #include <iomanip>
- /////////////////////////////////////////////////////////////////////////////////
- // This code contains one addss instruction(reg mem), expected output is 28.661//
+
+/////////////////////////////////////////////////////////////////////////////////
+// This code contains one addss instruction(reg mem), expected output is: 0x1p+0 //
 
 int main(int argc, char** argv)
 {   
