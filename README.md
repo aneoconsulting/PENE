@@ -35,7 +35,7 @@ You can also install the tool via a code editor.
 
 ## How to execute your code with PENE?
 
-To use PENE to execute your application, first prepare you must your binary executable then run: 
+To use PENE to execute your application, run: 
 
 ```shell
 path/to/pin -t path/to/pene.so/or/pene.dll [OPTIONS] -- path/to/executable
