@@ -156,7 +156,7 @@ def get_simd(opcode):
     return simd_option
 
 
-# returns the list of operands in a tokenq(instruction form) (returns a list of strings)
+# returns the list of operands in a token(instruction form) (returns a list of strings)
 def get_operand_string_list(token):
     splits= token.split('_')[2:]
     operands_list=[]
