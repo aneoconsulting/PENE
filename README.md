@@ -8,7 +8,7 @@ Changing the rounding mode was possible thanks to the implementation of the libr
 
 ## Requirements
 
-- cmake
+- cmake version >= 3.20
 - make
 - g++ compiler for Linux and MSVC compiler for  Windows
 - python3
