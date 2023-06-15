@@ -5,6 +5,14 @@ from enum import Enum
 import os
 
 
+# How to use this code
+# This is the code that generates instrumentation code
+# Takes 3 arguments: 
+# The first is the path of Pin enum file(containing the instructions forms from which the information is extracted)
+# The second is the name of the template file that should be located in the templates folder
+# The third is the output path where we want generated code to be saved
+
+
 class operand:
     def __init__(self):
         self.kind = 'None'
@@ -72,7 +80,7 @@ class operand_options(Enum):
     IMM = 6 #for compare operations
 
 
-# given Pin enum file extracts tokens ending with SS, PS, SD or PD to a list 
+# given Pin enum file extracts tokens(instruction forms) ending with SS, PS, SD or PD to a list 
 def get_tokens_list(file_path):
     list_tokens=[]
     with open(file_path,'r') as f:
@@ -86,7 +94,7 @@ def get_tokens_list(file_path):
     return list_tokens
 
 
-# given a token returns its instruction set 
+# given a token(instruction form) returns its instruction set 
 def get_isa(token):
     splits= token.split('_')[2:]
     if(not isfma_amd(splits[0])):
@@ -103,7 +111,7 @@ def get_isa(token):
     return isa
 
 
-# given a token returns the opcode and the type of the operation
+# given a token(instruction form) returns the opcode and the type of the operation
 def get_opcode_optype(token):
     splits=token.split('_')[2:]
     op_code=splits[0]
@@ -119,7 +127,7 @@ def get_opcode_optype(token):
             op_type=""
     return op_code,op_type
 
-
+# gets the precision of an instruction from the opcode
 def get_precision(opcode):
     if(opcode[-1] == 'S'):
         ins_precision=precision('float')
@@ -127,7 +135,7 @@ def get_precision(opcode):
         ins_precision=precision('double')
     return ins_precision
 
-
+# returns true if instruction is fma and avx512
 def check_if_fma_and_avx512(token):
     splits_check= token.split('_')[2:]
     if(isfma(splits_check[0])):
@@ -148,7 +156,7 @@ def get_simd(opcode):
     return simd_option
 
 
-# returns the list of operands in a token (list of strings)
+# returns the list of operands in a tokenq(instruction form) (returns a list of strings)
 def get_operand_string_list(token):
     splits= token.split('_')[2:]
     operands_list=[]
@@ -178,7 +186,7 @@ def get_operand_details(item,operand_item):
         operand_item.kind='imm'
         operand_item.width=8
 
-
+# gets the operands of an instruction
 def get_eff_operands(ins):
     if(ins.ins_isa == 'sse') and (ins.nb_operands >=2):
         ins.kind1=ins.operands[0].kind
@@ -197,6 +205,8 @@ def get_eff_operands(ins):
         ins.eff_operands.append(first_op)
         ins.eff_operands.append(second_op)
 
+
+# checks if instruction is fma
 def isfma(mnemonic):
     if( not isfma_amd(mnemonic) ):
         if(mnemonic.startswith("VFMADD")) or (mnemonic.startswith("VFMADDSUB")) or (mnemonic.startswith("VFNMADD")) or (mnemonic.startswith("VFMSUB")) or (mnemonic.startswith("VFMSUBADD")) or (mnemonic.startswith("VFNMSUB")):
@@ -207,6 +217,7 @@ def isfma(mnemonic):
         return False
 
 
+# checks if instruction is fma for amd
 def isfma_amd(mnemonic):
     if(mnemonic.startswith("VFMADD") or mnemonic.startswith("VFNMADD") or mnemonic.startswith("VFMSUB") or mnemonic.startswith("VFNMSUB")):
         if(len(mnemonic) < 9):
@@ -223,6 +234,7 @@ def isfma_amd(mnemonic):
         return False
 
 
+# parses the token(instruction form) to get the order of operands for fma instructions
 def fill_fma_order_list(mnemonic):
     order_list=[]
     if(isfma(mnemonic)):
@@ -232,7 +244,7 @@ def fill_fma_order_list(mnemonic):
     return order_list
 
 
-# parses the tokens, calls all the previous functions in order to form python objects       
+# parses the tokens, calls all the previous functions in order to form python objects, these python objects contain the informations needed by the template         
 def token_parser(pin_file_path,list_sse,list_avx,list_avx512, list_fma):
     pin_file=open(pin_file_path,'r')
     lines=pin_file.read()
@@ -275,9 +287,7 @@ def token_parser(pin_file_path,list_sse,list_avx,list_avx512, list_fma):
                             list_fma.append(ins)
 
 
-# To run the code generator, needed arguments: path of the pin enum file, name of the template file, name of the output path
 if __name__ == "__main__":
-    #print(os. getcwd())  #for debug purpose only
     pin_file_path=sys.argv[1] 
     template_file=sys.argv[2] 
     output=sys.argv[3]
@@ -299,7 +309,7 @@ if __name__ == "__main__":
     instructions_list_avx512=[]
     instructions_list_fma=[]
     token_parser(pin_file_path,instructions_list_sse,instructions_list_avx,instructions_list_avx512, instructions_list_fma)
-    total_size = len(instructions_list_sse) + len(instructions_list_avx) + len(instructions_list_avx512) + len(instructions_list_fma)
+    total_size = len(instructions_list_sse) + len(instructions_list_avx) + len(instructions_list_avx512) + len(instructions_list_fma) # used to check how many instruction forms were covered
 
 
     env = Environment(loader=FileSystemLoader('templates'),autoescape=False, trim_blocks=True,lstrip_blocks=True)
