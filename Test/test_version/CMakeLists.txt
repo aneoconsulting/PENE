@@ -10,7 +10,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/test_version.py
           -D INFILE=${CMAKE_CURRENT_SOURCE_DIR}/test_version.py
           -D OUTFILE=${CMAKE_CURRENT_BINARY_DIR}/test_version.py
           -D FLAG_TESTS_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
-          -D FLAG_TESTS_ECEXUTABLE=$<TARGET_FILE:test_version_executable>
+          -D FLAG_TESTS_EXECUTABLE=$<TARGET_FILE:test_version_executable>
           -D FLAG_TESTS_PINTOOL=$<TARGET_FILE:pene>
           -D PIN_EXECUTABLE=$<TARGET_FILE:pin>
           -P ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
