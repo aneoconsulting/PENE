@@ -6,7 +6,7 @@ import re
 
         
 class replace_tests(unittest.TestCase):
-    execpath = "@REPLACE_TESTS_ECEXUTABLE@"
+    execpath = "@REPLACE_TESTS_EXECUTABLE@"
     pinpath = "${PIN_EXECUTABLE}"
     toolpath = "@REPLACE_TESTS_PINTOOL@"
 

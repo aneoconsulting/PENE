@@ -25,7 +25,7 @@ foreach(test_script ${TEST_SCRIPTS})
               -D INFILE=${CMAKE_CURRENT_SOURCE_DIR}/${test_script}
               -D OUTFILE=${CMAKE_CURRENT_BINARY_DIR}/${test_script}
               -D FLAG_TESTS_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}
-              -D FLAG_TESTS_ECEXUTABLE=$<TARGET_FILE:executable>
+              -D FLAG_TESTS_EXECUTABLE=$<TARGET_FILE:executable>
               -D EXECUTABLE=$<TARGET_FILE:executable>
               -D FLAG_TESTS_PINTOOL=$<TARGET_FILE:pene>
               -D PINTOOL=$<TARGET_FILE:pene>

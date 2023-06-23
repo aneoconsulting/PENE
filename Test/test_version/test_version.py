@@ -6,7 +6,7 @@ import re
 
         
 class flag_tests(unittest.TestCase):
-    execpath = "@FLAG_TESTS_ECEXUTABLE@"
+    execpath = "@FLAG_TESTS_EXECUTABLE@"
     pinpath = "${PIN_EXECUTABLE}"
     toolpath = "@FLAG_TESTS_PINTOOL@"
 
