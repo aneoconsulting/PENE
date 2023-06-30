@@ -33,7 +33,8 @@ int main (void)
   double a = 0.1, b = 0.2;
   double c = call_addsd(a, b);
 
-  __mem64 m = {.lf = c};
+  __mem64 m ;
+  m.lf =c;
   
   std::cout << m.ld << std::endl;
   

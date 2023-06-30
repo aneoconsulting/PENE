@@ -1,5 +1,4 @@
-﻿cmake_minimum_required (VERSION 3.14)
-
+﻿
 if (PIN_FOUND)
 	include_directories(${PIN_INCLUDE_DIRS})
 	include_directories(SYSTEM ${PIN_CRT_INCLUDE_DIRS})

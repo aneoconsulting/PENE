@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.14)
 
 set(PIN_URL_WINDOWS https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.23-98579-gb15ab7903-msvc-windows.zip)
 set(PIN_URL_LINUX	https://software.intel.com/sites/landingpage/pintool/downloads/pin-3.23-98579-gb15ab7903-gcc-linux.tar.gz)
