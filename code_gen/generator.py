@@ -1,32 +1,45 @@
 import sys
 from tokenize import Token
-from jinja2 import Environment, FileSystemLoader,PackageLoader
+from jinja2 import Environment, FileSystemLoader, PackageLoader
 from enum import Enum
 import os
 
 
-# How to use this code
-# This is the code that generates instrumentation code
-# Takes 3 arguments: 
-# The first is the path of Pin enum file(containing the instructions forms from which the information is extracted)
-# The second is the name of the template file that should be located in the templates folder
-# The third is the output path where we want generated code to be saved
-
-
 class operand:
+    """
+    Represents an operand.
+
+    Attributes:
+        kind (str): The kind of the operand.
+        width (int): The width of the operand in bits.
+    """
     def __init__(self):
         self.kind = 'None'
         self.width = 0
 
 
 class eff_operand():
-    def __init__(self,ind,kind):
+    """
+    Represents an effective operand.
+
+    Attributes:
+        index (int): The index of the operand.
+        kind (str): The kind of the operand.
+    """
+    def __init__(self, ind, kind):
         self.index=ind
         self.kind=kind
     
 
 class precision:
-    def __init__(self,prec_type):
+    """
+    Represents the precision of an instruction.
+
+    Attributes:
+        associated_type (str): The associated type of precision.
+        nb_bits (int): The number of bits for the precision.
+    """
+    def __init__(self, prec_type):
         self.associated_type = prec_type
         if(prec_type=='float'):
             self.nb_bits=32
@@ -37,7 +50,24 @@ class precision:
 
 
 class instruction:
-    def __init__(self,token):
+    """
+    Represents an instruction.
+
+    Attributes:
+        token (str): The token of the instruction.
+        opcode (str): The opcode of the instruction.
+        optype (str): The type of the operation.
+        operands (list): The list of operands.
+        ins_isa (str): The instruction set architecture of the instruction.
+        ins_precision (Precision): The precision of the instruction.
+        simd_option (str): "packed" if instruction is SIMD, "scalar" if not.
+        nb_operands (int): The number of operands.
+        nb_elements (int): The number of elements.
+        eff_operands (list): The list of effective operands.
+        fma_order (list): The order of operands for FMA instructions.
+        isfma_avx512 (bool): True if the instruction is FMA and AVX512, False otherwise.
+    """
+    def __init__(self, token):
         self.token = token
         self.opcode = "None"
         self.optype="None"
@@ -48,12 +78,17 @@ class instruction:
         self.nb_operands=0
         self.nb_elements=0
         self.eff_operands=[]
-        self.fma_order=[1,2,3]
+        self.fma_order=[1, 2, 3]
         self.isfma_avx512=True
     
         
 list_operations =['add', 'sub', 'mul', 'div', 'fmadd', 'fnmadd', 'fmsub', 'fnmsub', 'fmaddsub', 'fmsubadd' ]
+
+
 class Op(Enum):
+    """
+    Enumerates the operation types.
+    """
     add = 'add'
     sub = 'sub'
     mul = 'mul'
@@ -65,13 +100,28 @@ class Op(Enum):
     fmaddsub = 'fmaddsub'
     fmsubadd = 'fmsubadd'
     # cmp='cmp'
+
+
 class op_prec(Enum):
+    """
+    Enumerates the operand precision types.
+    """
     float = 1
     double = 2
+
+
 class op_simd(Enum):
+    """
+    Enumerates the operand SIMD types.
+    """
     scalar = 1
     packed = 2
+
+
 class operand_options(Enum):
+    """
+    Enumerates the operand types: register(which register), mem, mask
+    """
     XMM = 1
     YMM = 2
     ZMM = 3
@@ -80,8 +130,16 @@ class operand_options(Enum):
     IMM = 6 #for compare operations
 
 
-# given Pin enum file extracts tokens(instruction forms) ending with SS, PS, SD or PD to a list 
 def get_tokens_list(file_path):
+    """
+    Extracts tokens (instruction forms) ending with SS, PS, SD, or PD from a Pin enum file.
+
+    Args:
+        file_path (str): The path to the Pin enum file.
+
+    Returns:
+        list: A list of tokens (instruction forms) ending with SS, PS, SD, or PD.
+    """
     list_tokens=[]
     with open(file_path,'r') as f:
         lines_float=f.read()
@@ -94,8 +152,16 @@ def get_tokens_list(file_path):
     return list_tokens
 
 
-# given a token(instruction form) returns its instruction set 
 def get_isa(token):
+    """
+    Retrieves the instruction set architecture (ISA) of an instruction from a given token (instruction form).
+
+    Args:
+        token (str): The token representing the instruction form.
+
+    Returns:
+        str: The instruction set architecture (ISA) of the instruction.
+    """
     splits= token.split('_')[2:]
     if(not isfma_amd(splits[0])):
         if(isfma(splits[0])):
@@ -111,8 +177,16 @@ def get_isa(token):
     return isa
 
 
-# given a token(instruction form) returns the opcode and the type of the operation
 def get_opcode_optype(token):
+    """
+    Retrieves the opcode and operation type from a given token (instruction form).
+
+    Args:
+        token (str): The token representing the instruction form.
+
+    Returns:
+        tuple: A tuple containing the opcode (str) and the type of operation (str).
+    """
     splits=token.split('_')[2:]
     op_code=splits[0]
     if(op_code.startswith("V") == False and not isfma_amd(op_code)):
@@ -127,16 +201,34 @@ def get_opcode_optype(token):
             op_type=""
     return op_code,op_type
 
-# gets the precision of an instruction from the opcode
+
 def get_precision(opcode):
+    """
+    Gets the precision of an instruction based on the opcode.
+
+    Args:
+        opcode (str): The opcode of the instruction.
+
+    Returns:
+        precision (str): The precision of the instruction (float or double).
+    """
     if(opcode[-1] == 'S'):
         ins_precision=precision('float')
     elif (opcode[-1] == 'D'):
         ins_precision=precision('double')
     return ins_precision
 
-# returns true if instruction is fma and avx512
+
 def check_if_fma_and_avx512(token):
+    """
+    Checks if the instruction specified by the token is FMA and AVX512.
+
+    Args:
+        token (str): The token representing the instruction.
+
+    Returns:
+        bool: True if the instruction is FMA and AVX512, False otherwise.
+    """
     splits_check= token.split('_')[2:]
     if(isfma(splits_check[0])):
         if(splits_check[-1]=='AVX512'):
@@ -147,8 +239,16 @@ def check_if_fma_and_avx512(token):
             return False
 
     
-# given the opcode gives if he instruction is simd or scalar
 def get_simd(opcode):
+    """
+    Determines if the instruction specified by the opcode is SIMD or scalar.
+
+    Args:
+        opcode (str): The opcode of the instruction.
+
+    Returns:
+        str: The SIMD option of the instruction, which can be either 'scalar' or 'packed'.
+    """
     if(opcode[-2] == 'S'):
         simd_option = 'scalar'
     elif (opcode[-2] == 'P'):
@@ -156,8 +256,16 @@ def get_simd(opcode):
     return simd_option
 
 
-# returns the list of operands in a token(instruction form) (returns a list of strings)
 def get_operand_string_list(token):
+    """
+    Retrieves the list of operands in a token (instruction form).
+
+    Args:
+        token (str): The token (instruction form) to extract operands from.
+
+    Returns:
+        list: A list of strings representing the operands.
+    """
     splits= token.split('_')[2:]
     operands_list=[]
     if(splits[-1] == "AVX512"):
@@ -167,8 +275,17 @@ def get_operand_string_list(token):
     return operands_list
 
 
-# get operand width and kind 
-def get_operand_details(item,operand_item):
+def get_operand_details(item, operand_item):
+    """
+    Retrieves the width and kind of an operand.
+
+    Args:
+        item (str): The operand item.
+        operand_item (Operand): The operand object to store the width and kind.
+
+    Returns:
+        None
+    """
     if(item == 'MASKmskw'):
        operand_item.kind= 'mask'
     elif(item.startswith('XMM')):
@@ -186,8 +303,17 @@ def get_operand_details(item,operand_item):
         operand_item.kind='imm'
         operand_item.width=8
 
-# gets the operands of an instruction
+
 def get_eff_operands(ins):
+    """
+    Gets the effective operands of an instruction.
+
+    Args:
+        ins (Instruction): The instruction object containing the operands.
+
+    Returns:
+        None
+    """  
     if(ins.ins_isa == 'sse') and (ins.nb_operands >=2):
         ins.kind1=ins.operands[0].kind
         ins.kind2=ins.operands[1].kind
@@ -206,8 +332,16 @@ def get_eff_operands(ins):
         ins.eff_operands.append(second_op)
 
 
-# checks if instruction is fma
 def isfma(mnemonic):
+    """
+    Checks if an instruction is FMA.
+
+    Args:
+        mnemonic (str): The mnemonic of the instruction.
+
+    Returns:
+        bool: True if the instruction is FMA, False otherwise.
+    """
     if( not isfma_amd(mnemonic) ):
         if(mnemonic.startswith("VFMADD")) or (mnemonic.startswith("VFMADDSUB")) or (mnemonic.startswith("VFNMADD")) or (mnemonic.startswith("VFMSUB")) or (mnemonic.startswith("VFMSUBADD")) or (mnemonic.startswith("VFNMSUB")):
             return True
@@ -217,8 +351,16 @@ def isfma(mnemonic):
         return False
 
 
-# checks if instruction is fma for amd
 def isfma_amd(mnemonic):
+    """
+    Checks if the instruction is an FMA (Fused Multiply-Add) instruction for AMD.
+
+    Args:
+        mnemonic (str): The mnemonic representing the instruction.
+
+    Returns:
+        bool: True if the instruction is an FMA instruction for AMD, False otherwise.
+    """
     if(mnemonic.startswith("VFMADD") or mnemonic.startswith("VFNMADD") or mnemonic.startswith("VFMSUB") or mnemonic.startswith("VFNMSUB")):
         if(len(mnemonic) < 9):
             return True
@@ -234,8 +376,16 @@ def isfma_amd(mnemonic):
         return False
 
 
-# parses the token(instruction form) to get the order of operands for fma instructions
 def fill_fma_order_list(mnemonic):
+    """
+    Parses the token (instruction form) to get the order of operands for FMA instructions.
+
+    Args:
+        mnemonic (str): The mnemonic representing the instruction.
+
+    Returns:
+       The list containing the order of operands for FMA instructions.
+    """
     order_list=[]
     if(isfma(mnemonic)):
           order_list.append(int(mnemonic[-5]))
@@ -244,8 +394,20 @@ def fill_fma_order_list(mnemonic):
     return order_list
 
 
-# parses the tokens, calls all the previous functions in order to form python objects, these python objects contain the informations needed by the template         
-def token_parser(pin_file_path,list_sse,list_avx,list_avx512, list_fma):
+def token_parser(pin_file_path, list_sse, list_avx, list_avx512, list_fma):
+    """
+    Parses the tokens, calls previous functions to form Python objects containing the required information for the template.
+
+    Args:
+        pin_file_path (str): The path of the Pin enum file.
+        list_sse (list): The list to store SSE instructions.
+        list_avx (list): The list to store AVX instructions.
+        list_avx512 (list): The list to store AVX512 instructions.
+        list_fma (list): The list to store FMA instructions.
+
+    Returns:
+        None
+    """
     pin_file=open(pin_file_path,'r')
     lines=pin_file.read()
     pin_file.close()  
@@ -287,21 +449,28 @@ def token_parser(pin_file_path,list_sse,list_avx,list_avx512, list_fma):
                             list_fma.append(ins)
 
 
-if __name__ == "__main__":
-    pin_file_path=sys.argv[1] 
-    template_file=sys.argv[2] 
-    output=sys.argv[3]
+def generate_instrumentation_code(pin_file_path, template_file, output):
+    """
+    Generates instrumentation code based on Pin enum file and template file
+
+    Args:
+        pin_file_path (str): The path of Pin enum file containing the instruction forms.
+        template_file (str): The name of the template file located in the templates folder.
+        output (str): The output path where the generated code will be saved.
     
+    Returns:
+        None
+    """
     wrappers="wrappers"
-    output_path = os.path.join(output,wrappers)
+    output_path = os.path.join(output, wrappers)
     path_exists=os.path.exists(output_path)
     if not path_exists:
         os.makedirs(output_path)
         
-    output_file_sse=os.path.join(output_path,"sse.h")
-    output_file_avx=os.path.join(output_path,"avx.h")
-    output_file_avx512=os.path.join(output_path,"avx512.h")
-    output_file_fma=os.path.join(output_path,"fma.h")
+    output_file_sse=os.path.join(output_path, "sse.h")
+    output_file_avx=os.path.join(output_path, "avx.h")
+    output_file_avx512=os.path.join(output_path, "avx512.h")
+    output_file_fma=os.path.join(output_path, "fma.h")
     
     
     instructions_list_sse=[]
@@ -316,10 +485,17 @@ if __name__ == "__main__":
     template = env.get_template(template_file)
    
     with open(output_file_sse, 'w+') as f:
-        f.write(template.render(instructions=instructions_list_sse,architecture_name='sse'))
+        f.write(template.render(instructions=instructions_list_sse, architecture_name='sse'))
     with open(output_file_avx, 'w+') as f:
-        f.write(template.render(instructions=instructions_list_avx,architecture_name='avx'))
+        f.write(template.render(instructions=instructions_list_avx, architecture_name='avx'))
     with open(output_file_avx512, 'w+') as f:
-        f.write(template.render(instructions=instructions_list_avx512,architecture_name='avx512'))
+        f.write(template.render(instructions=instructions_list_avx512, architecture_name='avx512'))
     with open(output_file_fma, 'w+') as f:
-        f.write(template.render(instructions=instructions_list_fma,architecture_name='fma'))
+        f.write(template.render(instructions=instructions_list_fma, architecture_name='fma'))
+
+if __name__ == "__main__":
+    pin_file_path=sys.argv[1] 
+    template_file=sys.argv[2] 
+    output=sys.argv[3]
+    generate_instrumentation_code(pin_file_path, template_file, output)
+   
