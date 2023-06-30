@@ -93,7 +93,7 @@ endif()
 
 include_directories("include")
 include_directories("include/replace/backend/backend_verrou")
-add_subdirectory("code_gen")
+add_subdirectory("code_generator")
 add_subdirectory ("src")
 add_subdirectory ("Test/test_version")
 add_subdirectory ("Test/test_counters")
