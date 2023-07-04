@@ -78,3 +78,19 @@ The exclusion file should follow the following format:
 
 - one exclusion rule per line
 - each line should be of the form `fctname pathsymbol` , where `fctname` is the function name, and `pathsymbol` is the path for the symbol: the shared library or the executable. 
+
+To generate the list of symbols with floating-point instructions present in your code, you can use the option `-gen-sym-list`:
+
+```shell
+path/to/pin -t path/to/pene.so/or/pene.dll -gen-sym-list list.lst -- path/to/executable
+```
+
+The list of symbols will be saved in `list.lst` in that case. You can rename this file.
+
+There is also an option `-gen-sym-list` that sets the mode for symbols generation:
+
+```shell
+path/to/pin -t path/to/pene.so/or/pene.dll -gen-sym-list list.txt -gen-sym-mode [0 or 1] -- path/to/executable
+```
+
+When the mode is set to 0, it will list all the symbols with floating-point instructions that have been loaded during execution. If set to 1, it will list all the symbols with floating-point instructions that have been executed. Default mode is 0.
