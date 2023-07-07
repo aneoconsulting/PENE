@@ -77,7 +77,7 @@ You can filter which parts of the code your want to instrument using the option 
 The exclusion file should follow the following format:
 
 - one exclusion rule per line
-- each line should be of the form `fctname pathsymbol` , where `fctname` is the function name, and `pathsymbol` is the path for the symbol: the shared library or the executable. 
+- each line should be of the form `pathsymbol fctname` , where `pathsymbol` is the path for the symbol: the shared library or the executable, and `fctname` is the function name. 
 
 To generate the list of symbols with floating-point instructions present in your code, you can use the option `-gen-sym-list`:
 
