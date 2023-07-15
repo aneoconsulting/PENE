@@ -35,7 +35,7 @@ namespace pene{
             update_counters(ins, c);
           }
 
-          for (int i = 0; i < counters::size && !has_fp_inst; ++i)
+          for (size_t i = 0; i < counters::size && !has_fp_inst; ++i)
           {
             has_fp_inst |= c.array[i] > 0;
           }
@@ -47,8 +47,8 @@ namespace pene{
         }
       }
     }
-
-    static VOID store_executed_symbols(TRACE trace, void*)
+        
+    static VOID store_executed_traces(TRACE trace, void*)
     {
       auto addr = TRACE_Address(trace);
       counters c;
@@ -62,7 +62,7 @@ namespace pene{
         }
       }
 
-      for (int i = 0; i < counters::size && !has_fp_inst; ++i)
+      for (size_t i = 0; i < counters::size && !has_fp_inst; ++i)
       {
         has_fp_inst |= c.array[i] > 0;
       }
@@ -73,6 +73,49 @@ namespace pene{
         img_name_max_size = std::max(name.length(), img_name_max_size);
         sym_list[name].insert(RTN_FindNameByAddress(addr));
       }
+    }
+
+    
+
+    using is_executed_by_sym_name_t = std::tr1::unordered_map<std::string, bool>;
+    using is_executed_by_sym_name_by_img_name_t = std::tr1::unordered_map<std::string, is_executed_by_sym_name_t>;
+    // sym_list[img_name] => rtn_name_list
+    is_executed_by_sym_name_by_img_name_t executed_sym_list;
+
+    static VOID set_true(bool * bool_ptr)
+    {
+      *bool_ptr = true;
+    }
+
+    static VOID store_executed_bbl(TRACE trace, void*)
+    {
+      for (BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
+      {
+        auto addr = BBL_Address(bbl);
+        counters c;
+        bool has_fp_inst = false;
+        for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
+        {
+          update_counters(ins, c);
+        }      
+        for (size_t i = 0; i < counters::size && !has_fp_inst; ++i)
+        {
+          has_fp_inst |= c.array[i] > 0;
+        }
+        
+        if (has_fp_inst)
+        {
+          auto img = IMG_FindByAddress(addr);
+          auto name = IMG_Valid(img) ? IMG_Name(img) : "Unknown_IMG";
+          img_name_max_size = std::max(name.length(), img_name_max_size);
+
+          auto& executed_sym = executed_sym_list[name][RTN_FindNameByAddress(addr)];
+
+          INS_InsertCall(BBL_InsHead(bbl), IPOINT_BEFORE, (AFUNPTR)set_true, IARG_PTR, &executed_sym, IARG_END);
+        }
+      }
+
+
     }
   }
 
@@ -85,7 +128,8 @@ namespace pene{
     , knob_exclist_mode{ KNOB_MODE_WRITEONCE, "pintool", "gen-sym-mode", "0",
       "Sets the mode for symbols generations. "
       "0: lists all symbols with fp instruction that have been loaded during execution. "
-      "1: lists only symbols with fp instructions that have been executed."}
+      "1: lists only symbols executed which contain fp instructions"
+      "2: lists only symbols with fp instructions that have been executed (slow)."}
   {
   }
 
@@ -112,9 +156,9 @@ namespace pene{
     }
 
     auto mode = knob_exclist_mode.Value();
-    if (mode != 0 && mode != 1)
+    if (mode < 0 || mode > 2)
     {
-      std::cerr << " KO: -gen-sym-mode should be either 0 or 1." << std::endl;
+      std::cerr << " KO: -gen-sym-mode should be either 0, 1 or 2." << std::endl;
       return false;
     }
     std::cerr << " OK" << std::endl;
@@ -127,28 +171,54 @@ namespace pene{
     std::cerr << "Initialization: symbol list generation." << std::endl;
     if (!knob_exclist_gen.Value().empty() && sym_list_stream.good())
     {
-      if (knob_exclist_mode.Value() == 0)
+      if (knob_exclist_mode.Value() == 2)
       {
-        IMG_AddInstrumentFunction(store_loaded_symbols, nullptr);
-      }
-      else
-      {
-        TRACE_AddInstrumentFunction(store_executed_symbols, nullptr);
-      }
-      PIN_AddFiniFunction([](INT32, void*) 
-        {
-          for (auto img_name_it : sym_list)
+        
+        TRACE_AddInstrumentFunction(store_executed_bbl, nullptr);
+        PIN_AddFiniFunction([](INT32, void*) 
           {
-            auto img_name = img_name_it.first;
-
-            for (auto rtn_name : img_name_it.second)
+            for (auto img_name_it : executed_sym_list)
             {
-              sym_list_stream << std::left << std::setw(int(img_name_max_size) + 4) << img_name << rtn_name << "\n";
+              auto img_name = img_name_it.first;
+
+              for (auto rtn_name_it : img_name_it.second)
+              {
+                if(rtn_name_it.second)
+                {
+                  auto rtn_name = rtn_name_it.first;
+                  sym_list_stream << std::left << std::setw(int(img_name_max_size) + 4) << img_name << rtn_name << "\n";
+                }
+              }
             }
-          }
-          sym_list_stream.flush();
-          sym_list_stream.close();
-        }, nullptr);
+            sym_list_stream.flush();
+            sym_list_stream.close();
+          }, nullptr);
+      }
+      else 
+      {
+        if (knob_exclist_mode.Value() == 0)
+        {
+          IMG_AddInstrumentFunction(store_loaded_symbols, nullptr);
+        }
+        else
+        {
+          TRACE_AddInstrumentFunction(store_executed_traces, nullptr);
+        }
+        PIN_AddFiniFunction([](INT32, void*) 
+          {
+            for (auto img_name_it : sym_list)
+            {
+              auto img_name = img_name_it.first;
+
+              for (auto rtn_name : img_name_it.second)
+              {
+                sym_list_stream << std::left << std::setw(int(img_name_max_size) + 4) << img_name << rtn_name << "\n";
+              }
+            }
+            sym_list_stream.flush();
+            sym_list_stream.close();
+          }, nullptr);
+      }
     }
   }
 
