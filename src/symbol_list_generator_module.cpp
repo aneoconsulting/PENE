@@ -50,7 +50,7 @@ namespace pene{
 
     static VOID store_executed_traces(TRACE trace, void*)
     {
-      auto addr = TRACE_Address(trace);
+      const auto& addr = TRACE_Address(trace);
       counters c;
       bool has_fp_inst = false;
 
@@ -68,8 +68,8 @@ namespace pene{
       }
       if (has_fp_inst)
       {
-        auto img = IMG_FindByAddress(addr);
-        auto name = IMG_Valid(img) ? IMG_Name(img) : "Unknown_IMG";
+        const auto& img = IMG_FindByAddress(addr);
+        const auto& name = IMG_Valid(img) ? IMG_Name(img) : "Unknown_IMG";
         img_name_max_size = std::max(name.length(), img_name_max_size);
         sym_list[name].insert(RTN_FindNameByAddress(addr));
       }
@@ -105,8 +105,8 @@ namespace pene{
 
         if (has_fp_inst)
         {
-          auto img = IMG_FindByAddress(addr);
-          auto name = IMG_Valid(img) ? IMG_Name(img) : "Unknown_IMG";
+          const auto& img = IMG_FindByAddress(addr);
+          const auto& name = IMG_Valid(img) ? IMG_Name(img) : "Unknown_IMG";
           img_name_max_size = std::max(name.length(), img_name_max_size);
 
           auto& executed_sym = executed_sym_list[name][RTN_FindNameByAddress(addr)];
@@ -136,7 +136,7 @@ namespace pene{
   bool symbol_list_generator_module::validate()
   {
     std::cerr << "Checking configuration: symbol list generation - ";
-    auto filename = knob_exclist_gen.Value();
+    const auto& filename = knob_exclist_gen.Value();
 
     if (filename.empty())
     {
@@ -155,7 +155,7 @@ namespace pene{
       return false;
     }
 
-    auto mode = knob_exclist_mode.Value();
+    const auto& mode = knob_exclist_mode.Value();
     if (mode < 0 || mode > 2)
     {
       std::cerr << " KO: -gen-sym-mode should be either 0, 1 or 2." << std::endl;
@@ -177,15 +177,15 @@ namespace pene{
         TRACE_AddInstrumentFunction(store_executed_bbl, nullptr);
         PIN_AddFiniFunction([](INT32, void*)
           {
-            for (auto img_name_it : executed_sym_list)
+            for (const auto& img_name_it : executed_sym_list)
             {
-              auto img_name = img_name_it.first;
+              const auto& img_name = img_name_it.first;
 
-              for (auto rtn_name_it : img_name_it.second)
+              for (const auto& rtn_name_it : img_name_it.second)
               {
                 if (rtn_name_it.second)
                 {
-                  auto rtn_name = rtn_name_it.first;
+                  const auto& rtn_name = rtn_name_it.first;
                   sym_list_stream << std::left << std::setw(int(img_name_max_size) + 4) << img_name << rtn_name << "\n";
                 }
               }
