@@ -173,7 +173,7 @@ namespace pene{
     {
       if (knob_exclist_mode.Value() == 2)
       {
-
+        std::cerr << "Symbols from executed BBLs will be listed." << std::endl;
         TRACE_AddInstrumentFunction(store_executed_bbl, nullptr);
         PIN_AddFiniFunction([](INT32, void*)
           {
@@ -198,10 +198,12 @@ namespace pene{
       {
         if (knob_exclist_mode.Value() == 0)
         {
+          std::cerr << "Symbols from loaded images will be listed." << std::endl;
           IMG_AddInstrumentFunction(store_loaded_symbols, nullptr);
         }
         else
         {
+          std::cerr << "Symbols from executed traces will be listed." << std::endl;
           TRACE_AddInstrumentFunction(store_executed_traces, nullptr);
         }
         PIN_AddFiniFunction([](INT32, void*)

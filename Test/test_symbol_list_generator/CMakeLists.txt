@@ -15,7 +15,9 @@ target_link_libraries(executable PRIVATE shared2_funs)
 
 set(TEST_SCRIPTS test_symbol_list_generator.py)
 set(REFERENCE_FILES )
-set(TEST_LIST test_symbol_list_generator.symbols_list_generation_tests.test_exec_and_shared)
+set(TEST_LIST test_symbol_list_generator.symbols_list_generation_tests.test_loaded_symbols 
+              test_symbol_list_generator.symbols_list_generation_tests.test_exec_traces
+              test_symbol_list_generator.symbols_list_generation_tests.test_exec_bbls)
 
 
 foreach(test_script ${TEST_SCRIPTS})
