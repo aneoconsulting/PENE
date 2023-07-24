@@ -1,6 +1,6 @@
-# PENE(Pin Enabled Numerical Exploration)
+# PENE
 
-PENE(Pin Enabled Numerical Exploration) is a dynamic instrumentation tool based on [Intel Pin](https://www.intel.com/content/www/us/en/developer/articles/tool/pin-a-dynamic-binary-instrumentation-tool.html) that instruments floating-point operations. It is compatible for Linux and Windows systems.
+PENE (Pin Enabled Numerical Exploration) is a dynamic instrumentation tool based on [Intel Pin](https://www.intel.com/content/www/us/en/developer/articles/tool/pin-a-dynamic-binary-instrumentation-tool.html) that instruments floating-point operations. It is compatible for Linux and Windows systems.
 
 PENE allows to change the rounding mode for floating-point operations by choosing one of the IEEE rounding mode or  random rounding mode.
 
