@@ -89,29 +89,28 @@ namespace pene{
 
     static VOID store_executed_bbl(TRACE trace, void*)
     {
+      const auto& addr = TRACE_Address(trace);
+      const auto& img = IMG_FindByAddress(addr);
+      const auto& name = IMG_Valid(img) ? IMG_Name(img) : "Unknown_IMG";
+      img_name_max_size = std::max(name.length(), img_name_max_size);
       for (BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
       {
-        auto addr = BBL_Address(bbl);
-        counters c;
-        bool has_fp_inst = false;
         for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
         {
+          counters c;
           update_counters(ins, c);
-        }
-        for (size_t i = 0; i < counters::size && !has_fp_inst; ++i)
-        {
-          has_fp_inst |= c.array[i] > 0;
-        }
+          bool has_fp_inst = false;
 
-        if (has_fp_inst)
-        {
-          const auto& img = IMG_FindByAddress(addr);
-          const auto& name = IMG_Valid(img) ? IMG_Name(img) : "Unknown_IMG";
-          img_name_max_size = std::max(name.length(), img_name_max_size);
+          for (size_t i = 0; i < counters::size && !has_fp_inst; ++i)
+          {
+            has_fp_inst |= c.array[i] > 0;
+          }
 
-          auto& executed_sym = executed_sym_list[name][RTN_FindNameByAddress(addr)];
-
-          INS_InsertCall(BBL_InsHead(bbl), IPOINT_BEFORE, (AFUNPTR)set_true, IARG_PTR, &executed_sym, IARG_END);
+          if (has_fp_inst)
+          {
+            auto& executed_sym = executed_sym_list[name][RTN_FindNameByAddress(addr)];
+            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)set_true, IARG_PTR, &executed_sym, IARG_END);
+          }
         }
       }
 

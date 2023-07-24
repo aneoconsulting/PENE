@@ -9,7 +9,7 @@ LIBRARY_API float func1(float a) {
 		ai = ai / 2;
 		return (*((float*)(&ai)));
 	}
-	return a+1;
+	return a + 1;
 }
 LIBRARY_API float func2(float a) {
 	int ai = *((int*)(&a));

@@ -15,7 +15,7 @@ class symbols_list_generation_tests(unittest.TestCase):
 
     executed = [["executable", ["main"]],
                 ["shared2_funs", ["func2_1", "func2_2"]],
-                ["shared_funs", ["func1"]]]
+                ["shared_funs", ["func2"]]]
 
 
     def generate_and_validate_list(self, mode, symbols):
@@ -24,7 +24,7 @@ class symbols_list_generation_tests(unittest.TestCase):
         print("the commandline is {}".format(subprocess.list2cmdline(out.args)))
         print(out.stdout.decode('utf-8'))
 
-        regexes = r"\A" + "".join([r"(?=.*?^\S*?" + elem[0] + r"\S*?\s+" + sym +r"$)" for elem in self.loaded for sym in elem[1]])
+        regexes = r"\A" + "".join([r"(?=.*?^\S*?" + elem[0] + r"\S*?\s+" + sym +r"$)" for elem in symbols for sym in elem[1]])
     
         with open('list'+mode+'.txt') as ref:
             input = ref.read()
