@@ -35,7 +35,7 @@ namespace pene{
             update_counters(ins, c);
           }
 
-          for (int i = 0; i < counters::size && !has_fp_inst; ++i)
+          for (size_t i = 0; i < counters::size && !has_fp_inst; ++i)
           {
             has_fp_inst |= c.array[i] > 0;
           }
@@ -62,7 +62,7 @@ namespace pene{
         }
       }
 
-      for (int i = 0; i < counters::size && !has_fp_inst; ++i)
+      for (size_t i = 0; i < counters::size && !has_fp_inst; ++i)
       {
         has_fp_inst |= c.array[i] > 0;
       }
@@ -92,7 +92,7 @@ namespace pene{
   bool symbol_list_generator_module::validate()
   {
     std::cerr << "Checking configuration: symbol list generation - ";
-    auto filename = knob_exclist_gen.Value();
+    const auto& filename = knob_exclist_gen.Value();
 
     if (filename.empty())
     {
@@ -137,11 +137,11 @@ namespace pene{
       }
       PIN_AddFiniFunction([](INT32, void*) 
         {
-          for (auto img_name_it : sym_list)
+          for (auto& img_name_it : sym_list)
           {
-            auto img_name = img_name_it.first;
+            auto& img_name = img_name_it.first;
 
-            for (auto rtn_name : img_name_it.second)
+            for (auto& rtn_name : img_name_it.second)
             {
               sym_list_stream << std::left << std::setw(int(img_name_max_size) + 4) << img_name << rtn_name << "\n";
             }
