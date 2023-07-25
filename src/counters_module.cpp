@@ -25,7 +25,7 @@ namespace pene {
         }
         virtual void destroy(counters* local_counters) override
         {
-          for (int i = 0; i < counters::size; ++i)
+          for (size_t i = 0; i < counters::size; ++i)
           {
             c.array[i] += local_counters->array[i];
           }
@@ -130,7 +130,7 @@ namespace pene {
           PIN_WriteErrorMessage("ERROR: index<N)", 1000, PIN_ERR_FATAL, 0);
           PIN_ExitApplication(-1);
         }
-        if constexpr (N < counters::size)
+        if constexpr (N+1 < counters::size)
         {
           if (index > N)
           {

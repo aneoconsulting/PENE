@@ -341,3 +341,8 @@ healthchecksdb
 
 Pin
 out
+/code_generator/just_for_cmake.cpp
+/include/replace/wrappers/avx.h
+/include/replace/wrappers/avx512.h
+/include/replace/wrappers/fma.h
+/include/replace/wrappers/sse.h

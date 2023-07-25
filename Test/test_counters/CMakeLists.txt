@@ -81,7 +81,7 @@ function(configure_file FILENAME)
       DEPENDS
         ${CMAKE_GENERICS_PATH}/GenericConfigureFile.cmake
         #${CMAKE_CURRENT_SOURCE_DIR}/${FILENAME}
-      COMMENT "Configuring FILENAME"
+      COMMENT "Configuring ${FILENAME}"
       VERBATIM)
 endfunction(configure_file)
 
