@@ -82,7 +82,7 @@ namespace pene{
     // sym_list[img_name] => rtn_name_list
     is_executed_by_sym_name_by_img_name_t executed_sym_list;
 
-    static VOID set_true(bool* bool_ptr)
+    static VOID PIN_FAST_ANALYSIS_CALL set_true(bool* bool_ptr)
     {
       *bool_ptr = true;
     }
@@ -95,22 +95,23 @@ namespace pene{
       img_name_max_size = std::max(name.length(), img_name_max_size);
       for (BBL bbl = TRACE_BblHead(trace); BBL_Valid(bbl); bbl = BBL_Next(bbl))
       {
+        counters c;
+        bool has_fp_inst = false;
+
         for (INS ins = BBL_InsHead(bbl); INS_Valid(ins); ins = INS_Next(ins))
         {
-          counters c;
           update_counters(ins, c);
-          bool has_fp_inst = false;
 
           for (size_t i = 0; i < counters::size && !has_fp_inst; ++i)
           {
             has_fp_inst |= c.array[i] > 0;
           }
+        }
 
-          if (has_fp_inst)
-          {
-            auto& executed_sym = executed_sym_list[name][RTN_FindNameByAddress(addr)];
-            INS_InsertCall(ins, IPOINT_BEFORE, (AFUNPTR)set_true, IARG_PTR, &executed_sym, IARG_END);
-          }
+        if (has_fp_inst)
+        {
+          auto& executed_sym = executed_sym_list[name][RTN_FindNameByAddress(addr)];
+          BBL_InsertCall(bbl, IPOINT_ANYWHERE, (AFUNPTR)set_true, IARG_FAST_ANALYSIS_CALL, IARG_PTR, &executed_sym, IARG_END);
         }
       }
 
