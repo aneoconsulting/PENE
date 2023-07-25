@@ -94,3 +94,7 @@ path/to/pin -t path/to/pene.so/or/pene.dll -gen-sym-list list.txt -gen-sym-mode 
 ```
 
 When the mode is set to 0, it will list all the symbols with floating-point instructions that have been loaded during execution. If set to 1, it will list all the symbols with floating-point instructions that have been executed. Default mode is 0.
+
+## How to contribute
+
+To contribute to PENE, it is neede to accept the Contributor Licence Agreement.
