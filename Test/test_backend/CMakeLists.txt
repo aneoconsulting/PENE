@@ -72,7 +72,22 @@ add_custom_target(${PROJECT_NAME} ALL DEPENDS
 )
 
 find_package(Python3 REQUIRED Interpreter)
+
+execute_process(
+    COMMAND pip show pytest
+    RESULT_VARIABLE EXIT_CODE
+    OUTPUT_QUIET
+)
+
+if (NOT ${EXIT_CODE} EQUAL 0)
+    message(
+            FATAL_ERROR
+            "The \"pytest\" Python3 package is not installed. Please install it using the following command: \"pip3 install pytest\"."
+    )
+endif()
+
 foreach(script ${TEST_SCRIPTS})
 	add_test(NAME ${script}
 			COMMAND ${Python3_EXECUTABLE} stderr2stdout.py ${Python3_EXECUTABLE} -m pytest ${script})
 endforeach()
+
