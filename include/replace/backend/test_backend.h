@@ -57,7 +57,7 @@ namespace pene
          
          static void madd_float(float a, float b, float c, float* cptr, void*) noexcept
           {
-           float temp =fma(a,b,c);
+           float temp = fmaf(a,b,c);
            auto  ans=bit_cast<uint32_t,float>(temp);
            ans &= 0xfffffff0;
            ans |= 0x9;

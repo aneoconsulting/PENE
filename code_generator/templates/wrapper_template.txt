@@ -40,30 +40,30 @@ namespace pene
         
         {% if architecture_name == "avx512"  %}
         template<typename T, void (*backend_fct)(T, T, T*,void*)>
-        void call_backend_fct(T* const a, T* const b, T* c, void* ctx, int i)
+        void call_backend_fct(T* const a, T* const b, T* c, void* ctx, size_t i)
         {
             backend_fct(a[i], b[i], &c[i], ctx);
         }
         {% elif architecture_name == "sse" or architecture_name  == "avx" %}
         template<typename T, void (*backend_fct)(T, T, T*,void*)>
-        void call_backend_fct(T* const a, T* const b, T* c, void* ctx, int N)
+        void call_backend_fct(T* const a, T* const b, T* c, void* ctx, size_t N)
         {
-            for(int i=0 ;i<N; ++i)
+            for(size_t i=0 ;i<N; ++i)
                backend_fct(a[i], b[i], &c[i], ctx);
         }
         {% endif %}
 
         {% if architecture_name == "avx512" or architecture_name == "fma" %}
         template<typename T>
-        void PIN_FAST_ANALYSIS_CALL zero_reg_at_position(T* dst, int pos)
+        void PIN_FAST_ANALYSIS_CALL zero_reg_at_position(T* dst, size_t pos)
         {
-        dst[pos]=0;
+            dst[pos]=0;
         }
-        static bool PIN_FAST_ANALYSIS_CALL msk_element_set(IMULTI_ELEMENT_OPERAND* OpInfo, int pos)
+        static bool PIN_FAST_ANALYSIS_CALL msk_element_set(IMULTI_ELEMENT_OPERAND* OpInfo, UINT32 pos)
         {
           return OpInfo->ElementMaskValue(pos)==1;
         }
-        static bool PIN_FAST_ANALYSIS_CALL msk_element_notset(IMULTI_ELEMENT_OPERAND* OpInfo, int pos)
+        static bool PIN_FAST_ANALYSIS_CALL msk_element_notset(IMULTI_ELEMENT_OPERAND* OpInfo, UINT32 pos)
         {
           return OpInfo->ElementMaskValue(pos)==0;
         }
@@ -71,25 +71,25 @@ namespace pene
         
         {% if architecture_name == "fma" %}
         template<typename T, void (*backend_fct_fmadd)(T, T, T, T*,void*)>
-        void call_backend_fct_fmadd(T* const a, T* const b, T* const c, T* d, void* ctx, int i)
+        void call_backend_fct_fmadd(T* const a, T* const b, T* const c, T* d, void* ctx, size_t i)
         {
             backend_fct_fmadd(a[i], b[i], c[i], &d[i], ctx);
         }
 
         template<typename T, void (*backend_fct_fnmadd)(T, T, T, T*,void*)>
-        void call_backend_fct_fnmadd(T* const a, T* const b, T* const c, T* d, void* ctx, int i)
+        void call_backend_fct_fnmadd(T* const a, T* const b, T* const c, T* d, void* ctx, size_t i)
         {
             backend_fct_fnmadd(-a[i], b[i], c[i], &d[i], ctx);
         }
         
          template<typename T, void (*backend_fct_fmsub)(T, T, T, T*,void*)>
-        void call_backend_fct_fmsub(T* const a, T* const b, T* const c, T* d, void* ctx, int i)
+        void call_backend_fct_fmsub(T* const a, T* const b, T* const c, T* d, void* ctx, size_t i)
         {
             backend_fct_fmsub(a[i], b[i], -c[i], &d[i], ctx);
         }
 
         template<typename T, void (*backend_fct_fnmsub)(T, T, T, T*,void*)>
-        void call_backend_fct_fnmsub(T* const a, T* const b, T* const c, T* d, void* ctx, int i)
+        void call_backend_fct_fnmsub(T* const a, T* const b, T* const c, T* d, void* ctx, size_t i)
         {
             backend_fct_fnmsub(-a[i], b[i], -c[i], &d[i], ctx);
         }
@@ -101,8 +101,8 @@ namespace pene
           auto xed = INS_XedDec(ins); // TODO check that pointer does not need to be freed
           auto iform = xed_decoded_inst_get_iform_enum(xed);
           {% if architecture_name == "avx512" or architecture_name == "fma" %}
-          bool ismasking=xed_decoded_inst_masking(xed);
-          bool iszeroing=xed_decoded_inst_zeroing(xed);
+          bool ismasking=(bool)xed_decoded_inst_masking(xed);
+          bool iszeroing=(bool)xed_decoded_inst_zeroing(xed);
           REG mask_reg = INS_MaskRegister(ins); 
           {% endif %}
 
@@ -178,7 +178,7 @@ namespace pene
                     {
                      if(iszeroing)
                      {
-                     for(int i=0;i< {{instruction.nb_elements}};i++)
+                     for(size_t i=0;i< {{instruction.nb_elements}};i++)
                      {
                       INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_notset,
                       IARG_FAST_ANALYSIS_CALL,
@@ -206,7 +206,7 @@ namespace pene
                       }
                      }
                      else
-                      for(int i=0;i< {{instruction.nb_elements}};i++)
+                      for(size_t i=0;i< {{instruction.nb_elements}};i++)
                       {
                       INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_set,
                       IARG_FAST_ANALYSIS_CALL,
@@ -271,7 +271,7 @@ namespace pene
                     {% elif instruction.isfma_avx512 == True %}
                     if(!ismasking || !REG_valid(mask_reg))
                      {
-                     for(int i=0;i< {{instruction.nb_elements}};i++)
+                     for(size_t i=0;i< {{instruction.nb_elements}};i++)
                      {%if instruction.optype != "fmaddsub" and instruction.optype != "fmsubadd" %}
                       {
                       INS_InsertCall(ins,IPOINT_BEFORE,(AFUNPTR){{which_fct_to_call(instruction.optype)}}<{{instruction.ins_precision.associated_type}}, OPERATION_IMPL::madd_{{instruction.ins_precision.associated_type}}>,
@@ -318,7 +318,7 @@ namespace pene
                     {
                      if(iszeroing)
                      {
-                     for(int i=0;i< {{instruction.nb_elements}};i++)
+                     for(size_t i=0;i< {{instruction.nb_elements}};i++)
                      {
                       INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_notset,
                       IARG_FAST_ANALYSIS_CALL,
@@ -371,7 +371,7 @@ namespace pene
                       }
                      }
                      else
-                      for(int i=0;i< {{instruction.nb_elements}};i++)
+                      for(size_t i=0;i< {{instruction.nb_elements}};i++)
                       {
                       INS_InsertIfCall(ins, IPOINT_BEFORE, (AFUNPTR)msk_element_set,
                       IARG_FAST_ANALYSIS_CALL,

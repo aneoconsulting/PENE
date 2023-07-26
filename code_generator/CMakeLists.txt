@@ -30,6 +30,18 @@ if (NOT ${Python3_FOUND})
     message(FATAL_ERROR "Python is needed to generate sources.")
 endif ()
 
+execute_process(
+    COMMAND pip show Jinja2
+    RESULT_VARIABLE EXIT_CODE
+    OUTPUT_QUIET
+)
+
+if (NOT ${EXIT_CODE} EQUAL 0)
+    message(
+            FATAL_ERROR
+            "The \"Jinja2\" Python3 package is not installed. Please install it using the following command: \"pip3 install Jinja2\"."
+    )
+endif()
 
 add_custom_command(OUTPUT "${OUTPUT_PATH}/sse.h" "${OUTPUT_PATH}/avx.h" "${OUTPUT_PATH}/avx512.h" "${OUTPUT_PATH}/fma.h"
                    COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/generator.py" ${args_list}
