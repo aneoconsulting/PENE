@@ -25,7 +25,7 @@ INT32 Usage()
 
 
 
-VOID Fini(INT32 code, VOID* v)
+VOID Fini(INT32 code, VOID*)
 {
     // Write to a file since cout and cerr maybe closed by the application
     OutFile.setf(std::ios::showbase);

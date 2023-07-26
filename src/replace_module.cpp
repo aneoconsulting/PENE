@@ -230,9 +230,8 @@ namespace pene {
     case replace_module_internals::replace_modes::VERROU:
       {
       auto verrou_replace_instrmenter = new replace_module_internals::replace_inst_instrumenters<typename replace::backend::verrou>();
-      unsigned long seed=0;
-      srand(time(0));
-      seed=rand();
+      srand((uint)time(nullptr));
+      uint seed=(uint)rand();
       pene::replace::backend::verrou_set_seed (seed);
       if (rounding_mode == replace_module_internals::rounding_modes::NOTSPECIFIED)
         {
