@@ -33,6 +33,16 @@ namespace pene {
         return false;
       }
     }
+    KNOB<bool> * interflop = static_cast<KNOB<bool>*>(KNOB_BASE::FindKnob("interflop"));
+    KNOB<int> *  replace   = static_cast<KNOB<int>*>(KNOB_BASE::FindKnob("fp-replace"));
+    if (interflop && replace)
+    {
+      if (interflop->Value() && replace->Value())
+      {
+        std::cerr << "error : Only one mode between -interflop or -fp-replace should be used" << std::endl;
+        return false;
+      }
+    }
     return true;
   }
   void module::init_all()

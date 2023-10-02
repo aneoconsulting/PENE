@@ -7,6 +7,7 @@
 #include "symbol_list_generator_module.h"
 #include "replace_module.h"
 #include "extern_file.h"
+#include "interflop_module.h"
 
 using namespace pene;
 std::ofstream OutFile;
@@ -54,6 +55,7 @@ int main(int argc, char* argv[])
     counters_module countersModule{};
     symbol_list_generator_module symlistgenModule{};
     replace_module replacemodule{};
+    interflop_module interflopmodule{};
 
     OutFile.open(KnobOutputFile.Value().c_str());
 
