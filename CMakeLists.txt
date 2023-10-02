@@ -91,10 +91,13 @@ endif()
 
 # Include sub-projects.
 
+include_directories("extern")
+include_directories("extern/interflop")
 include_directories("include")
 include_directories("include/replace/backend/backend_verrou")
 add_subdirectory("code_generator")
 add_subdirectory ("src")
+add_subdirectory ("extern")
 add_subdirectory ("Test/test_version")
 add_subdirectory ("Test/test_counters")
 add_subdirectory ("Test/test_symbol_list_generator")
