@@ -1,0 +1,3 @@
+[submodule "extern/interflop"]
+	path = extern/interflop
+	url = https://github.com/a-hamitouche/interflop-stdlib.git
