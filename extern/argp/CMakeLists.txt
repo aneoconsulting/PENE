@@ -6,8 +6,6 @@ set (ARGP_C_SRC
     "argp-parse.c"
 )
 
-message("ARGP : " ${CRT_LINK_LIBRARIES})
-
 add_library(argp_c OBJECT ${ARGP_C_SRC})
 target_compile_definitions(argp_c PRIVATE ${CRT_COMPILE_DEFINITIONS})
 target_compile_options (argp_c PRIVATE ${CRT_PREPROCESS_OPTIONS} ${CRT_COMPILE_OPTIONS} "-fPIC")

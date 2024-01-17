@@ -4,6 +4,11 @@ project("Interflop")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/interflop")
 
+if(DEFINED USE_FMA_INTRINSIC)
+message("-- Using FMA Intrinsic")
+set(HAVE_FMA_INTRINSIC=${HAVE_FMA_INTRINSIC})
+set(FMA_FLAGS "-mfma")
+endif()
 
 set(CRT_COMPILE_DEFINITIONS 
   # Preprocessor Options

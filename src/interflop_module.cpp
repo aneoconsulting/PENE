@@ -604,8 +604,7 @@ namespace pene {
                     MAX_BACKENDS);
       }
 
-      handle_pre_init(&interflop_module::panic, stderr, &contexts[loaded_backends]);	  
-      fprintf (stderr, "Context pointer value : %p\n", contexts[0]);
+      handle_pre_init(&interflop_module::panic, stderr, &contexts[loaded_backends]);
       handle_cli(backend_argc, backend_argv, contexts[loaded_backends]);
       backends[loaded_backends] = handle_init(contexts[loaded_backends]);
       loaded_backends++;
