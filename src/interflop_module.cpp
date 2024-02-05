@@ -1,4 +1,32 @@
+#if defined(_WIN32)
 
+#include <iostream>
+#include "interflop_module.h"
+
+namespace pene {
+  using namespace pin_utils;
+  interflop_module::interflop_module() : module(), 
+    KnobInterflop(KNOB_MODE_WRITEONCE, "pintool", "interflop", "0", "use interflop dynamic backend (should not be used on windows target)"),
+    KnobVectorInterflop(KNOB_MODE_WRITEONCE, "pintool", "vector-mode", "0", "use interflop dynamic backend (should not be used on windows target)"),
+    data(nullptr)
+  {}
+
+  void interflop_module::init()
+  {
+    std::cerr << "Initialization: interflop module." << std::endl;
+    std::cerr << "  Interflop verificarlo's dynamic backends : " << "disabled" << std::endl;
+    std::cerr << "  Backends working mode : none" << std::endl;
+    std::cerr << "  /!\\ Feature not supported on Windows" << std::endl;
+  }
+
+  const std::string& interflop_module::name() 
+  {
+    static const std::string name_("interflop_module");
+    return name_;
+  }
+}
+
+#else
 extern "C"
 {
   #include "argp/argp.h"
@@ -27,6 +55,11 @@ extern "C"
 #include <iostream>
 #include "interflop_module.h"
 
+extern "C"{
+#include "interflop.h"
+#include "interflop_stdlib.h"
+#include "iostream/logger.h"
+}
 // Part of Verificarlo project
 // Taken from
 // https://github.com/interflop/verificarlo/blob/master/src/vfcwrapper/main.c.in
@@ -655,3 +688,4 @@ namespace pene {
 
 }
 
+#endif

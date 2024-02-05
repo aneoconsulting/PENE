@@ -5,12 +5,6 @@
 #include "module.h"
 #include "pin_utils/instrumenter.h"
 
-extern "C"{
-#include "interflop.h"
-#include "interflop_stdlib.h"
-#include "iostream/logger.h"
-}
-
 #define MAX_BACKENDS 16
 #define MAX_ARGS 256
 

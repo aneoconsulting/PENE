@@ -28,8 +28,6 @@ set(SOURCES "pene.cpp" "module.cpp" "version_module.cpp"  "utils/match.cpp"
 			"pin_utils/element_instrumenter.cpp" "pin_utils/symbol_filter.cpp" 
 			"pin_utils/source_filter.cpp" 
 			"replace/backend/backend_verrou/interflop_verrou.cpp" "replace/backend/backend_verrou/tinymt64.cpp"
-			"${CMAKE_SOURCE_DIR}/extern/interflop/interflop_stdlib.c"
-			"${CMAKE_SOURCE_DIR}/extern/interflop/iostream/logger.c"
 )
 
 set(PIN_TOOL pene)
@@ -42,7 +40,11 @@ set_property(TARGET ${PIN_TOOL} PROPERTY CXX_STANDARD 17)
 
 target_compile_definitions(${PIN_TOOL} PRIVATE  "-DHAVE_FMA_INTRINSIC")
 target_link_libraries(${PIN_TOOL} ${PIN_LIBRARIES})
+if(UNIX)
 target_link_libraries(${PIN_TOOL} instr argp interflop_stdlib)
+else()
+target_link_libraries(${PIN_TOOL} instr)
+endif(UNIX)
 target_link_options(${PIN_TOOL} PUBLIC ${PIN_LDFLAGS}) 
 
 install(TARGETS ${PIN_TOOL})
