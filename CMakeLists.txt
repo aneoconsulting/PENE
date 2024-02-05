@@ -91,6 +91,12 @@ endif()
 
 # Include sub-projects.
 
+if(UNIX)
+    include_directories("extern")
+    include_directories("extern/interflop")
+    add_subdirectory ("extern")
+endif()
+
 include_directories("include")
 include_directories("include/replace/backend/backend_verrou")
 add_subdirectory("code_generator")
@@ -105,8 +111,4 @@ add_subdirectory ("Test/cpp_unit")
 add_subdirectory ("Test/test_backend")
 add_subdirectory ("Test/test_backend_verrou")
 
-if(UNIX)
-    include_directories("extern")
-    include_directories("extern/interflop")
-    add_subdirectory ("extern")
-endif(UNIX)
+
