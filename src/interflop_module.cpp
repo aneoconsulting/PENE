@@ -452,6 +452,7 @@ typedef enum
 #include "replace/wrappers/vfc_sse.h"
 #include "replace/wrappers/vfc_wrapper_sse.h"
 #include "replace/wrappers/vfc_avx.h"
+#include "replace/wrappers/vfc_wrapper_avx.h"
 
 namespace pene {
   using namespace pin_utils;
@@ -493,9 +494,9 @@ namespace pene {
         case xed_category_enum_t::XED_CATEGORY_SSE:
           replace::vfc_wrappers::devectorized_sse::instrument(loaded_backends, backends, contexts, ins);
           break;
-        //~ case xed_category_enum_t::XED_CATEGORY_AVX:
-          //~ replace::vfc_wrappers::avx::instrument(loaded_backends, backends, contexts, ins);
-          //~ break;
+        case xed_category_enum_t::XED_CATEGORY_AVX:
+          replace::vfc_wrappers::devectorized_avx::instrument(loaded_backends, backends, contexts, ins);
+          break;
         // case xed_category_enum_t::XED_CATEGORY_AVX512:
         //   replace::wrappers::avx512::instrument<OPERATION_IMPL>(backend_ctx, ins);
         //   break;
@@ -515,9 +516,9 @@ namespace pene {
         case xed_category_enum_t::XED_CATEGORY_SSE:
           replace::vfc_wrappers::sse::instrument(loaded_backends, backends, contexts, ins);
           break;
-        //~ case xed_category_enum_t::XED_CATEGORY_AVX:
-          //~ replace::vfc_wrappers::avx::instrument(loaded_backends, backends, contexts, ins);
-          //~ break;
+        case xed_category_enum_t::XED_CATEGORY_AVX:
+          replace::vfc_wrappers::avx::instrument(loaded_backends, backends, contexts, ins);
+          break;
         // case xed_category_enum_t::XED_CATEGORY_AVX512:
         //   replace::wrappers::avx512::instrument<OPERATION_IMPL>(backend_ctx, ins);
         //   break;
