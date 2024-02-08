@@ -23,20 +23,28 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 # Set source files
 set(SOURCES "pene.cpp" "module.cpp" "version_module.cpp"  "utils/match.cpp"
 			"counters.cpp" "counters_module.cpp"  "update_counters.cpp" 
-			"symbol_list_generator_module.cpp" "replace_module.cpp" 
+			"symbol_list_generator_module.cpp" "replace_module.cpp" "interflop_module.cpp"
 			"pin_utils/instrumenter.cpp" "pin_utils/filter.cpp" 
 			"pin_utils/element_instrumenter.cpp" "pin_utils/symbol_filter.cpp" 
 			"pin_utils/source_filter.cpp" 
 			"replace/backend/backend_verrou/interflop_verrou.cpp" "replace/backend/backend_verrou/tinymt64.cpp"
-			)
+)
+
 set(PIN_TOOL pene)
+
 
 # Add target
 add_library (${PIN_TOOL} SHARED ${SOURCES})
 set_property(TARGET ${PIN_TOOL} PROPERTY CXX_STANDARD 17)
 
+
+target_compile_definitions(${PIN_TOOL} PRIVATE  "-DHAVE_FMA_INTRINSIC")
 target_link_libraries(${PIN_TOOL} ${PIN_LIBRARIES})
+if(UNIX)
+target_link_libraries(${PIN_TOOL} instr argp interflop_stdlib)
+else()
 target_link_libraries(${PIN_TOOL} instr)
+endif(UNIX)
 target_link_options(${PIN_TOOL} PUBLIC ${PIN_LDFLAGS}) 
 
 install(TARGETS ${PIN_TOOL})

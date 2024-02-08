@@ -25,7 +25,9 @@ To do so, run via your command line on Linux or your powershell on Windows:
 
 ```shell
 cd [PENE repository] 
-cmake . 
+git submodule update --init
+git submodule foreach 'git checkout main'
+cmake -DUSE_FMA_INTRINSIC=1 . 
 cmake --build .
 ctest -C Debug
 ``` 
@@ -47,6 +49,9 @@ Without specifying any options, this command will execute your code under PENE w
 
 # How to instrument your code with PENE?
 
+PENE offers two ways to instrument code. A cross-plateforme based on backend [Verrou](https://github.com/edf-hpc/verrou) named **fp-replace** and on based one [Interflop](https://github.com/interflop), available on Linux only.
+
+## **FP-REPLACE** mode
 To instrument your code, you can use the **fp-replace** option:
 
 ```shell
@@ -69,6 +74,43 @@ where:
 - rounding-mode = 3 : downward rounding
 - rounding-mode = 4 : rounding to zero
 - rounding-mode = 5 : random rounding
+
+## **INTERFLOP** mode (Linux only)
+
+The interflop mode allows to dynamicaly load up to 16 backends and make them work separately. Available backends are :
+
+| Backend                                                                   | Description                                                                                                                          |
+|---------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+|[backend ieee](https://github.com/a-hamitouche/interflop-backend-ieee)     | The IEEE backend implements straighforward IEEE-754 arithmetic. It should have no effect on the output and behavior of your program. |
+|[backend verrou](https://github.com/a-hamitouche/interflop-backend-verrou) | The Verrou backend implements software couterpart of all IEEE-754 standard rounding modes                                            |
+|[backend vprec](https://github.com/a-hamitouche/interflop-backend-vprec)   | The VPREC backend simulates any floating-point formats that can fit into the IEEE-754 double precision format with a round to the nearest.|
+
+Each of these backends accepts different arguments and exhibits distinct behavior. To learn more, please consult the README.md files of each backend (located in the external subfolder or on their GitHub page).
+With this mode, backends can be used with a scalar mode (by devectorizing operations) or in vector mode to reduce instrumentation overhead.
+
+Usage :
+
+```bash
+VFC_BACKENDS="libbackend.so [option]" path/to/pin -t path/to/pene.so/or/pene.so -interflop -- path/to/executable
+```
+
+Exemple of usage with Verrou :
+
+
+```bash
+#Scalar mode
+VFC_BACKENDS="libinterflop_verrou.so --rounding-mode=upward" path/to/pin -t path/to/pene.so/or/pene.so -interflop -- path/to/executable
+
+#Vector mode
+VFC_BACKENDS="libinterflop_verrou.so --rounding-mode=downward" path/to/pin -t path/to/pene.so/or/pene.so -interflop -vector-mode -- path/to/executable
+
+#Multiple backends
+VFC_BACKENDS="libinterflop_verrou.so --rounding-mode=upward; libinterflop_vprec.so --mode=full --precision-binary32=23 --debug" path/to/pin -t path/to/pene.so/or/pene.so -interflop -- path/to/executable
+```
+
+/!\ Note :
+- Proposed backends fully work only in scalar mode
+- For backend Verrou, only nearest, upward and downward modes are available on vector mode
 
 ## How to exclude parts of the code from instrumentation?
 
